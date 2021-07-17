@@ -1,0 +1,23 @@
+<!-- /todo/templates/todo/index.html -->
+
+{% extends 'todo/base.html' %}
+
+{% block content %}
+
+    <h2>TODOリスト</h2>
+
+    {% if category %}
+        <h2>カテゴリー: {{ category.title }}</h2>
+    {% endif %}
+
+    {% for todos in todo %}
+        <ul>
+            <li>{{ todos.title }}--{{ todos.created_at }}</li>
+            <form method="POST" action="{% url 'todo:delete' todos.pk %}">
+                {% csrf_token %}
+                <button type="submit">削除</button>
+            </form>
+        </ul>
+    {% endfor %}
+
+{% endblock %}

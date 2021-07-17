@@ -1,0 +1,29 @@
+<!-- /todo/templates/todo/base.html -->
+
+<!doctype html>
+<html>
+    <head>
+
+        <title>TODO</title>
+
+    </head>
+    <body>
+
+        <h2>カテゴリー</h2>
+
+        <ul>
+            <a href="{% url 'todo:index' %}">
+                <li>トップ</li>
+            </a>
+            {% for category in category_list %}
+                <a href="{% url 'todo:todo_category' category %}">
+                    <li>{{ category }}></li>
+                </a>
+            {% endfor %}
+        </ul>
+
+        {% block content %}
+        {% endblock %}
+
+    </body>
+</html>
