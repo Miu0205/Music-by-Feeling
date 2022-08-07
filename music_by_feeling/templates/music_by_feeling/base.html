@@ -1,0 +1,29 @@
+<!-- /music_by_feeling/templates/music_by_feeling/base.html -->
+
+<!doctype html>
+<html>
+    <head>
+
+        <title>MUSIC_BY_FEELING</title>
+
+    </head>
+    <body>
+
+        <h2>カテゴリー</h2>
+
+        <ul>
+            <a href="{% url 'music_by_feeling:index' %}">
+                <li>トップ</li>
+            </a>
+            {% for category in category_list %}
+                <a href="{% url 'music_by_feeling:music_by_feeling_category' category %}">
+                    <li>{{ category }}></li>
+                </a>
+            {% endfor %}
+        </ul>
+
+        {% block content %}
+        {% endblock %}
+
+    </body>
+</html>
