@@ -23,3 +23,15 @@ def music_by_feeling_category(request, category):
     """カテゴリで絞り込む"""
     music_by_feeling = Music_by_feeling.objects.filter(category=category).order_by('title')
     return render(request, 'music_by_feeling/index.html', {'music_by_feeling': music_by_feeling, 'category': category})
+
+def videoplayback(request):
+    music_by_feelings = Music_by_feeling.objects.order_by('title')
+    txt = {
+        'music_by_feelings' : music_by_feelings,
+    }
+    return render(request, 'music_by_feeling/videoplayback.html', txt)
+
+def playlist(request):
+    txt = {
+    }
+    return render(request, 'music_by_feeling/playlist.html', txt)

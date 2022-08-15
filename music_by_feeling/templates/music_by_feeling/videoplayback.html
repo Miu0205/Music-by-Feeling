@@ -1,0 +1,236 @@
+{% load static %}
+<style>
+.video-textarea-sidebyside{
+      display: flex;                /*内部要素の横並び*/
+      margin: 20px 20px 0 20px;     /*上、右、下、左*/
+}
+
+.background{
+      /*margin: 0 0 0 0;  */   /*上、右、下、左*/
+      /*padding: 20px 10px 15px 20px;*/
+      background-image: url(images/1.jpg);
+      /*background-repeat: repeat-x;*/
+}
+.background-kazari{
+      /*margin: 0 0 0 0;  */   /*上、右、下、左*/
+      /*padding: 20px 10px 15px 20px;*/
+      /*background-image: url(images/123_kazari.png);*/
+      position: absolute;left:0px;top:40px;
+      /*background-repeat: repeat-x;*/
+}
+.class1 {
+  position: absolute;
+  top: 10px;
+  left: 750px;
+  /*text-align:left;*/
+}
+.class2 {
+  position: absolute;
+  top: 100px;
+  left: 800px;
+}
+</style>
+
+<html>
+    <head>
+        <title>MUSIC_BY_FEELING</title>
+        <link rel="stylesheet" href="/static/css/style.css">
+    </head>
+<body>
+
+<header>
+      <!--スライドショー-->
+      <aside id="mainimg">
+        <img src="/static/images/1.jpg" alt="" class="slide0">
+        <img src="/static/images/1.jpg" alt="" class="slide1">
+        <img src="/static/images/2.jpg" alt="" class="slide2">
+        <img src="/static/images/3.jpg" alt="" class="slide3">
+        <img src="/static/images/123_kazari.png" alt="" class="slide7">
+        <img src="/static/images/4.jpg" alt="" class="slide4">
+        <img src="/static/images/5.jpg" alt="" class="slide5">
+        <img src="/static/images/6.jpg" alt="" class="slide6">
+        <img src="/static/images/456_kazari.png" alt="" class="slide8">
+      </aside>
+</header>
+
+  <div class="background-kazari">
+        <a href="{% url 'music_by_feeling:index' %}">
+            <h2><font size="6">Music By Feeling</font></h2>
+        </a>
+        <div class="video float-right">
+          <div class="d-grid gap-2 mx-auto">
+            <div class="video-textarea-sidebyside">
+            <video width='750' height='450' autoplay controls controlslist id="video" onclick="video_pause()">
+              <source src="/static/video/tokyo2022.mp4" type="video/mp4">
+              <source src="/static/tokyo2022.webm" type="video/webm">
+            </video>
+            <textarea rows="22" cols="60" class="class2">ここに記入してください</textarea>
+            <a href="{% url 'music_by_feeling:index' %}">
+                <div class="class1">
+                  <img src="/static/images/icon_close.png">
+                </div>
+            </a>
+            </div>
+          </div>
+        </div>
+
+
+        <button type="button" class="btn btn-warning" onclick="video_play()">再生</button>
+        <button type="button" class="btn btn-warning" onclick="video_pause()">停止</button>
+        <button type="button" class="btn btn-warning" onclick="video_next(1)">次へ</button>
+        <button type="button" class="btn btn-warning" onclick="video_back()">戻る</button>
+        <button type="button" class="btn btn-warning" onclick="video_mute()">ミュート</button>
+        <button type="button" class="btn btn-warning" onClick="upVolume()">↑</button>
+        <button type="button" class="btn btn-warning" onClick="downVolume()">↓</button>
+        <button type="button" class="btn btn-warning" onClick="btn_back()">10秒前</button>
+        <button type="button" class="btn btn-warning" onClick="btn_forward()">10秒後</button>
+        <select>
+            <option value="1">1倍速</option>
+            <option value="2">2倍速</option>
+            <option value="3">3倍速</option>
+        </select>
+        <select name ="loop" onchange="change(this)">
+            <option value="1">一回ずつ</option>
+            <option value="2">リピート</option>
+        </select>
+
+        <button type="button" class="btn btn-warning" onclick="video_playbackRate()">保存</button>
+        <button type="button" class="btn btn-warning" onclick="video_playbackRate()">お気に入り</button>
+
+        <button onclick="playVideo(1)">1</button>
+        <button onclick="playVideo(2)">2</button>
+        <button onclick="playVideo(3)">3</button>
+
+        <h3>コメント</h3>
+
+        <ul>
+          <form action="sample.php" method="post">
+            <label>
+            <textarea name="freeans" name="confirm" rows="4" cols="90"> 自由に意見を記述してください </textarea>
+            </label>
+            <input type="submit">
+          </form>
+
+          <a href="{% url 'music_by_feeling:playlist' %}">
+              <li>リスト</li>
+          </a>
+      </div>
+    </body>
+</html>
+
+<script>
+    var count1 = 0;
+    function video_play() {
+      //再生
+        video.play();
+    }
+    function video_pause() {
+      //停止
+        video.pause();
+    }
+    function video_next(num) {
+    	//次の画面へ
+      num = num + 1;
+      console.log(num);
+        tag = document.getElementById("video");
+        switch (num) {
+            case 1:
+                tag.src = "/static/video/tokyo2022.mp4";
+                break;
+            case 2:
+                tag.src = "/static/video/2.mp4";
+                break;
+            case 3:
+                tag.src = "/static/video/3.mp4";
+                break;
+        }
+    }
+    function video_back() {
+    	//前の画面へ
+      tag = document.getElementById("video");
+      tag.src = "/static/video/tokyo2022.mp4";
+    }
+    function video_mute() {
+      //ミュート
+        if(video.muted){
+             video.muted = false;
+        }else{
+             video.muted = true;
+        }
+    }
+
+    window.onload = () => {
+      // 倍速
+        const selector = document.getElementsByTagName("select")[0];
+        selector.addEventListener('change', (it) => {
+            video.playbackRate = setRate(it.target.value);
+        });
+        const setRate = (val) => {
+            return Number(val);
+        }
+    }
+    function change(obj) {
+      // リピート、ループ
+        result = document.getElementById("result");
+        index = obj.selectedIndex;
+        value = obj.options[index].value;
+        if(value == 1){
+             video.loop = false;
+        }else {
+             video.loop = true;
+        }
+    }
+    function upVolume() {
+    	//音量を上げる
+    	video.volume = video.volume + 0.25;
+    }
+    function downVolume() {
+    	//音量を下げる
+    	video.volume = video.volume - 0.25;
+    }
+    function btn_back() {
+      // 10秒前ボタンを押したとき
+        video.currentTime -= 10;
+    }
+    function btn_forward() {
+      // 10秒後ボタンを押したとき
+        video.currentTime += 10;
+    }
+    function playVideo(num) {
+      // 切り替え
+        console.log(num);
+        tag = document.getElementById("video");
+        switch (num) {
+            case 1:
+                tag.src = "/static/video/tokyo2022.mp4";
+                break;
+            case 2:
+                tag.src = "/static/video/2.mp4";
+                break;
+            case 3:
+                tag.src = "/static/video/3.mp4";
+                break;
+        }
+    }
+    (function() {
+      // 自動切り替え1
+      "use strict";
+      var video = document.getElementById('video');
+      var movie_url = "/static/video/2.mp4";
+        video.addEventListener('ended', function() {
+        video.src = movie_url;
+        video.load();
+        video.play();
+        if(count1 == 0){
+             movie_url = "/static/video/3.mp4";
+             count1 = count1+1;
+        }else if(count1 == 1){
+             movie_url = "/static/video/tokyo2022.mp4";
+             count1 = count1+1;
+        }else {
+             movie_url = "/static/video/2.mp4";
+             count1 = 0;
+        }
+      })
+    })();
+</script>

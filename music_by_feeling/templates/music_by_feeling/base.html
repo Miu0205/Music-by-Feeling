@@ -8,6 +8,9 @@
 
     </head>
     <body>
+      <a href="{% url 'music_by_feeling:index' %}">
+          <h2>Music By Feeling</h2>
+      </a>
 
         <h2>カテゴリー</h2>
 
@@ -27,3 +30,10 @@
 
     </body>
 </html>
+
+<script>
+    var myWindow;
+    function openWinVideo() {
+        myWindow = window.open("videoplayback", "myWindow", "top=200,left=200,width=600,height=450");
+    }
+</script>
