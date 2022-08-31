@@ -4,6 +4,10 @@
       display: flex;                /*内部要素の横並び*/
       margin: 20px 20px 0 20px;     /*上、右、下、左*/
 }
+.video-textarea-sidebyside2{
+      display: flex;                /*内部要素の横並び*/
+      margin: 0px 20px 0 20px;     /*上、右、下、左*/
+}
 
 .background{
       /*margin: 0 0 0 0;  */   /*上、右、下、左*/
@@ -11,8 +15,6 @@
       background-image: url(images/1.jpg);
       /*background-repeat: repeat-x;*/
 }
-html, body{ height: 100%;}
-body{ background-size: cover;}
 .background-kazari{
       /*margin: 0 0 0 0;  */   /*上、右、下、左*/
       /*padding: 20px 10px 15px 20px;*/
@@ -23,8 +25,8 @@ body{ background-size: cover;}
 }
 .class1 {
   position: absolute;
-  top: 10px;
-  left: 750px;
+  top: 20px;
+  left: 1100px;
   /*text-align:left;*/
 }
 .class2 {
@@ -40,7 +42,7 @@ fieldset{
 }
 #wrapper {
       /*top:20px;left:100px;*/
-      height: 450px;
+      height: 380px;
       width: 300px;
       overflow-y: scroll;
 }
@@ -106,7 +108,7 @@ fieldset{
 
 /*ボタンとメイン*/
 .comment-textarea-sidebyside2{
-    margin: 20px;
+    padding: 300px;
 }
 
 
@@ -115,7 +117,7 @@ fieldset{
 <html>
     <head>
         <title>MUSIC_BY_FEELING</title>
-        <link rel="stylesheet" href="/static/css/style.css">
+        <!--<link rel="stylesheet" href="/static/css/style.css">-->
     </head>
 <body>
 
@@ -123,14 +125,14 @@ fieldset{
       <!--スライドショー-->
     <aside id="mainimg">
         <img src="/static/images/1.jpg" alt="" class="slide0">
-        <img src="/static/images/1.jpg" alt="" class="slide1">
+        <!--<img src="/static/images/1.jpg" alt="" class="slide1">
         <img src="/static/images/2.jpg" alt="" class="slide2">
         <img src="/static/images/3.jpg" alt="" class="slide3">
         <img src="/static/images/123_kazari.png" alt="" class="slide7">
         <img src="/static/images/4.jpg" alt="" class="slide4">
         <img src="/static/images/5.jpg" alt="" class="slide5">
         <img src="/static/images/6.jpg" alt="" class="slide6">
-        <img src="/static/images/456_kazari.png" alt="" class="slide8">
+        <img src="/static/images/456_kazari.png" alt="" class="slide8">-->
     </aside>
 </header>
 
@@ -139,8 +141,7 @@ fieldset{
         <a href="{% url 'music_by_feeling:index' %}">
             <h2><font size="6">Music By Feeling</font></h2>
         </a>
-
-        <a href="{% url 'music_by_feeling:index' %}">
+        <a href="{% url 'music_by_feeling:spotifyLoad' %}">
             <div class="class1">
               <img src="/static/images/icon_close.png" width="48" height="43">
             </div>
@@ -150,23 +151,19 @@ fieldset{
         <div class="video float-right">
           <div class="d-grid gap-2 mx-auto">
             <div class="video-textarea-sidebyside">
-              <video width='750' height='450' autoplay controls controlslist id="video" onclick="video_pause()">
-                <source src="/static/video/1.mp4" type="video/mp4">
-                <source src="/static/1.webm" type="video/webm">
-              </video>
-            <div class="video-textarea-sidebyside1">
-              <div id="wrapper">
-                <fieldset>
-                      {% for comment in commentsmodel %}
-                      <hr>
-                      {{ comment.author }}
-                      {{ comment.created_date }}<br>
-                      {{ comment.text }}<br>
-                      <hr>
-                      {% endfor %}
-                </fieldset>
-              </div>
-            </div>
+              <iframe style="border-radius:12px" src={{ url_0 }} width="750" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+              <div class="video-textarea-sidebyside1"></div>
+                <div id="wrapper">
+                  <fieldset>
+                        {% for comment in commentsmodel %}
+                        <hr>
+                        {{ comment.author }}
+                        {{ comment.created_date }}<br>
+                        {{ comment.text }}<br>
+                        <hr>
+                        {% endfor %}
+                  </fieldset>
+                </div>
             </div>
           </div>
         </div>
@@ -193,13 +190,9 @@ fieldset{
         <button type="button" class="btn btn-warning" onclick="video_keep()">保存</button>
         <button type="button" class="btn btn-warning" onclick="video_playbackRate()">お気に入り</button>
 
-        <button onclick="playVideo(1)">1</button>
-        <button onclick="playVideo(2)">2</button>
-        <button onclick="playVideo(3)">3</button>
-
         <!--コメント追加要素-->
         <div data-gb-custom-block data-tag="block"></div>
-            <h1>コメント</h1>
+            <h3>コメント</h3>
             <form method="POST" class="post-form">
                 <div data-gb-custom-block data-tag="csrf_token">
                     {% csrf_token %}
@@ -212,23 +205,31 @@ fieldset{
         <div class="video-textarea-sidebyside">
             <div class="FlexTextarea">
                 <div class="FlexTextarea__dummy" aria-hidden="true"></div>
-                    <textarea id="FlexTextarea" class="FlexTextarea__textarea" placeholder = "コメントを追加"></textarea>
-                </div>
+                <textarea id="FlexTextarea" class="FlexTextarea__textarea" placeholder = "コメントを追加"></textarea>
+            </div>
             <div class="comment-textarea-sidebyside">
                 <button type="submit" class="save btn btn-default">送信</button>
             </div>
         </div>
 
         <a href="{% url 'music_by_feeling:playlist' %}">
-            <h1>リスト</h1>
+            <h3>リスト</h3>
         </a>
+
         </div>
     </body>
 </html>
 
 <script>
     var count1 = 0;
-    var myWindow1;
+    var urlList = {{ url | safe}};
+    var storage = localStorage;
+
+    if(storage.Key != 0){
+      var tag = document.getElementsByTagName("iframe")[0];
+      tag.src = urlList[storage.Key];
+    }
+
     function video_play() {
       //再生
         video.play();
