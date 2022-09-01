@@ -42,7 +42,7 @@ def videoplayback(request):
         form = CommentForm()
 
     #入力パート
-    artist_url = 'https://open.spotify.com/artist/6mEQK9m2krja6X1cfsAjfl?si=uqYs_aAJSnKLwD3ikUjUeQ'
+    artist_url = 'https://open.spotify.com/artist/2dIgFjalVxs4ThymZ67YCE?si=uPwGLt18SOOUbTwi4Cvqow'
     album_url =''
     track_url = ''
     output_filename = 'zep_related_artist.csv' #.csv形式で名前を入力
@@ -79,7 +79,7 @@ def playlist(request):
 
 def spotifyLoad(request):
     #入力パート
-    artist_url = 'https://open.spotify.com/artist/6mEQK9m2krja6X1cfsAjfl?si=uqYs_aAJSnKLwD3ikUjUeQ'
+    artist_url = 'https://open.spotify.com/artist/2dIgFjalVxs4ThymZ67YCE?si=uPwGLt18SOOUbTwi4Cvqow'
     album_url =''
     track_url = ''
     output_filename = 'zep_related_artist.csv' #.csv形式で名前を入力

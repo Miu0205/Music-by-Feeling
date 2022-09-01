@@ -1,7 +1,7 @@
 {% load static %}
 
 <style>
-.background{
+body{
     background-image: url(/static/images/1.jpg);
 }
 </style>
@@ -11,31 +11,29 @@
         <title>MUSIC_BY_FEELING</title>
     </head>
     <body>
-        <div class="background">
-            <a href="{% url 'music_by_feeling:index' %}">
-                <h2><font size="6">Music By Feeling</font></h2>
-            </a>
-            <a href="javascript:playVideo(0)">01 {{ name0 }}</a><br>
-            <a href="javascript:playVideo(1)">02 {{ name1 }}</a><br>
-            <a href="javascript:playVideo(2)">03 {{ name2 }}</a><br>
-            <a href="javascript:playVideo(3)">04 {{ name3 }}</a><br>
-            <a href="javascript:playVideo(4)">05 {{ name4 }}</a><br>
-            <a href="javascript:playVideo(5)">06 {{ name5 }}</a><br>
-            <a href="javascript:playVideo(6)">07 {{ name6 }}</a><br>
-            <a href="javascript:playVideo(7)">08 {{ name7 }}</a><br>
-            <a href="javascript:playVideo(8)">09 {{ name8 }}</a><br>
-            <a href="javascript:playVideo(9)">10 {{ name9 }}</a><br>
-            <a href="javascript:playVideo(10)">11 {{ name10 }}</a><br>
-            <a href="javascript:playVideo(11)">12 {{ name11 }}</a><br>
-            <a href="javascript:playVideo(12)">13 {{ name12 }}</a><br>
-            <a href="javascript:playVideo(13)">14 {{ name13 }}</a><br>
-            <a href="javascript:playVideo(14)">15 {{ name14 }}</a><br>
-            <a href="javascript:playVideo(15)">16 {{ name15 }}</a><br>
-            <a href="javascript:playVideo(16)">17 {{ name16 }}</a><br>
-            <a href="javascript:playVideo(17)">18 {{ name17 }}</a><br>
-            <a href="javascript:playVideo(18)">19 {{ name18 }}</a><br>
-            <a href="javascript:playVideo(19)">20 {{ name19 }}</a><br>
-        </div>
+        <a href="{% url 'music_by_feeling:index' %}">
+            <h2><font size="6">Music By Feeling</font></h2>
+        </a>
+        <a href="javascript:playVideo(0)">01 {{ name0 }}</a><br>
+        <a href="javascript:playVideo(1)">02 {{ name1 }}</a><br>
+        <a href="javascript:playVideo(2)">03 {{ name2 }}</a><br>
+        <a href="javascript:playVideo(3)">04 {{ name3 }}</a><br>
+        <a href="javascript:playVideo(4)">05 {{ name4 }}</a><br>
+        <a href="javascript:playVideo(5)">06 {{ name5 }}</a><br>
+        <a href="javascript:playVideo(6)">07 {{ name6 }}</a><br>
+        <a href="javascript:playVideo(7)">08 {{ name7 }}</a><br>
+        <a href="javascript:playVideo(8)">09 {{ name8 }}</a><br>
+        <a href="javascript:playVideo(9)">10 {{ name9 }}</a><br>
+        <a href="javascript:playVideo(10)">11 {{ name10 }}</a><br>
+        <a href="javascript:playVideo(11)">12 {{ name11 }}</a><br>
+        <a href="javascript:playVideo(12)">13 {{ name12 }}</a><br>
+        <a href="javascript:playVideo(13)">14 {{ name13 }}</a><br>
+        <a href="javascript:playVideo(14)">15 {{ name14 }}</a><br>
+        <a href="javascript:playVideo(15)">16 {{ name15 }}</a><br>
+        <a href="javascript:playVideo(16)">17 {{ name16 }}</a><br>
+        <a href="javascript:playVideo(17)">18 {{ name17 }}</a><br>
+        <a href="javascript:playVideo(18)">19 {{ name18 }}</a><br>
+        <a href="javascript:playVideo(19)">20 {{ name19 }}</a><br>
     </body>
 </html>
 
