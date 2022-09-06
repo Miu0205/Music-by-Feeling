@@ -37,3 +37,62 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text
+
+
+
+
+
+
+
+class Music(models.Model):
+
+    category=(
+    ('1', '1'),
+    ('2', '2'),
+    ('3', '3'),
+    ('4', '4'),
+    ('5', '5'),
+    ('6', '6'),
+    ('7', '7'),
+    ('8', '8'),
+    ('9', '9'),
+    ('10', '10'),
+    )
+    feeling_1 = models.CharField(max_length=10, default='5')
+    feeling_2 = models.CharField(max_length=10, default='5')
+    artist = models.CharField(max_length=20,default='5')
+
+    genre_category = (
+      ('1', 'J-POP'),
+      ('2', 'K-POP'),
+      ('3', 'アニメ'),
+      ('4', 'クラシック'),
+      ('5', 'ロック'),
+    )
+    genre = models.CharField(
+         'ジャンル',
+         max_length=5,
+         default='',
+         choices=genre_category
+         )
+
+    era_category = (
+      ('1', '1980'),
+      ('2', '1990'),
+      ('3', '2000'),
+      ('4', '2010'),
+      ('5', '2020'),
+    )
+    era = models.CharField(
+         '年代',
+         max_length=5,
+         default='',
+         choices=era_category
+         )
+
+
+    famous = models.BooleanField(default=False)
+
+
+    def __str__(self):
+        return self.artist

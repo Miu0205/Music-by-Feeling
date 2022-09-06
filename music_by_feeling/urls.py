@@ -13,4 +13,6 @@ urlpatterns = [
         path('videoplayback', views.videoplayback, name='videoplayback'),    # ←追加
         path('playlist', views.playlist, name='playlist'),    # ←追加
         path('spotifyLoad', views.spotifyLoad, name='spotifyLoad'),    # ←追加
+
+        path('page3/', views.page3, name='page3'),  # ３
 ]
