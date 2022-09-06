@@ -1,8 +1,8 @@
 # /music_by_feeling/views.py
 
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Music_by_feeling, Category, Comment
-from .forms import CommentForm
+from .models import Music_by_feeling, Category, Comment, Music
+from .forms import CommentForm, MusicForm
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import pandas as pd
@@ -142,3 +142,21 @@ def spotifyLoad(request):
         'name19':name[19],
     }
     return render(request, 'music_by_feeling/spotifyLoad.html', txt2)
+
+
+
+
+
+
+"""ページ３"""
+def page3(request):
+    if request.method == "POST":
+        form_m = MusicForm(request.POST)
+        if form_c.is_valid():
+            music = form_c.save(commit=False)
+            music.save()
+            return redirect('music_by_feeling:page3')
+    else:
+        form_m = MusicForm()
+
+    return render(request, 'music_by_feeling/page3.html', {'forms':form_m})
