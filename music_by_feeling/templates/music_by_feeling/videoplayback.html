@@ -187,8 +187,15 @@ fieldset{
             <option value="2">リピート</option>
         </select>
 
-        <button type="button" class="btn btn-warning" onclick="video_keep()">保存</button>
-        <button type="button" class="btn btn-warning" onclick="video_playbackRate()">お気に入り</button>
+        <button type="button" class="btn btn-warning" onclick="music_favorite()">お気に入り</button>
+
+        <form action="{% url 'music_by_feeling:playlist' %}" method="post">
+            {% csrf_token %}
+            <div class="field">
+                <input type="hidden" name="url1" id="url1">
+            </div>
+            <input type="submit" value="保存">
+        </form>
 
         <!--コメント追加要素-->
         <div data-gb-custom-block data-tag="block"></div>
@@ -224,6 +231,10 @@ fieldset{
     var count1 = 0;
     var urlList = {{ url | safe}};
     var storage = localStorage;
+    var count = storage.Key;
+
+    var elm1 = document.getElementById('url1');
+    elm1.value = count;
 
     if(storage.Key != 0){
       var tag = document.getElementsByTagName("iframe")[0];
@@ -240,33 +251,33 @@ fieldset{
     }
     function video_next(num) {
     	//次の画面へ
-      num = num + 1;
-      console.log(num);
-        tag = document.getElementById("video");
-        switch (num) {
-            case 1:
-                tag.src = "/static/video/1.mp4";
-                break;
-            case 2:
-                tag.src = "/static/video/2.mp4";
-                break;
-            case 3:
-                tag.src = "/static/video/3.mp4";
-                break;
-        }
+      if(count != 19){
+        count = Number(count) + 1;
+        storage.Key = count;
+        var tag = document.getElementsByTagName("iframe")[0];
+        tag.src = urlList[count];
+      }else {
+        count = 0;
+        storage.Key = 0;
+        var tag = document.getElementsByTagName("iframe")[0];
+        tag.src = urlList[count];
+      }
+      elm1.value = count;
     }
     function video_back() {
     	//前の画面へ
-      tag = document.getElementById("video");
-      tag.src = "/static/video/1.mp4";
-    }
-    function video_mute() {
-      //ミュート
-        if(video.muted){
-             video.muted = false;
-        }else{
-             video.muted = true;
-        }
+      if(count != 0){
+        count = Number(count) - 1;
+        storage.Key = count;
+        var tag = document.getElementsByTagName("iframe")[0];
+        tag.src = urlList[count];
+      }else {
+        count = 19;
+        storage.Key = 19;
+        var tag = document.getElementsByTagName("iframe")[0];
+        tag.src = urlList[count];
+      }
+      elm1.value = count;
     }
 
     window.onload = () => {
@@ -290,21 +301,9 @@ fieldset{
              video.loop = true;
         }
     }
-    function video_keep(num) {
-      // 保存
-      console.log(num);
-      tag = document.getElementById("video");
-      switch (num) {
-          case 1:
-              tag.src = "/static/video/1.mp4";
-              break;
-          case 2:
-              tag.src = "/static/video/2.mp4";
-              break;
-          case 3:
-              tag.src = "/static/video/3.mp4";
-              break;
-      }
+    function music_favorite() {
+      // お気に入り
+      storage.Key1 = count;
     }
     function upVolume() {
     	//音量を上げる
