@@ -1,158 +1,52 @@
 {% load static %}
 <style>
-.background{
-      /*margin: 0 0 0 0;  */   /*上、右、下、左*/
-      /*padding: 20px 10px 15px 20px;*/
-      background-image: url(/static/images/1.jpg);
-      /*background-repeat: repeat-x;*/
-}
-.background-kazari{
-      /*margin: 0 0 0 0;  */   /*上、右、下、左*/
-      /*padding: 20px 10px 15px 20px;*/
-      /*background-image: url(images/123_kazari.png);*/
-      position: absolute;left:0px;top:40px;
-      /*background-repeat: repeat-x;*/
+body{
+    background-image: url(/static/images/1.jpg);
 }
 .class1 {
   position: absolute;
-  top: 10px;
+  top: 30px;
   left: 750px;
+}
+.title-button-sidebyside{
+      display: flex;                /*内部要素の横並び*/
+      margin: 0px 20px 0 20px;     /*上、右、下、左*/
 }
 </style>
 
 <html>
     <head>
-
         <title>MUSIC_BY_FEELING</title>
-
     </head>
     <body>
-        <div class="background">
-          <a href="{% url 'music_by_feeling:videoplayback' %}">
-          <div class="class1">
-              <img src="/static/images/icon_close.png" width="48" height="43">
-          </div>
-
-        <a href="{% url 'music_by_feeling:index' %}">
-            <h2>Music By Feeling</h2>
-        </a>
-        <p><audio src="/static/sound/audiovideoplayer/01-nausicaa-thema.mp3" preload="none" onclick="playthis(1);" controls="controls"></audio></p>
-
-        <ul>
-        <li id="list1"><a href="javascript:playthis(1)">01 風の谷のナウシカ シンボルテーマ</a></li>
-        <li id="list2"><a href="javascript:playthis(2)">02 風の谷のナウシカ オープニング</a></li>
-        <li id="list3"><a href="javascript:playthis(3)">03 ナウシカレクイエム</a></li>
-        <li id="list4"><a href="javascript:playthis(4)">04 君をのせて</a></li>
-        <li id="list5"><a href="javascript:playthis(5)">05 となりのトトロ</a></li>
-        </ul>
+        <div class="title-button-sidebyside">
+            <a href="{% url 'music_by_feeling:index' %}">
+                <h2><font size="6">Music By Feeling</font></h2>
+            </a>
+            <a href="{% url 'music_by_feeling:videoplayback' %}">
+                <div class="class1">
+                    <img src="/static/images/icon_close.png" width="48" height="43">
+                </div>
+            </a>
         </div>
-    </body>
-</html>
+        <iframe style="border-radius:12px" src={{ url_0 }} width="750" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <h4>お気に入りプレイリスト</h4>
+            {% for fml in fmList %}
+                <a href="javascript:playVideo()">{{fml.name}}</a><br>
+            {% endfor %}
+      </body>
+  </html>
 
-<script type="text/javascript">
-    // 再生ファイル配置ディレクトリ 相対パスではうまくいかない場合があります
-    var dir = "/static/sound/audiovideoplayer/";
+<script>
+  var storage = localStorage;
+  var urlList = {{ url | safe}};
 
-    // 現在再生中のマーク
-    var now = " ← now playing";
-
-    // オーディオタグの取得
-    var media = document.getElementsByTagName("audio")[0];
-
-    // 再生リストの作成
-    var list = new Array(5);
-    list[1] = "01-nausicaa-thema.mp3";
-    list[2] = "02-nausicaa-opening.mp3";
-    list[3] = "03-nausicaa-requiem.mp3";
-    list[4] = "04-carrying-you.mp3";
-    list[5] = "05-my-neighbor-totoro.mp3";
-
-    // 再生リストの長さ
-    var length = list.length;
-
-    // クッキーの取得
-    var COOKIE = new Array();
-    if (document.cookie) {
-      var cookies = document.cookie.split("; ");
-      for (var i = 0; i < cookies.length; i++) {
-        var str = cookies[i].split("=");
-        COOKIE[str[0]] = unescape(str[1]);
-      }
-    }
-
-    // クッキーにボリュームが設定されている場合はその値をボリューム値とする
-    var volume = isNaN(COOKIE["volume"]) ? 0.5 : COOKIE["volume"];
-    media.volume = volume;
-
-    // 再生が終わったら次を再生
-    media.onended = function(){ playnext(this.src); };
-
-    // ページを離れるときに現在のボリューム値をクッキーにセット
-    window.onbeforeunload = function(){ setCookie("volume", media.volume); };
-
-
-
-
-
-
-//playlist2
-
-// これを再生
-function playthis(key){
-	media.pause();
-	media.src = dir + list[key];
-	media.play();
-	for(var i=1;i<length;i++) document.getElementById("list"+i).innerHTML = document.getElementById("list"+i).innerHTML.replace(now,"");
-	document.getElementById("list"+key).innerHTML += now;
-}
-
-// 次を再生
-function playnext(objsrc) {
-	var objsrc = decodeURI(objsrc);
-	objsrc = objsrc.replace("http://"+location.hostname,"");
-	objsrc = objsrc.replace("https://"+location.hostname,"");
-	for (var i=1;i<length;i++) {
-		var listsrc = dir + list[i];
-		if(objsrc===listsrc){
-			if(length==i+1){
-				// 再生終了
-				document.getElementById("list"+i).innerHTML = document.getElementById("list"+i).innerHTML.replace(now,"");
-				// 先頭を再生
-				// playthis(1);
-			}else{
-				playthis(i+1);
-			}
-			break;
-		}
-	}
-}
-
-// クッキーの発行
-function setCookie(name, value, domain, path, expires, secure) {
-	if (!name) return;
-	domain = location.hostname;
-	path = "/";
-	expires = 30;
-
-	var str = name + "=" + escape(value);
-	if (domain) {
-		if (domain == 1) domain = location.hostname.replace(/^[^\.]*/, "");
-		str += "; domain=" + domain;
-	}
-	if (path) {
-		if (path == 1) path = location.pathname;
-		str += "; path=" + path;
-	}
-	if (expires) {
-		var nowtime = new Date().getTime();
-		expires = new Date(nowtime + (60 * 60 * 24 * 1000 * expires));
-		expires = expires.toGMTString();
-		str += "; expires=" + expires;
-	}
-	if (secure && location.protocol == "https:") {
-		str += "; secure";
-	}
-	document.cookie = str;
-}
-
+  if(storage.Key1 != 0){
+    var tag = document.getElementsByTagName("iframe")[0];
+    tag.src = urlList[storage.Key1];
+  }
+  function playVideo() {
+      var tag = document.getElementsByTagName("iframe")[0];
+      tag.src = urlList[0];
+  }
 </script>
