@@ -38,6 +38,29 @@ class Comment(models.Model):
     def __str__(self):
         return self.text
 
+class Music_by_feelingList(models.Model):
+    name = models.CharField('名前', max_length=50)
+    genres = models.CharField('ジャンル', max_length=50)
+    images = models.CharField('イメージ', max_length=50)
+    popularity = models.IntegerField('人気度',blank=True, null=True,default=1)
+    external_urls = models.CharField('外部URL', max_length=50)
+    uri = models.CharField('URI', max_length=50)
+    result1 = models.CharField('結果1', max_length=50)
+
+    def __str__(self):
+        return self.name
+
+class FavoriteMusicList(models.Model):
+    name = models.CharField('名前', max_length=50)
+    genres = models.CharField('ジャンル', max_length=50)
+    images = models.CharField('イメージ', max_length=50)
+    popularity = models.IntegerField('人気度',blank=True, null=True,default=1)
+    external_urls = models.CharField('外部URL', max_length=50)
+    uri = models.CharField('URI', max_length=50)
+    result1 = models.CharField('結果1', max_length=50)
+
+    def __str__(self):
+        return self.name
 
 class Music(models.Model):
 
