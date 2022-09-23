@@ -16,14 +16,12 @@
                 <li><div>
                   <label for="scales">なりたい気分を選択</label>
                   <br><br>
-                  悲<input type="range" min="0" max="10" step="10" value="5">楽
+                  悲<input type="range" min="0" max="10" value="5">楽
                   <br><br>
                   落<input type="range" name="speed" min="0" max="10" value="5">アクティブ
 
 
-
 <br><br>
-
                 </div></li>
 
 
@@ -77,29 +75,21 @@
         <a href="{% url 'music_by_feeling:index' %}">
           <button type="button">メインページに戻る</button></a>
 
+    <br><br>音楽リスト
+<br>
+    {% for music in music_list %}
+    ＊
+    
+    悲・楽(1~10)：{{ music.feeling_1}}<br>
+    落・アクティブ(1~10)：{{ music.feeling_2}}<br>
+    アーティスト名：{{ music.artist}}<br>
+    ジャンル：{{ music.genre}}<br>
+    年代：{{ music.era}}<br>
+    有名：{{music.famous}}<br><br>
 
 
-
-    <h2>New post</h2>
-    <form method="POST" class="music">{% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="save btn btn-default">Save</button>
-    </form>
-
-    {% if category %}
-        <!--<h2>カテゴリー: {{ category.title }}</h2>-->
-    {% endif %}
-
-    {% for musics_category in music_by_feeling %}
-  
-        <ul>
-            <li>{{ musics_by_feeling.title }}--{{ musics_by_feeling.created_at }}</li>
-            <form method="POST" action="{% url 'music_by_feeling:delete' musics_by_feeling.pk %}">
-                {% csrf_token %}
-                <button type="submit">削除</button>
-            </form>
-        </ul>
     {% endfor %}
+
 
 
 

@@ -62,15 +62,10 @@ class FavoriteMusicList(models.Model):
     def __str__(self):
         return self.name
 
-
-
-
-
-
 class Music(models.Model):
 
     category=(
-    ('1', '1'),
+    ('1', '0.1'),
     ('2', '2'),
     ('3', '3'),
     ('4', '4'),
@@ -83,7 +78,7 @@ class Music(models.Model):
     )
     feeling_1 = models.CharField(max_length=10, default='5')
     feeling_2 = models.CharField(max_length=10, default='5')
-    artist = models.CharField(max_length=20,default='5')
+    artist = models.CharField(max_length=20,default='5',blank=True)
 
     genre_category = (
       ('1', 'J-POP'),
@@ -96,7 +91,9 @@ class Music(models.Model):
          'ジャンル',
          max_length=5,
          default='',
-         choices=genre_category
+         choices=genre_category,
+
+         blank=True
          )
 
     era_category = (
@@ -110,12 +107,14 @@ class Music(models.Model):
          '年代',
          max_length=5,
          default='',
-         choices=era_category
+         choices=era_category,
+
+         blank=True
          )
 
 
-    famous = models.BooleanField(default=False)
-
+    famous = models.BooleanField(default=False, blank=True)
+    """time = models.DateTimeField(default=timezone.now)"""
 
     def __str__(self):
-        return self.artist
+        return self.feeling_1

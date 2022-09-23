@@ -1,7 +1,9 @@
 from django import forms
 
-from .models import Comment, Music
+from .models import Comment
 
+from .models import Music
+from django.utils import timezone
 
 class CommentForm(forms.ModelForm):
 
@@ -13,4 +15,4 @@ class CommentForm(forms.ModelForm):
 class MusicForm(forms.ModelForm):
     class Meta:
         model = Music
-        fields = ('feeling_1','feeling_2','artist','genre', 'era', 'famous')
+        fields = ('feeling_1','feeling_2','artist','genre', 'era', 'famous' )

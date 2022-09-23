@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Music_by_feeling, Category, Comment, Music, Music_by_feelingList, FavoriteMusicList
 from .forms import CommentForm, MusicForm
 import spotipy
+
 from spotipy.oauth2 import SpotifyClientCredentials
 import pandas as pd
 import csv
@@ -42,10 +43,14 @@ def videoplayback(request):
         form = CommentForm()
 
     #入力パート
-    artist_url = 'https://open.spotify.com/artist/2dIgFjalVxs4ThymZ67YCE?si=uPwGLt18SOOUbTwi4Cvqow'
+    #artist_url = 'https://open.spotify.com/artist/2dIgFjalVxs4ThymZ67YCE?si=uPwGLt18SOOUbTwi4Cvqow'
     album_url =''
     track_url = ''
     output_filename = 'zep_related_artist.csv' #.csv形式で名前を入力
+
+
+    #max_energy
+    #Spotify.target_energy
 
     #認証パート
     my_id ='ed4ef8d322064f90b989bedef7c194b4' #client ID
@@ -53,12 +58,49 @@ def videoplayback(request):
     ccm = SpotifyClientCredentials(client_id = my_id, client_secret = my_secret)
     spotify = spotipy.Spotify(client_credentials_manager = ccm)
 
-    results = spotify.artist_related_artists(artist_url)
-    result = results['artists']
+    # プレイリストを取得
+    result = spotify.user_playlist('Madoka Sota','7GkvWsIFKewgwTDPBZgpt3')#'JPOP Hits 2022のplaylist'
+    #print(result)
+    features = []
+    id_list = []
+    cnt = 0
+
+    for track in result['tracks']['items']:
+        cnt += 1
+        # プレイリスト内の曲のidを抜き出してリスト化
+        id = track['track']['id']
+        id_list.append(id)
+
+        #print(id_list)
+        if cnt == 50:
+            features.extend(spotify.audio_features(id_list))
+            cnt = 0
+            id_list = []
+
+    cnt = 0
+
+    count = 0
+    name = []
+    for feature in features:
+        if(0.5 <= feature['energy'] <= 0.6 and \
+        0.5 <= feature['danceability'] <= 0.6):
+           match = spotify.track(feature['id'])
+           #print(match['name'], "はenergyが0.5〜0.6、danceabilityが0.5〜0.6の曲です。")
+
+           name.append(match)
+           count += 1
+
+    count = 0
+
+    #spotify.artist_related_artists(artist_url)
+    #result = results['artists']
     url = []
 
-    for i in range(len(result)): #resultの数をカウントしてfor文を回す
-        url.append('https://open.spotify.com/embed/artist/'+result[i]['id']+'?utm_source=generator'),
+
+    for i in range(len(name)): #resuktの数をカウントしてfor文を回す
+        url.append('https://open.spotify.com/embed/track/'+name[i]['id']+'?utm_source=generator'),
+        #('https://open.spotify.com/embed/artist/'+name[i]['id']+'?utm_source=generator'),
+
 
     url_0 = url[0]
 
@@ -156,7 +198,7 @@ def playlist(request):
 
 def spotifyLoad(request):
     #入力パート
-    artist_url = 'https://open.spotify.com/artist/2dIgFjalVxs4ThymZ67YCE?si=uPwGLt18SOOUbTwi4Cvqow'
+    #artist_url = 'https://open.spotify.com/artist/2dIgFjalVxs4ThymZ67YCE?si=uPwGLt18SOOUbTwi4Cvqow'
     album_url =''
     track_url = ''
     output_filename = 'zep_related_artist.csv' #.csv形式で名前を入力
@@ -167,73 +209,80 @@ def spotifyLoad(request):
     ccm = SpotifyClientCredentials(client_id = my_id, client_secret = my_secret)
     spotify = spotipy.Spotify(client_credentials_manager = ccm)
 
-    results = spotify.artist_related_artists(artist_url)
-    result = results['artists']
+    #results = spotify.artist_related_artists(artist_url)
+    #result = results['artists']
 
+    # プレイリストを取得
+    result = spotify.user_playlist('Madoka Sota','7GkvWsIFKewgwTDPBZgpt3')#'JPOP Hits 2022のplaylist'
+    #print(result)
+    features = []
+    id_list = []
+    cnt = 0
+
+    for track in result['tracks']['items']:
+        cnt += 1
+        # プレイリスト内の曲のidを抜き出してリスト化
+        id = track['track']['id']
+        id_list.append(id)
+
+        #print(id_list)
+        if cnt == 50:
+            features.extend(spotify.audio_features(id_list))
+            cnt = 0
+            id_list = []
+
+    cnt = 0
+
+    count = 0
     name = []
+    for feature in features:
+        if(0.5 <= feature['energy'] <= 0.6 and \
+        0.5 <= feature['danceability'] <= 0.6):
+           match = spotify.track(feature['id'])
+           #print(match['name'], "はenergyが0.5〜0.6、danceabilityが0.5〜0.6の曲です。")
 
-    for i in range(len(result)): #resultの数をカウントしてfor文を回す
-        name.append(result[i]['name']),
+           name.append(match)
+           count += 1
+
+    count = 0
+    print('処理が終了しました。')
+
+
+
+    i = 0
+    #for i in range(len(match)): #resultの数をカウントしてfor文を回す
+        #name.append(match[i]['name']),#(match[i]['name']),
 
     name0 = name[0]
     name1 = name[1]
-    name2 = name[2]
-    name3 = name[3]
-    name4 = name[4]
-    name5 = name[5]
-    name6 = name[6]
-    name7 = name[7]
-    name8 = name[8]
-    name9 = name[9]
-    name10 = name[10]
-    name11 = name[11]
-    name12 = name[12]
-    name13 = name[13]
-    name14 = name[14]
-    name15 = name[15]
-    name16 = name[16]
-    name17 = name[17]
-    name18 = name[18]
-    name19 = name[19]
+
+
 
     txt2 = {
-        'name0':name[0],
-        'name1':name[1],
-        'name2':name[2],
-        'name3':name[3],
-        'name4':name[4],
-        'name5':name[5],
-        'name6':name[6],
-        'name7':name[7],
-        'name8':name[8],
-        'name9':name[9],
-        'name10':name[10],
-        'name11':name[11],
-        'name12':name[12],
-        'name13':name[13],
-        'name14':name[14],
-        'name15':name[15],
-        'name16':name[16],
-        'name17':name[17],
-        'name18':name[18],
-        'name19':name[19],
+        'name0':name[0]['name'],
+        'name1':name[1]['name'],
+
+
     }
     return render(request, 'music_by_feeling/spotifyLoad.html', txt2)
-
-
-
-
 
 
 """ページ３"""
 def page3(request):
     if request.method == "POST":
         form_m = MusicForm(request.POST)
-        if form_c.is_valid():
-            music = form_c.save(commit=False)
+        if form_m.is_valid():
+            music = form_m.save(commit=False)
             music.save()
             return redirect('music_by_feeling:page3')
     else:
         form_m = MusicForm()
 
     return render(request, 'music_by_feeling/page3.html', {'forms':form_m})
+
+"""音楽リストを表示"""
+def music_render(request):
+    context = {
+        'music_list': Music.objects.all(),
+    }
+    return render(request, 'music_by_feeling/page3.html', context)
