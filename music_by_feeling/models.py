@@ -40,24 +40,24 @@ class Comment(models.Model):
 
 class Music_by_feelingList(models.Model):
     name = models.CharField('名前', max_length=50)
-    genres = models.CharField('ジャンル', max_length=50)
-    images = models.CharField('イメージ', max_length=50)
+    genres = models.CharField('ジャンル', max_length=50, null=True)
+    images = models.CharField('イメージ', max_length=50, null=True)
     popularity = models.IntegerField('人気度',blank=True, null=True,default=1)
-    external_urls = models.CharField('外部URL', max_length=50)
-    uri = models.CharField('URI', max_length=50)
-    result1 = models.CharField('結果1', max_length=50)
+    external_urls = models.CharField('外部URL', max_length=50, null=True)
+    uri = models.CharField('URI', max_length=50, null=True)
+    result1 = models.CharField('結果1', max_length=50, null=True)
 
     def __str__(self):
         return self.name
 
 class FavoriteMusicList(models.Model):
     name = models.CharField('名前', max_length=50)
-    genres = models.CharField('ジャンル', max_length=50)
-    images = models.CharField('イメージ', max_length=50)
+    genres = models.CharField('ジャンル', max_length=50, null=True)
+    images = models.CharField('イメージ', max_length=50, null=True)
     popularity = models.IntegerField('人気度',blank=True, null=True,default=1)
-    external_urls = models.CharField('外部URL', max_length=50)
-    uri = models.CharField('URI', max_length=50)
-    result1 = models.CharField('結果1', max_length=50)
+    external_urls = models.CharField('外部URL', max_length=50, null=True)
+    uri = models.CharField('URI', max_length=50, null=True)
+    result1 = models.CharField('結果1', max_length=50, null=True)
 
     def __str__(self):
         return self.name
@@ -79,6 +79,8 @@ class Music(models.Model):
     feeling_1 = models.CharField(max_length=10, default='5')
     feeling_2 = models.CharField(max_length=10, default='5')
     artist = models.CharField(max_length=20,default='5',blank=True)
+
+    select_year = '2022'
 
     genre_category = (
       ('1', 'J-POP'),

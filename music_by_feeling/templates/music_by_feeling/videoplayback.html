@@ -194,7 +194,7 @@ fieldset{
             <div class="field">
                 <input type="hidden" name="url1" id="url1">
             </div>
-            <input type="submit" value="保存">
+            <input type="submit" onclick="music_favorite()" value="保存">
         </form>
 
         <!--コメント追加要素-->
@@ -232,6 +232,9 @@ fieldset{
     var urlList = {{ url | safe}};
     var storage = localStorage;
     var count = storage.Key;
+    var mbfCount = {{ mbfCount | safe}};
+
+    storage.UrlList = urlList;
 
     var elm1 = document.getElementById('url1');
     elm1.value = count;
@@ -251,7 +254,7 @@ fieldset{
     }
     function video_next(num) {
     	//次の画面へ
-      if(count != 19){
+      if(count != mbfCount - 1){
         count = Number(count) + 1;
         storage.Key = count;
         var tag = document.getElementsByTagName("iframe")[0];
@@ -263,6 +266,10 @@ fieldset{
         tag.src = urlList[count];
       }
       elm1.value = count;
+      console.log("num=" + num);
+      console.log("count=" + count);
+      console.log("storage.Key=" + storage.Key);
+      console.log("mbfCount=" + mbfCount);
     }
     function video_back() {
     	//前の画面へ
@@ -272,8 +279,8 @@ fieldset{
         var tag = document.getElementsByTagName("iframe")[0];
         tag.src = urlList[count];
       }else {
-        count = 19;
-        storage.Key = 19;
+        count = mbfCount - 1;
+        storage.Key = mbfCount - 1;
         var tag = document.getElementsByTagName("iframe")[0];
         tag.src = urlList[count];
       }
@@ -321,6 +328,7 @@ fieldset{
       // 10秒後ボタンを押したとき
         video.currentTime += 10;
     }
+/*
     function playVideo(num) {
       // 切り替え
         console.log(num);
@@ -337,6 +345,7 @@ fieldset{
                 break;
         }
     }
+
     (function() {
       // 自動切り替え1
       "use strict";
@@ -358,6 +367,7 @@ fieldset{
         }
       })
     })();
+*/
     function flexTextarea(el) {
       // テキストエリア拡張
       const dummy = el.querySelector('.FlexTextarea__dummy')
