@@ -41,16 +41,15 @@
                   </select></li>
 <br>
                 <li><label for="pet-select">年代:</label>
-                  <select name="pets" id="pet-select">
+                  <select name="jpop_hits" id="jpop_hits_select">
                     <option value="">選択してください</option>
-                    <option value="dog">1</option>
-                    <option value="cat">2</option>
-                    <option value="hamster">3</option>
+                    <option value="2022">2022年</option>
+                    <option value="2021">2021年</option>
+                    <option value="2020">2020年</option>
                   </select></li>
 
 
 <br>
-
 
                 <li><div>
                   <input type="checkbox" id="scales" checked>
@@ -66,8 +65,13 @@
             {% endfor %}
         </ul>
 
-        <a href="{% url 'music_by_feeling:spotifyLoad' %}">
-            <button type="button">音楽を聴く</button></a>
+        <form action="{% url 'music_by_feeling:spotifyLoad' %}" method="post">
+            {% csrf_token %}
+            <div class="field">
+                <input type="hidden" name="select_year" id="select_year">
+            </div>
+            <input type="submit" onclick="select_year_reflect()" value="音楽を聴く">
+        </form>
 
             <br>
             <hr>
@@ -79,7 +83,7 @@
 <br>
     {% for music in music_list %}
     ＊
-    
+
     悲・楽(1~10)：{{ music.feeling_1}}<br>
     落・アクティブ(1~10)：{{ music.feeling_2}}<br>
     アーティスト名：{{ music.artist}}<br>
@@ -99,3 +103,27 @@
 
     </body>
 </html>
+
+<script>
+
+    var elm1 = document.getElementById('jpop_hits_select');
+    var elm2 = document.getElementById('select_year');
+    var num = elm1.selectedIndex;
+    elm2.value = elm1.selectedIndex;
+//    elm2.value = elm1.options[num].value;
+
+    console.log("select:"+elm1.value);
+    console.log("select:"+elm1.selectedIndex);
+    var num = elm1.selectedIndex;
+    console.log("select:"+elm1.options[num].value);
+
+    function select_year_reflect() {
+      //年代選択反映
+      num = elm1.selectedIndex;
+      elm2.value = elm1.options[num].value;
+//      elm2.value = elm1.selectedIndex;
+      console.log("select:"+elm1.selectedIndex);
+      console.log("select:"+elm1.options[num].value);
+    }
+
+</script>
