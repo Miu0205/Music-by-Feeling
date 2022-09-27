@@ -66,7 +66,16 @@ def videoplayback(request):
     result = '' #'JPOP Hits 2022のplaylist'
     select_year = ''
 
+
+    feeling_1 = ''
+    feeling_2 = ''
+    feeling_1 = Music.feeling_1
+    feeling_2 = Music.feeling_2
+    print(feeling_1)
+
+
     select_year = Music.select_year
+
     if select_year == '2022':
         # プレイリストを取得
         result = spotify.user_playlist('Madoka Sota','7GkvWsIFKewgwTDPBZgpt3')#'JPOP Hits 2022のplaylist'
@@ -79,6 +88,8 @@ def videoplayback(request):
 
 
     Music.select_year = select_year
+    Music.feeling_1 = feeling_1
+    Music.feeling_2 = feeling_2
 #####################################################
 
 
@@ -103,14 +114,30 @@ def videoplayback(request):
 
     count = 0
     name = []
+    #仮　↓
+    if(feeling_1 == 1):
+        feeling_1 =0.9
+    if(feeling_2 == 1):
+        feeling_2 =0.9
+
     for feature in features:
-        if(0.5 <= feature['energy'] <= 0.6 and \
-        0.5 <= feature['danceability'] <= 0.6):
+        if(float(feeling_1) <= feature['energy'] <= float(feeling_1) + 0.1 and \
+        float(feeling_2) <= feature['danceability'] <= float(feeling_2) + 0.1):
            match = spotify.track(feature['id'])
            #print(match['name'], "はenergyが0.5〜0.6、danceabilityが0.5〜0.6の曲です。")
 
            name.append(match)
            count += 1
+
+    if(len(name) <= 5):
+     for feature in features:
+        if(float(feeling_1) <= feature['energy'] <= float(feeling_1) + 0.1):
+            match = spotify.track(feature['id'])
+            name.append(match)
+
+        if(float(feeling_2) <= feature['danceability'] <= float(feeling_2) + 0.1):
+            match = spotify.track(feature['id'])
+            name.append(match)
 
     count = 0
 
@@ -163,7 +190,15 @@ def playlist(request):
     result = '' #'JPOP Hits 2022のplaylist'
     select_year = ''
 
+    feeling_1 = ''
+    feeling_2 = ''
+    feeling_1 = Music.feeling_1
+    feeling_2 = Music.feeling_2
+    print(feeling_1)
+
+
     select_year = Music.select_year
+
     if select_year == '2022':
         # プレイリストを取得
         result = spotify.user_playlist('Madoka Sota','7GkvWsIFKewgwTDPBZgpt3')#'JPOP Hits 2022のplaylist'
@@ -176,6 +211,8 @@ def playlist(request):
 
 
     Music.select_year = select_year
+    Music.feeling_1 = feeling_1
+    Music.feeling_2 = feeling_2
 #####################################################
 
 
@@ -202,14 +239,31 @@ def playlist(request):
 
     count = 0
     name = []
+
+    #仮　↓
+    if(float(feeling_1) == 1):
+        feeling_1 =0.9
+    if(float(feeling_2) == 1):
+        feeling_2 =0.9
+
     for feature in features:
-        if(0.5 <= feature['energy'] <= 0.6 and \
-        0.5 <= feature['danceability'] <= 0.6):
+        if(float(feeling_1) <= feature['energy'] <= float(feeling_1) + 0.1 and \
+        float(feeling_2) <= feature['danceability'] <= float(feeling_2) + 0.1):
            match = spotify.track(feature['id'])
            #print(match['name'], "はenergyが0.5〜0.6、danceabilityが0.5〜0.6の曲です。")
 
            name.append(match)
            count += 1
+
+    if(len(name) <= 5):
+     for feature in features:
+        if(float(feeling_1) <= feature['energy'] <= float(feeling_1) + 0.1):
+            match = spotify.track(feature['id'])
+            name.append(match)
+
+        if(float(feeling_2) <= feature['danceability'] <= float(feeling_2) + 0.1):
+            match = spotify.track(feature['id'])
+            name.append(match)
 
     count = 0
 
@@ -330,9 +384,20 @@ def spotifyLoad(request):
 
     result = '' #'JPOP Hits 2022のplaylist'
     select_year = ''
+
+    feeling_1 = ''
+    feeling_2 = ''
+    feeling_1 = Music.feeling_1
+    feeling_2 = Music.feeling_2
+
+
+
     if request.method == 'POST':
         select_year = request.POST['select_year']
         #select_year1 = int(select_year)
+
+        feeling_1 = request.POST['feeling_1']
+        feeling_2 = request.POST['feeling_2']
 
         if select_year == '2022':
             # プレイリストを取得
@@ -347,6 +412,9 @@ def spotifyLoad(request):
         result = spotify.user_playlist('Madoka Sota','6uszFyxWd5Jt3z0lTZG3AO?si=1c68012b5f094018')#'JPOP Hits 2022のplaylist'
 
     Music.select_year = select_year
+
+    Music.feeling_1 = feeling_1
+    Music.feeling_2 = feeling_2
 
     #print(result)
     features = []
@@ -369,16 +437,37 @@ def spotifyLoad(request):
 
     count = 0
     name = []
+
+    #仮　↓
+    if(float(feeling_1) == 1):
+        feeling_1 =0.9
+    if(float(feeling_2) == 1):
+        feeling_2 =0.9
+
     for feature in features:
-        if(0.5 <= feature['energy'] <= 0.6 and \
-        0.5 <= feature['danceability'] <= 0.6):
+        if(float(feeling_1) <= feature['energy'] <= float(feeling_1) + 0.1 and \
+        float(feeling_2) <= feature['danceability'] <= float(feeling_2) + 0.1):
            match = spotify.track(feature['id'])
            #print(match['name'], "はenergyが0.5〜0.6、danceabilityが0.5〜0.6の曲です。")
 
            name.append(match)
            count += 1
 
+    if(len(name) <= 5):
+     for feature in features:
+        if(float(feeling_1) <= feature['energy'] <= float(feeling_1) + 0.1):
+            match = spotify.track(feature['id'])
+            name.append(match)
+
+        if(float(feeling_2) <= feature['danceability'] <= float(feeling_2) + 0.1):
+            match = spotify.track(feature['id'])
+            name.append(match)
+
     count = 0
+
+    print(feeling_1)
+
+    print(select_year)
     print('処理が終了しました。')
 
     i = 0
@@ -387,6 +476,8 @@ def spotifyLoad(request):
 
     name0 = name[0]
     name1 = name[1]
+
+
 
     #追加
     for nm in name:
@@ -407,6 +498,10 @@ def spotifyLoad(request):
     txt2 = {
         'name0':name[0]['name'],
         'name1':name[1]['name'],
+        'feeling_1':feeling_1,
+        'feeling_2':feeling_2,
+
+
 
         'select_year':select_year,
 
