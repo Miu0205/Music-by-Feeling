@@ -15,6 +15,7 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -24,23 +25,19 @@ SECRET_KEY = '223zk#k6lykrd-l$j9ag6101vh9&z+^ni+#@4r1x-qa2&=ysu='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1', '.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com']
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'todo.apps.TodoConfig',  # ←アプリを追加
+    'music_by_feeling.apps.Music_by_feelingConfig',  # ←アプリを追加
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'django.contrib.sites', #allauth
-    #'allauth', #allauth
-    #'allauth.account', #allauth
-    #'allauth.socialaccount', #allauth
 ]
 
 MIDDLEWARE = [
@@ -66,8 +63,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'todo.category_list.common',  # ←追記
-                #'django.template.context_processors.request', #allauth
+                'music_by_feeling.category_list.common',  # ←追記
             ],
         },
     },
@@ -86,11 +82,7 @@ DATABASES = {
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
-
-#10/4
+#10/4 ログイン、新規登録用
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.Argon2PasswordHasher",
     "django.contrib.auth.hashers.BCryptSHA256PasswordHasher",
@@ -98,6 +90,10 @@ PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.PBKDF2PasswordHasher",
     "django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher",
 ]
+
+
+# Password validation
+# https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -112,11 +108,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
-]
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend', #一般ユーザー用(メールアドレス認証)
-    'allauth.account.auth_backends.AuthenticationBackend', #管理サイト用(ユーザー名認証)
 ]
 
 
@@ -140,37 +131,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-DEFAULT_AUTO_FIELD='django.db.models.AutoField'
-
-'''
-#追加
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' #メールアドレスで登録できるように
-
-#sitesフレームワーク用のサイトID
-SITE_ID = 1
-
-#ログイン・ログアウト時のリダイレクト先
-LOGIN_URL = "/login/" #ログインが必要な場合の移動先URL
-LOGIN_REDIRECT_URL = "/" #ログインに成功した場合の移動先URL
-LOGOUT_REDIRECT_URL = "/login/" #ログアウト後の移動先URL
-
-#ACCOUNT_LOGOUT_ON_GET = True  # 確認を行わずログアウトする設定
-
-# 認証方式を「メアドとパスワード」に設定
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-# ユーザ名は使用しない
-ACCOUNT_USERNAME_REQUIRED = False
-
-# ユーザ登録時に確認メールを送信するか(none=送信しない, mandatory=送信する)
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_EMAIL_REQUIRED = True   # ユーザ登録にメルアド必須にする
-AUTH_USER_MODEL = 'todo.CustomUser' #新規設定時のユーザーモデル登録
-'''
-
-
-
-#MEDIA_ROOT = MEDIA_DIR #追加(9/26)
-#MEDIA_URL = '/media/' #追加(9/26)
-
-
-
+MEDIA_URL = '/media/'   # ← 追加
+MEDIA_ROOT = BASE_DIR # 追加

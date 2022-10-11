@@ -1,0 +1,379 @@
+{% load static %}
+<style>
+.video-textarea-sidebyside{
+      display: flex;                /*内部要素の横並び*/
+      margin: 20px 20px 0 20px;     /*上、右、下、左*/
+}
+.video-textarea-sidebyside2{
+      display: flex;                /*内部要素の横並び*/
+      margin: 0px 20px 0 20px;     /*上、右、下、左*/
+}
+
+.background{
+      /*margin: 0 0 0 0;  */   /*上、右、下、左*/
+      /*padding: 20px 10px 15px 20px;*/
+      background-image: url(images/1.jpg);
+      /*background-repeat: repeat-x;*/
+}
+.background-kazari{
+      /*margin: 0 0 0 0;  */   /*上、右、下、左*/
+      /*padding: 20px 10px 15px 20px;*/
+      /*background-image: url(images/123_kazari.png);*/
+      position: absolute;left:0px;top:40px;
+      background-size: cover;
+      /*background-repeat: repeat-x;*/
+}
+.class1 {
+  position: absolute;
+  top: 20px;
+  left: 1100px;
+  /*text-align:left;*/
+}
+.class2 {
+  position: absolute;
+  top: 100px;
+  left: 800px;
+}
+.comment {
+    margin: 20px 0px 20px 20px;
+}
+fieldset{
+  background-color: #ffffff;
+}
+#wrapper {
+      /*top:20px;left:100px;*/
+      height: 380px;
+      width: 300px;
+      overflow-y: scroll;
+}
+
+/*伸縮するテキストエリア*/
+.FlexTextarea {
+  position: relative;
+  font-size: 1rem;
+  line-height: 1.8;
+  width: 650px;
+}
+
+.FlexTextarea__dummy {
+  overflow: hidden;
+  visibility: hidden;
+  box-sizing: border-box;
+  padding: 5px 15px;
+  min-height: 60px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  border: 1px solid;
+}
+
+.FlexTextarea__textarea {
+  position: absolute;
+  top: 0;
+  left: 10;
+  display: block;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 5px 15px;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  border: 1px solid #b6c3c6;
+  border-radius: 4px;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  resize: none;
+  background-color: #ffffff;
+  /*rows="4";
+  cols="90";*/
+}
+
+.FlexTextarea__textarea:focus {
+  box-shadow: 0 0 0 4px rgba(35, 167, 195, 0.3);
+  outline: 0;
+}
+
+/*書き出しテキストエリア*/
+.video-textarea-sidebyside1{
+  padding: 40px;
+  margin: 0px;
+}
+
+/*送信テキストエリア*/
+.comment-textarea-sidebyside{
+    padding: 0px;
+    margin: 20px;
+}
+
+/*ボタンとメイン*/
+.comment-textarea-sidebyside2{
+    padding: 300px;
+}
+
+
+</style>
+
+<html>
+    <head>
+        <title>MUSIC_BY_FEELING</title>
+        <!--<link rel="stylesheet" href="/static/css/style.css">-->
+    </head>
+<body>
+
+<header>
+      <!--スライドショー-->
+    <aside id="mainimg">
+        <img src="/static/images/1.jpg" alt="" class="slide0">
+        <!--<img src="/static/images/1.jpg" alt="" class="slide1">
+        <img src="/static/images/2.jpg" alt="" class="slide2">
+        <img src="/static/images/3.jpg" alt="" class="slide3">
+        <img src="/static/images/123_kazari.png" alt="" class="slide7">
+        <img src="/static/images/4.jpg" alt="" class="slide4">
+        <img src="/static/images/5.jpg" alt="" class="slide5">
+        <img src="/static/images/6.jpg" alt="" class="slide6">
+        <img src="/static/images/456_kazari.png" alt="" class="slide8">
+    </aside>-->
+</header>
+
+  <div class="background-kazari">
+    <div class="video-textarea-sidebyside2">
+        <a href="{% url 'music_by_feeling:index' %}">
+            <h2><font size="6">Music By Feeling</font></h2>
+        </a>
+        <a href="{% url 'music_by_feeling:spotifyLoad' %}">
+            <div class="class1">
+              <img src="/static/images/icon_close.png" width="48" height="43">
+            </div>
+        </a>
+    </div>
+
+        <div class="video float-right">
+          <div class="d-grid gap-2 mx-auto">
+            <div class="video-textarea-sidebyside">
+              <iframe style="border-radius:12px" src={{ url_0 }} width="750" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+              <div class="video-textarea-sidebyside1"></div>
+                <div id="wrapper">
+                  <fieldset>
+                        {% for comment in commentsmodel %}
+                        <hr>
+                        {{ comment.author }}
+                        {{ comment.created_date }}<br>
+                        {{ comment.text }}<br>
+                        <hr>
+                        {% endfor %}
+                  </fieldset>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-warning" onclick="video_play()">再生</button>
+        <button type="button" class="btn btn-warning" onclick="video_pause()">停止</button>
+        <button type="button" class="btn btn-warning" onclick="video_next(1)">次へ</button>
+        <button type="button" class="btn btn-warning" onclick="video_back()">戻る</button>
+        <button type="button" class="btn btn-warning" onclick="video_mute()">ミュート</button>
+        <button type="button" class="btn btn-warning" onClick="upVolume()">↑</button>
+        <button type="button" class="btn btn-warning" onClick="downVolume()">↓</button>
+        <button type="button" class="btn btn-warning" onClick="btn_back()">10秒前</button>
+        <button type="button" class="btn btn-warning" onClick="btn_forward()">10秒後</button>
+        <select>
+            <option value="1">1倍速</option>
+            <option value="2">2倍速</option>
+            <option value="3">3倍速</option>
+        </select>
+        <select name ="loop" onchange="change(this)">
+            <option value="1">一回ずつ</option>
+            <option value="2">リピート</option>
+        </select>
+
+        <button type="button" class="btn btn-warning" onclick="music_favorite()">お気に入り</button>
+
+        <form action="{% url 'music_by_feeling:playlist' %}" method="post">
+            {% csrf_token %}
+            <div class="field">
+                <input type="hidden" name="url1" id="url1">
+            </div>
+            <input type="submit" onclick="music_favorite()" value="保存">
+        </form>
+
+        <!--コメント追加要素-->
+        <div data-gb-custom-block data-tag="block"></div>
+            <h3>コメント</h3>
+            <form method="POST" class="post-form">
+                <div data-gb-custom-block data-tag="csrf_token">
+                    {% csrf_token %}
+                    {{ form.as_p}}
+                    <button type="submit" class="save btn btn-default">送信</button>
+                </div>
+            </form>
+
+        <label for="FlexTextarea">コメント</label>
+        <div class="video-textarea-sidebyside">
+            <div class="FlexTextarea">
+                <div class="FlexTextarea__dummy" aria-hidden="true"></div>
+                <textarea id="FlexTextarea" class="FlexTextarea__textarea" placeholder = "コメントを追加"></textarea>
+            </div>
+            <div class="comment-textarea-sidebyside">
+                <button type="submit" class="save btn btn-default">送信</button>
+            </div>
+        </div>
+
+        <a href="{% url 'music_by_feeling:playlist' %}">
+            <h3>リスト</h3>
+        </a>
+
+        </div>
+    </body>
+</html>
+
+<script>
+    var count1 = 0;
+    var urlList = {{ url | safe}};
+    var storage = localStorage;
+    var count = storage.Key;
+    var mbfCount = {{ mbfCount | safe}};
+
+    storage.UrlList = urlList;
+
+    var elm1 = document.getElementById('url1');
+    elm1.value = count;
+
+    if(storage.Key != 0){
+      var tag = document.getElementsByTagName("iframe")[0];
+      tag.src = urlList[storage.Key];
+    }
+
+    function video_play() {
+      //再生
+        video.play();
+    }
+    function video_pause() {
+      //停止
+        video.pause();
+    }
+    function video_next(num) {
+    	//次の画面へ
+      if(count != mbfCount - 1){
+        count = Number(count) + 1;
+        storage.Key = count;
+        var tag = document.getElementsByTagName("iframe")[0];
+        tag.src = urlList[count];
+      }else {
+        count = 0;
+        storage.Key = 0;
+        var tag = document.getElementsByTagName("iframe")[0];
+        tag.src = urlList[count];
+      }
+      elm1.value = count;
+      console.log("num=" + num);
+      console.log("count=" + count);
+      console.log("storage.Key=" + storage.Key);
+      console.log("mbfCount=" + mbfCount);
+    }
+    function video_back() {
+    	//前の画面へ
+      if(count != 0){
+        count = Number(count) - 1;
+        storage.Key = count;
+        var tag = document.getElementsByTagName("iframe")[0];
+        tag.src = urlList[count];
+      }else {
+        count = mbfCount - 1;
+        storage.Key = mbfCount - 1;
+        var tag = document.getElementsByTagName("iframe")[0];
+        tag.src = urlList[count];
+      }
+      elm1.value = count;
+    }
+
+    window.onload = () => {
+      // 倍速
+        const selector = document.getElementsByTagName("select")[0];
+        selector.addEventListener('change', (it) => {
+            video.playbackRate = setRate(it.target.value);
+        });
+        const setRate = (val) => {
+            return Number(val);
+        }
+    }
+    function change(obj) {
+      // リピート、ループ
+        result = document.getElementById("result");
+        index = obj.selectedIndex;
+        value = obj.options[index].value;
+        if(value == 1){
+             video.loop = false;
+        }else {
+             video.loop = true;
+        }
+    }
+    function music_favorite() {
+      // お気に入り
+      storage.Key1 = count;
+    }
+    function upVolume() {
+    	//音量を上げる
+    	video.volume = video.volume + 0.25;
+    }
+    function downVolume() {
+    	//音量を下げる
+    	video.volume = video.volume - 0.25;
+    }
+    function btn_back() {
+      // 10秒前ボタンを押したとき
+        video.currentTime -= 10;
+    }
+    function btn_forward() {
+      // 10秒後ボタンを押したとき
+        video.currentTime += 10;
+    }
+/*
+    function playVideo(num) {
+      // 切り替え
+        console.log(num);
+        tag = document.getElementById("video");
+        switch (num) {
+            case 1:
+                tag.src = "/static/video/1.mp4";
+                break;
+            case 2:
+                tag.src = "/static/video/2.mp4";
+                break;
+            case 3:
+                tag.src = "/static/video/3.mp4";
+                break;
+        }
+    }
+
+    (function() {
+      // 自動切り替え1
+      "use strict";
+      var video = document.getElementById('video');
+      var movie_url = "/static/video/2.mp4";
+        video.addEventListener('ended', function() {
+        video.src = movie_url;
+        video.load();
+        video.play();
+        if(count1 == 0){
+             movie_url = "/static/video/3.mp4";
+             count1 = count1+1;
+        }else if(count1 == 1){
+             movie_url = "/static/video/1.mp4";
+             count1 = count1+1;
+        }else {
+             movie_url = "/static/video/2.mp4";
+             count1 = 0;
+        }
+      })
+    })();
+*/
+    function flexTextarea(el) {
+      // テキストエリア拡張
+      const dummy = el.querySelector('.FlexTextarea__dummy')
+      el.querySelector('.FlexTextarea__textarea').addEventListener('input', e => {
+        dummy.textContent = e.target.value + '\u200b'
+      })
+    }
+    document.querySelectorAll('.FlexTextarea').forEach(flexTextarea)
+</script>

@@ -1,0 +1,129 @@
+<!-- /music_by_feeling/templates/music_by_feeling/page3.html
+メイン画面：曲を聴くボタンを押すと4にpage4に飛ぶ
+過去に聞いた曲などの閲覧機能（？）-->
+
+<!doctype html>
+<html>
+    <head>
+
+        <title>曲を聴く</title>
+
+    </head>
+    <body>
+
+        <ul>
+            <br>
+                <li><div>
+                  <label for="scales">なりたい気分を選択</label>
+                  <br><br>
+                  悲<input type="range" min="0" max="10" value="5">楽
+                  <br><br>
+                  落<input type="range" name="speed" min="0" max="10" value="5">アクティブ
+
+
+<br><br>
+                </div></li>
+
+
+
+                <li>
+                  <label for="name">アーティスト名：</label>
+                  <input type="text" id="name" name="name" required minlength="4" maxlength="8" size="10">
+                </li><br>
+
+
+                <li><label for="pet-select">ジャンル:</label>
+                  <select name="pets" id="pet-select">
+                    <option value="">選択してください</option>
+                    <option value="dog">1</option>
+                    <option value="cat">2</option>
+                    <option value="hamster">3</option>
+                  </select></li>
+<br>
+                <li><label for="pet-select">年代:</label>
+                  <select name="jpop_hits" id="jpop_hits_select">
+                    <option value="">選択してください</option>
+                    <option value="2022">2022年</option>
+                    <option value="2021">2021年</option>
+                    <option value="2020">2020年</option>
+                  </select></li>
+
+
+<br>
+
+                <li><div>
+                  <input type="checkbox" id="scales" checked>
+                  <label for="scales">人気の曲から選ぶ</label>
+                </div></li>
+
+
+
+            {% for category in category_list %}
+                <a href="{% url 'music_by_feeling:music_by_feeling_category' category %}">
+                    <li>{{ category }}></li>
+                </a>
+            {% endfor %}
+        </ul>
+
+        <form action="{% url 'music_by_feeling:spotifyLoad' %}" method="post">
+            {% csrf_token %}
+            <div class="field">
+                <input type="hidden" name="select_year" id="select_year">
+            </div>
+            <input type="submit" onclick="select_year_reflect()" value="音楽を聴く">
+        </form>
+
+            <br>
+            <hr>
+
+        <a href="{% url 'music_by_feeling:index' %}">
+          <button type="button">メインページに戻る</button></a>
+
+    <br><br>音楽リスト
+<br>
+    {% for music in music_list %}
+    ＊
+
+    悲・楽(1~10)：{{ music.feeling_1}}<br>
+    落・アクティブ(1~10)：{{ music.feeling_2}}<br>
+    アーティスト名：{{ music.artist}}<br>
+    ジャンル：{{ music.genre}}<br>
+    年代：{{ music.era}}<br>
+    有名：{{music.famous}}<br><br>
+
+
+    {% endfor %}
+
+
+
+
+
+        {% block content %}
+        {% endblock %}
+
+    </body>
+</html>
+
+<script>
+
+    var elm1 = document.getElementById('jpop_hits_select');
+    var elm2 = document.getElementById('select_year');
+    var num = elm1.selectedIndex;
+    elm2.value = elm1.selectedIndex;
+//    elm2.value = elm1.options[num].value;
+
+    console.log("select:"+elm1.value);
+    console.log("select:"+elm1.selectedIndex);
+    var num = elm1.selectedIndex;
+    console.log("select:"+elm1.options[num].value);
+
+    function select_year_reflect() {
+      //年代選択反映
+      num = elm1.selectedIndex;
+      elm2.value = elm1.options[num].value;
+//      elm2.value = elm1.selectedIndex;
+      console.log("select:"+elm1.selectedIndex);
+      console.log("select:"+elm1.options[num].value);
+    }
+
+</script>

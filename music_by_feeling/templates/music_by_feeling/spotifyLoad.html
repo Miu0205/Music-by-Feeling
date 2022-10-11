@@ -1,0 +1,32 @@
+{% load static %}
+
+<style>
+body{
+    background-image: url(/static/images/1.jpg);
+}
+</style>
+
+<html>
+    <head>
+        <title>MUSIC_BY_FEELING</title>
+    </head>
+    <body>
+        <a href="{% url 'music_by_feeling:index' %}">
+            <h2><font size="6">Music By Feeling</font></h2>
+        </a>
+        <p>energyが0.5〜0.6、danceabilityが0.5〜0.6の曲</p>
+        <a href="javascript:playVideo(0)">01 {{ name0 }}</a><br>
+        <a href="javascript:playVideo(1)">02 {{ name1 }}</a><br>
+
+    </body>
+
+</html>
+
+<script>
+    // オーディオタグの取得
+    function playVideo(num) {
+        var storage = localStorage;
+            storage.Key = num;
+        window.location.href = "{% url 'music_by_feeling:videoplayback' %}";
+    }
+</script>
