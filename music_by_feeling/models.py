@@ -40,6 +40,9 @@ class Comment(models.Model):
         return self.text
 
 class Music_by_feelingList(models.Model):
+    # ユーザー(ユーザー名、パスワード、メールアドレス）
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
     name = models.CharField('名前', max_length=50)
     genres = models.CharField('ジャンル', max_length=50, null=True)
     images = models.CharField('イメージ', max_length=50, null=True)
@@ -52,6 +55,9 @@ class Music_by_feelingList(models.Model):
         return self.name
 
 class FavoriteMusicList(models.Model):
+    # ユーザー(ユーザー名、パスワード、メールアドレス）
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
     name = models.CharField('名前', max_length=50)
     genres = models.CharField('ジャンル', max_length=50, null=True)
     images = models.CharField('イメージ', max_length=50, null=True)
@@ -64,6 +70,9 @@ class FavoriteMusicList(models.Model):
         return self.name
 
 class Music(models.Model):
+
+    # ユーザー(ユーザー名、パスワード、メールアドレス）
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     category=(
     ('1', '0.1'),
@@ -130,20 +139,9 @@ class Account(models.Model):
 
     # 追加フィールド
     age=models.SmallIntegerField()
-    sex=models.CharField(max_length=10) #male、female、other
+    sex_category=(('1','male'),('2','female'),('3','other'))
 
-    history_music=models.ForeignKey('music_by_feeling.Music_by_feelinglist', on_delete=models.CASCADE, related_name='history_music')
-    like_music=models.ForeignKey('music_by_feeling.Music_by_feelinglist', on_delete=models.CASCADE, related_name='like_music')
-    feeling=models.ForeignKey('music_by_feeling.Feeling', on_delete=models.CASCADE, related_name='feeling')
+    sex=models.CharField(max_length=3,default='',choices=sex_category,blank=True)
 
     def __str__(self):
         return self.user.username
-
-class Feeling(models.Model):
-    feeling='feeling'
-    spotify_activeness=models.FloatField()
-    spotify_positiveness=models.FloatField()
-
-    def __str__(self):
-        return self.feeling
-
