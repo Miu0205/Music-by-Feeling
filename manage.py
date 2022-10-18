@@ -21,4 +21,4 @@ if __name__ == '__main__':
     main()
 
 """pythonanywhereで動かすために追加"""
-sys.path.append("/home/pastel/.local/lib/python3.9/site-packages")
+sys.path.append("/home/pastel/.local/lib/python3.6.13/site-packages")
