@@ -18,11 +18,11 @@
             <a href="{% url 'music_by_feeling:index' %}">
                 <li>トップ</li>
             </a>
-            <!--{% for category in category_list %}
+            {% for category in category_list %}
                 <a href="{% url 'music_by_feeling:music_by_feeling_category' category %}">
                     <li>{{ category }}></li>
                 </a>
-            {% endfor %}-->
+            {% endfor %}
         </ul>
 
         {% block content %}
