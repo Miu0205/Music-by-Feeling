@@ -22,3 +22,4 @@ if __name__ == '__main__':
 
 """pythonanywhereで動かすために追加"""
 sys.path.append("/home/pastel/.local/lib/python3.6.13/site-packages")
+sys.path.append("/home/PastelMusic/.local/lib/python3.10/site-packages")
