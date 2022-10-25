@@ -24,22 +24,13 @@
         </ul>
     {% endfor %}
 
-    <!--
-        ログイン映らない
-    {% if user.is_authenticated %}
-        Hi {{ user.username }}!
-        <p><a href="{% url 'logout' %}">Log Out</a></p>
-    {% else %}
-        <p>You are not logged in</p>
-        <a href="{% url 'login' %}">Log In</a>
-    {% endif %}
-    -->
-
     <a href="{% url 'music_by_feeling:page3' %}">音楽を聴く</a>
     <br><br>
     <a href="{% url 'music_by_feeling:spotifyLoad' %}">結果</a>
     <br><br>
+    <a href="{% url 'music_by_feeling:maintenance' %}">メンテナンス</a>
+    <br><br>
 
-    
+
 
 {% endblock %}

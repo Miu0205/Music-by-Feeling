@@ -1,0 +1,68 @@
+<!-- /music_by_feeling/templates/music_by_feeling/page3.html
+メイン画面：曲を聴くボタンを押すと4にpage4に飛ぶ
+過去に聞いた曲などの閲覧機能（？）-->
+
+<!doctype html>
+<html>
+    <head>
+
+        <title>メンテナンス</title>
+
+    </head>
+    <body>
+
+        <ul>
+            <br>
+
+                <li><label for="pet-select">年代:</label>
+                  <select name="jpop_hits" id="jpop_hits_select">
+                    <option value="">選択してください</option>
+                    <option value="2022">2022年</option>
+                    <option value="2021">2021年</option>
+                    <option value="2020">2020年</option>
+                  </select></li>
+
+
+<br>
+
+            {% for category in category_list %}
+                <a href="{% url 'music_by_feeling:music_by_feeling_category' category %}">
+                    <li>{{ category }}></li>
+                </a>
+            {% endfor %}
+        </ul>
+
+        <form action="{% url 'music_by_feeling:maintenance' %}" method="post">
+            {% csrf_token %}
+            <div class="field">
+                <input type="hidden" name="select_year" id="select_year">
+            </div>
+            <input type="submit" onclick="select_year_reflect()" value="ダウンロード">
+        </form>
+
+            <br>
+            <hr>
+
+        <a href="{% url 'music_by_feeling:index' %}">
+          <button type="button">メインページに戻る</button></a>
+
+
+        {% block content %}
+        {% endblock %}
+
+    </body>
+</html>
+
+<script>
+
+  var elm1 = document.getElementById('jpop_hits_select');
+  var elm2 = document.getElementById('select_year');
+  var num1;
+
+  function select_year_reflect() {
+    //年代選択反映
+    num1 = elm1.selectedIndex;
+    elm2.value = elm1.options[num1].value;
+  }
+
+</script>
