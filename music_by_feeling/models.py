@@ -41,7 +41,7 @@ class Comment(models.Model):
 
 class Music_by_feelingList(models.Model):
     # ユーザー(ユーザー名、パスワード、メールアドレス）
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
 
     name = models.CharField('名前', max_length=50)
     genres = models.CharField('ジャンル', max_length=50, null=True)
@@ -56,7 +56,7 @@ class Music_by_feelingList(models.Model):
 
 class FavoriteMusicList(models.Model):
     # ユーザー(ユーザー名、パスワード、メールアドレス）
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
 
     name = models.CharField('名前', max_length=50)
     genres = models.CharField('ジャンル', max_length=50, null=True)
@@ -72,7 +72,7 @@ class FavoriteMusicList(models.Model):
 class Music(models.Model):
 
     # ユーザー(ユーザー名、パスワード、メールアドレス）
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
 
     category=(
     ('1', '0.1'),
@@ -135,7 +135,7 @@ class Account(models.Model):
 
     # ユーザー認証のインスタンス(1vs1関係)
     # ユーザー(ユーザー名、パスワード、メールアドレス）
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
 
     # 追加フィールド
     age=models.SmallIntegerField()

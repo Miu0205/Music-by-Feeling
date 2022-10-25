@@ -399,14 +399,15 @@ def spotifyLoad(request):
     for nm in name:
         newmbfList = Music_by_feelingList.objects.create(
          # ユニークな値
-          name = nm['name'],
-#          genres = nm['genres'],
-#          images = nm['images'],
-          popularity = nm['popularity'],
-          external_urls = nm['external_urls'],
-          uri = nm['uri'],
-#          result1 = nm['url'],
-          result1 = nm['id'],
+            user=request.user,
+            name = nm['name'],
+#           genres = nm['genres'],
+#           images = nm['images'],
+            popularity = nm['popularity'],
+            external_urls = nm['external_urls'],
+            uri = nm['uri'],
+#           result1 = nm['url'],
+            result1 = nm['id'],
         )
         newmbfList.save()
 
@@ -428,6 +429,7 @@ def page3(request):
         form_m = MusicForm(request.POST)
         if form_m.is_valid():
             music = form_m.save(commit=False)
+            music.user=request.user
             music.save()
             return redirect('music_by_feeling:page3')
     else:
@@ -443,7 +445,7 @@ def music_render(request):
     return render(request, 'music_by_feeling/page3.html', context)
 
 #新規登録
-class  AccountRegistration(TemplateView):
+class  SignUpView(TemplateView):
 
     def __init__(self):
         self.params = {
@@ -485,11 +487,14 @@ class  AccountRegistration(TemplateView):
             # アカウント作成情報更新
             self.params["AccountCreate"] = True
 
+            login(request,account)
+            return redirect('login')
+
         else:
             # フォームが有効でない場合
             print(self.params["account_form"].errors)
 
-        return render(request,"music_by_feeling/signup.html",context=self.params)
+            return render(request,"music_by_feeling/signup.html",context=self.params)
 
 def login(request):
     if request.method == "POST":
@@ -521,3 +526,9 @@ def logout(request):
     logout(request)
     # ログイン画面遷移
     return HttpResponseRedirect(reverse('Login'))
+'''
+def feeling(request,pk):
+    feel=get_object_or_404(spotifyLoad, pk=pk)
+    return render(request, 'music_by_feeling/feeling.html', {spotifyLoad: spotifyLoad})
+'''
+
