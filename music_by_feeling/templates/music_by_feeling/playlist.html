@@ -32,8 +32,37 @@ body{
         <iframe style="border-radius:12px" src={{ url_0 }} width="750" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         <h4>お気に入りプレイリスト</h4>
             {% for fml in fmList %}
-                <a href="javascript:playVideo()">{{fml.name}}</a><br>
+<!--                <a href="javascript:playVideo()">{{fml.name}}</a><br>-->
+                <a href="javascript:playVideo('{{fml.result1}}')">{{fml.name}}</a><br>
             {% endfor %}
+<!--
+        <h4>戦闘0</h4><br>
+
+        {{ name0 }}
+        <h4>戦闘1</h4><br>
+        {{ name1 }}
+        <h4>戦闘2</h4><br>
+        {{mbfList}}
+        <h4>戦闘3</h4><br>
+        {{name2}}
+        <h4>戦闘4</h4><br>
+        {{name3}}
+
+        <h4>戦闘</h4><br>
+        <table>
+            <tr>
+                <th>名前</th><th>id</th><th>images</th><th>人気度</th><th>外部url</th><th>uri</th><th>result1</th>
+            </tr>
+            {% for mbf in mbfList %}
+
+                        <tr>
+                            <td>{{mbf.name}}</td><td>{{mbf.id}}</td><td>{{mbf.images}}</td><td>{{mbf.popularity}}</td><td>{{mbf.external_urls}}</td><td>{{mbf.uri}}</td><td>{{mbf.external_urls}}</td><td>{{mbf.result1}}</td>
+                        </tr>
+
+            {% endfor %}
+        </table>
+-->
+
       </body>
   </html>
 
@@ -41,12 +70,18 @@ body{
   var storage = localStorage;
   var urlList = {{ url | safe}};
 
+//  console.log("num=" + num);
+//  console.log("count=" + count);
+  console.log("storage.Key=" + storage.Key);
+  console.log("storage.Key1=" + storage.Key1);
+
+
   if(storage.Key1 != 0){
     var tag = document.getElementsByTagName("iframe")[0];
     tag.src = urlList[storage.Key1];
   }
-  function playVideo() {
+  function playVideo(url1) {
       var tag = document.getElementsByTagName("iframe")[0];
-      tag.src = urlList[0];
+      tag.src = url1;
   }
 </script>
