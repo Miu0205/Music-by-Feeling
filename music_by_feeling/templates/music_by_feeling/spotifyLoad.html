@@ -14,17 +14,82 @@ body{
         <a href="{% url 'music_by_feeling:index' %}">
             <h2><font size="6">Music By Feeling</font></h2>
         </a>
+<!--
         <p>energyが0.5〜0.6、danceabilityが0.5〜0.6の曲</p>
         <a href="javascript:playVideo(0)">01 {{ name0 }}</a><br>
-        <a href="javascript:playVideo(1)">02 {{ name1 }}</a><br>
+        <a href="javascript:playVideo(1)">02 {{ name1 }}</a><br><br>
 
+        <a href="javascript:playVideo(0)">11 {{ mbfl0 }}</a><br>
+        <a href="javascript:playVideo(1)">12 {{ mbfl1 }}</a><br>
+-->
     </body>
+
+
+  <!--  <h4>Music_By_Feeling</h4><br>-->
+    <table>
+        <tr>
+            <th>曲名</th>
+        </tr>
+        {% for mbf in mbfl %}
+
+                    <tr>
+                        <!--<td><a href="javascript:playVideo({{mbf.order}})">{{mbf.tracks}}</td>
+-->
+                        <td><a href="javascript:playVideo({{mbf.order}})">{{mbf.order}} {{mbf.tracks}}</td>
+                    </tr>
+
+        {% endfor %}
+    </table>
+
+<!--
+    <h4>Music_By_Feeling</h4><br>
+    <table>
+        <tr>
+            <th>曲名</th><th>アーティスト</th><th>踊りやすさ</th><th>エネルギッシュ</th><th>人気度</th><th>年</th><th>順位</th><th>通し番号</th>
+        </tr>
+        {% for mbf in mbfl %}
+
+                    <tr>
+                        <td>{{mbf.tracks}}</td><td>{{mbf.artist}}</td><td>{{mbf.danceability}}</td><td>{{mbf.energy}}</td><td>{{mbf.popularity}}</td><td>{{mbf.created_year}}</td><td>{{mbf.rank}}</td><td>{{mbf.order}}</td>
+                    </tr>
+
+        {% endfor %}
+    </table>
+
+
+
+
+    <h1>MUSIC_BY_FEELING16</h1>
+    {{Track}}<br><br>
+    {{Artist}}<br><br>
+    {{danceability}}<br><br>
+    {{energy}}<br><br>
+    {{key}}<br><br>
+    {{loudness}}<br><br>
+    {{mode}}<br><br>
+    {{speechiness}}<br><br>
+    {{acousticness}}<br><br>
+    {{instrumentalness}}<br><br>
+    {{liveness}}<br><br>
+    {{valence}}<br><br>
+    {{tempo}}<br><br>
+    {{type}}<br><br>
+    {{URL}}<br><br>
+    {{track_data}}<br><br>
+    {{urls_list}}<br><br>
+    {{list_data}}<br><br>
+    {{list_data_items}}<br><br>
+    {{results}}<br><br>
+    {{genres}}<br><br>
+
+    {{mbfl0}}<br><br>-->
 
 </html>
 
 <script>
     // オーディオタグの取得
     function playVideo(num) {
+        console.log("num=" + num);
         var storage = localStorage;
             storage.Key = num;
         window.location.href = "{% url 'music_by_feeling:videoplayback' %}";

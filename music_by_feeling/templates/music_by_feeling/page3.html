@@ -32,12 +32,17 @@
                 </li><br>
 
 
-                <li><label for="pet-select">ジャンル:</label>
-                  <select name="pets" id="pet-select">
+                <li><label for="genres-select">ジャンル:</label>
+                  <select name="genres" id="genres-select">
                     <option value="">選択してください</option>
-                    <option value="dog">1</option>
-                    <option value="cat">2</option>
-                    <option value="hamster">3</option>
+                    <option value="j-pop">J ポップ</option>
+                    <option value="k-pop">K ポップ</option>
+                    <option value="rock">ロック</option>
+                    <option value="anime">アニソン</option>
+                    <option value="glam metal">ヘビメタ</option>
+                    <option value="vocaloid">ボカロ</option>
+                    <option value="hip hop">ヒップホップ</option>
+
                   </select></li>
 <br>
                 <li><label for="pet-select">年代:</label>
@@ -108,22 +113,21 @@
 
     var elm1 = document.getElementById('jpop_hits_select');
     var elm2 = document.getElementById('select_year');
-    var num = elm1.selectedIndex;
-    elm2.value = elm1.selectedIndex;
-//    elm2.value = elm1.options[num].value;
 
-    console.log("select:"+elm1.value);
-    console.log("select:"+elm1.selectedIndex);
-    var num = elm1.selectedIndex;
-    console.log("select:"+elm1.options[num].value);
+    var elm3 = document.getElementById('genres-select');
+
+    var array = [];
+    var num1;
+    var num3;
 
     function select_year_reflect() {
       //年代選択反映
-      num = elm1.selectedIndex;
-      elm2.value = elm1.options[num].value;
-//      elm2.value = elm1.selectedIndex;
-      console.log("select:"+elm1.selectedIndex);
-      console.log("select:"+elm1.options[num].value);
+      num1 = elm1.selectedIndex;
+      num3 = elm3.selectedIndex;
+
+      array = [elm1.options[num1].value, elm3.options[num3].value];
+
+      elm2.value = array;
     }
 
 </script>

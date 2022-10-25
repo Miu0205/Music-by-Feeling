@@ -1,20 +1,13 @@
 # /music_by_feeling/views.py
 
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Music_by_feeling, Category, Comment, Music, Music_by_feelingList, FavoriteMusicList, Account
-from .forms import CommentForm, MusicForm, AccountForm, AddAccountForm
+from .models import Music_by_feeling, Category, Comment, AllMusic, Music, Music_by_feelingList, FavoriteMusicList
+from .forms import CommentForm, MusicForm
 import spotipy
 
 from spotipy.oauth2 import SpotifyClientCredentials
-#import pandas as pd
+import pandas as pd
 import csv
-
-
-from django.urls import reverse
-from django.views.generic import TemplateView
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponse
-from django.contrib.auth import authenticate, login, logout
 
 """一覧表示"""
 def index(request):
@@ -49,90 +42,17 @@ def videoplayback(request):
     else:
         form = CommentForm()
 
-    #入力パート
-    #artist_url = 'https://open.spotify.com/artist/2dIgFjalVxs4ThymZ67YCE?si=uPwGLt18SOOUbTwi4Cvqow'
-    album_url =''
-    track_url = ''
-    output_filename = 'zep_related_artist.csv' #.csv形式で名前を入力
-
-
-    #max_energy
-    #Spotify.target_energy
-
-    #認証パート
-    my_id ='ed4ef8d322064f90b989bedef7c194b4' #client ID
-    my_secret = 'dd02269b70424359a84b1ecb14b16df7' #client secret
-    ccm = SpotifyClientCredentials(client_id = my_id, client_secret = my_secret)
-    spotify = spotipy.Spotify(client_credentials_manager = ccm)
-
-###################################################
-    # プレイリストを取得
-#    result = spotify.user_playlist('Madoka Sota','7GkvWsIFKewgwTDPBZgpt3')#'JPOP Hits 2022のplaylist'
-
-
-    result = '' #'JPOP Hits 2022のplaylist'
-    select_year = ''
-
-    select_year = Music.select_year
-    if select_year == '2022':
-        # プレイリストを取得
-        result = spotify.user_playlist('Madoka Sota','7GkvWsIFKewgwTDPBZgpt3')#'JPOP Hits 2022のplaylist'
-    elif select_year == '2021':
-        result = spotify.user_playlist('Madoka Sota','6uszFyxWd5Jt3z0lTZG3AO?si=1c68012b5f094018')#'JPOP Hits 2021のplaylist'
-    elif select_year == '2020':
-        result = spotify.user_playlist('Madoka Sota','19pd98k52F2lQYnwvyWIRy?si=128dd502b1a14b70')#'JPOP Hits 2020のplaylist'
-    else:
-        result = spotify.user_playlist('Madoka Sota','7GkvWsIFKewgwTDPBZgpt3')#'JPOP Hits 2022のplaylist'
-
-
-    Music.select_year = select_year
-#####################################################
-
-
-    #print(result)
-    features = []
-    id_list = []
-    cnt = 0
-
-    for track in result['tracks']['items']:
-        cnt += 1
-        # プレイリスト内の曲のidを抜き出してリスト化
-        id = track['track']['id']
-        id_list.append(id)
-
-        #print(id_list)
-        if cnt == 50:
-            features.extend(spotify.audio_features(id_list))
-            cnt = 0
-            id_list = []
-
-    cnt = 0
-
-    count = 0
-    name = []
-    for feature in features:
-        if(0.5 <= feature['energy'] <= 0.6 and \
-        0.5 <= feature['danceability'] <= 0.6):
-           match = spotify.track(feature['id'])
-           #print(match['name'], "はenergyが0.5〜0.6、danceabilityが0.5〜0.6の曲です。")
-
-           name.append(match)
-           count += 1
-
-    count = 0
-
-    #spotify.artist_related_artists(artist_url)
-    #result = results['artists']
     url = []
 
+    ##########追加####################################################################
+    mbfl = Music_by_feelingList.objects.order_by('id')
 
-    for i in range(len(name)): #resuktの数をカウントしてfor文を回す
-        url.append('https://open.spotify.com/embed/track/'+name[i]['id']+'?utm_source=generator'),
-        #('https://open.spotify.com/embed/artist/'+name[i]['id']+'?utm_source=generator'),
-
+    for msc in mbfl:
+        url.append('https://open.spotify.com/embed/track/' + msc.track_id + '?utm_source=generator')
+    ################################################################################
 
     url_0 = url[0]
-    l = len(name)
+    l = len(url)
 
     txt = {
         'music_by_feelings' : music_by_feelings,
@@ -146,177 +66,72 @@ def videoplayback(request):
     return render(request, 'music_by_feeling/videoplayback.html',txt)
 
 def playlist(request):
-    #入力パート
-    artist_url = 'https://open.spotify.com/artist/2dIgFjalVxs4ThymZ67YCE?si=uPwGLt18SOOUbTwi4Cvqow'
-    album_url =''
-    track_url = ''
 
-    #認証パート
-    my_id ='ed4ef8d322064f90b989bedef7c194b4' #client ID
-    my_secret = 'dd02269b70424359a84b1ecb14b16df7' #client secret
-    ccm = SpotifyClientCredentials(client_id = my_id, client_secret = my_secret)
-    spotify = spotipy.Spotify(client_credentials_manager = ccm)
+    favoriteMusicList = FavoriteMusicList.objects.order_by('id')
+    music_by_feelingList = Music_by_feelingList.objects.order_by('id')
 
-    results = spotify.artist_related_artists(artist_url)
-    result = results['artists']
-
-
-
-###################################################
-    # プレイリストを取得
-#    result = spotify.user_playlist('Madoka Sota','7GkvWsIFKewgwTDPBZgpt3')#'JPOP Hits 2022のplaylist'
-
-
-    result = '' #'JPOP Hits 2022のplaylist'
-    select_year = ''
-
-    select_year = Music.select_year
-    if select_year == '2022':
-        # プレイリストを取得
-        result = spotify.user_playlist('Madoka Sota','7GkvWsIFKewgwTDPBZgpt3')#'JPOP Hits 2022のplaylist'
-    elif select_year == '2021':
-        result = spotify.user_playlist('Madoka Sota','6uszFyxWd5Jt3z0lTZG3AO?si=1c68012b5f094018')#'JPOP Hits 2021のplaylist'
-    elif select_year == '2020':
-        result = spotify.user_playlist('Madoka Sota','19pd98k52F2lQYnwvyWIRy?si=128dd502b1a14b70')#'JPOP Hits 2020のplaylist'
-    else:
-        result = spotify.user_playlist('Madoka Sota','7GkvWsIFKewgwTDPBZgpt3')#'JPOP Hits 2022のplaylist'
-
-
-    Music.select_year = select_year
-#####################################################
-
-
-
-
-    #print(result)
-    features = []
-    id_list = []
-    cnt = 0
-
-    for track in result['tracks']['items']:
-        cnt += 1
-        # プレイリスト内の曲のidを抜き出してリスト化
-        id = track['track']['id']
-        id_list.append(id)
-
-        #print(id_list)
-        if cnt == 50:
-            features.extend(spotify.audio_features(id_list))
-            cnt = 0
-            id_list = []
-
-    cnt = 0
-
-    count = 0
-    name = []
-    for feature in features:
-        if(0.5 <= feature['energy'] <= 0.6 and \
-        0.5 <= feature['danceability'] <= 0.6):
-           match = spotify.track(feature['id'])
-           #print(match['name'], "はenergyが0.5〜0.6、danceabilityが0.5〜0.6の曲です。")
-
-           name.append(match)
-           count += 1
-
-    count = 0
-
-
-
-
-
-
-
-
-
-
-    name1 = []
-    genres = []
-    images = []
-    popularity = []
-    external_urls = []
-    uri = []
-    id = []
     url = []
-
-    for i in range(len(name)): #resultの数をカウントしてfor文を回す
-        name1.append(name[i]['name']),
-#        genres.append(name[i]['genres']),
-#        images.append(name[i]['images'][0]['url']),
-        popularity.append(name[i]['popularity']),
-        external_urls.append(name[i]['external_urls']['spotify']),
-        uri.append(name[i]['uri']),
-        id.append(name[i]['id']),
-        url.append('https://open.spotify.com/embed/track/'+name[i]['id']),
-#        url.append('https://open.spotify.com/embed/artist/'+name[i]['id']+'?utm_source=generator'),
+    name1 = []
+    for msc in music_by_feelingList:
+        name1.append( msc.tracks),
+        url.append('https://open.spotify.com/embed/track/' + msc.track_id),
 
     url_0 = url[0]
-
-    '''
-    related_df = pd.DataFrame(index=[], columns=['Name', 'Genres', 'Images_url', 'Popularity', 'URL', 'URI', 'ID'])
-    for i in range(len(result)): #resultの数をカウントしてfor文を回す
-        related_df= related_df.append({
-            'Name' : result[i]['name'],
-            'Genres' : result[i]['genres'],
-            'Images_url' : result[i]['images'][0]['url'],
-            'Popularity' : result[i]['popularity'],
-            'URL' : result[i]['external_urls']['spotify'],
-            'URI' : result[i]['uri'],
-            'ID' : result[i]['id']}, ignore_index=True)
-            '''
-
-    music_by_feelingList = Music_by_feelingList.objects.order_by('id')
-    favoriteMusicList = FavoriteMusicList.objects.order_by('id')
-
-#    mbf = get_object_or_404(Music_by_feelingList,pk=1)
-#    mbf = Music_by_feelingList.objects.get(id=1)
-#    mbf1 = Music_by_feelingList.objects.get(name='Shukumei')
-
-
-#    for relatedData in related_df.itertuples():
-#        music_by_feelingLists = Music_by_feelingList.objects.update_or_create(genres=relatedData.Genres, images=relatedData.Images_url, popularity=relatedData.Popularity, external_urls=relatedData.URL, uri=relatedData.URI, result1=relatedData.ID, defaults={"name": relatedData.Name})
-
-#    fmList = FavoriteMusicList.objects.order_by('id')
 
     if request.method == 'POST':
         url1 = request.POST['url1']
         num = int(url1)
 
-        newfmList = FavoriteMusicList.objects.create(
-         # ユニークな値
-          name = name1[num],
-#          genres = genres[num],
-#          images = images[num],
-          popularity = popularity[num],
-          external_urls = external_urls[num],
-          uri = uri[num],
-          result1 = url[num],
-        )
+        print("playlist:")
+        cnt = 0
+        for msc in music_by_feelingList:
+            if cnt == num:
+                print(num)
+
+                newfmList = FavoriteMusicList.objects.create(
+                    tracks = msc.tracks,
+                    artist = msc.artist,
+                    danceability = msc.danceability,
+                    energy = msc.energy,
+                    key = msc.key,
+                    loudness = msc.loudness,
+                    mode = msc.mode,
+                    speechiness = msc.speechiness,
+                    acousticness = msc.acousticness,
+                    instrumentalness = msc.instrumentalness,
+                    liveness = msc.liveness,
+                    valence = msc.valence,
+                    tempo = msc.tempo,
+                    type = msc.type,
+                    url =msc.url,
+                    track_id = msc.track_id,
+                    uri = msc.uri,
+                    track_href = msc.track_href,
+                    analysis_url = msc.analysis_url,
+                    duration_ms = msc.duration_ms,
+                    time_signature = msc.time_signature,
+                    artist_url = msc.artist_url,
+                    genres = msc.genres,
+                    popularity = msc.popularity,
+                    track_url =  msc.track_url,
+                    created_year =  msc.created_year,
+                    rank =  msc.rank,
+                    order =  cnt,
+                )
+                break
+            cnt = cnt + 1
+
         newfmList.save()
-
-        txt = {
-            'num':num,
-        }
-
-    name0 = name1[0]
-    name1 = name1[1]
-    name2 = name[0]['id']
-    name3 = name[0]['name']
-#    name4 = mbf1
 
     txt = {
         'fmList':favoriteMusicList,
-        'mbfList':music_by_feelingList,
         'url':url,
         'url_0':url_0,
-        'name0':name0,
-        'name1':name1,
-        'name2':name2,
-        'name3':name3,
-#        'name4':name4,
     }
     return render(request, 'music_by_feeling/playlist.html', txt)
 
 def spotifyLoad(request):
+
     #入力パート
     #artist_url = 'https://open.spotify.com/artist/2dIgFjalVxs4ThymZ67YCE?si=uPwGLt18SOOUbTwi4Cvqow'
     album_url =''
@@ -329,43 +144,94 @@ def spotifyLoad(request):
     ccm = SpotifyClientCredentials(client_id = my_id, client_secret = my_secret)
     spotify = spotipy.Spotify(client_credentials_manager = ccm)
 
-    #results = spotify.artist_related_artists(artist_url)
-    #result = results['artists']
-
-    #result = spotify.user_playlist('Madoka Sota','7GkvWsIFKewgwTDPBZgpt3')#'JPOP Hits 2022のplaylist'
-
-
     result = '' #'JPOP Hits 2022のplaylist'
-    select_year = ''
+    select_year = []
     if request.method == 'POST':
         select_year = request.POST['select_year']
-        #select_year1 = int(select_year)
 
-        if select_year == '2022':
+        if select_year[0] == '2022':
             # プレイリストを取得
             result = spotify.user_playlist('Madoka Sota','7GkvWsIFKewgwTDPBZgpt3')#'JPOP Hits 2022のplaylist'
-        elif select_year == '2021':
+        elif select_year[0] == '2021':
             result = spotify.user_playlist('Madoka Sota','6uszFyxWd5Jt3z0lTZG3AO?si=1c68012b5f094018')#'JPOP Hits 2021のplaylist'
-        elif select_year == '2020':
+        elif select_year[0] == '2020':
             result = spotify.user_playlist('Madoka Sota','19pd98k52F2lQYnwvyWIRy?si=128dd502b1a14b70')#'JPOP Hits 2020のplaylist'
         else:
             result = spotify.user_playlist('Madoka Sota','7GkvWsIFKewgwTDPBZgpt3')#'JPOP Hits 2022のplaylist'
     else:
         result = spotify.user_playlist('Madoka Sota','6uszFyxWd5Jt3z0lTZG3AO?si=1c68012b5f094018')#'JPOP Hits 2022のplaylist'
 
-    Music.select_year = select_year
-
-    #print(result)
+    list_data = result['tracks']
+    track_num = list_data['total']
+    urls_list =[]
+    artist_url =[]
+    genres =[]
+    results =[]
     features = []
     id_list = []
     cnt = 0
+    tracks = []
+    artist = []
+    danceability = []
+    energy = []
+    key = []
+    loudness = []
+    mode = []
+    speechiness = []
+    acousticness = []
+    instrumentalness = []
+    liveness = []
+    valence = []
+    tempo = []
+    type = []
+    url = []
+    track_id = []
+    uri = []
+    track_href = []
+    analysis_url = []
+    duration_ms = []
+    time_signature = []
+    popularity = []
+
+    for i in range(len(list_data['items'])):
+        track_url = list_data['items'][i]['track']['external_urls']['spotify']
+        urls_list.append(track_url)
+
+    for i in range(len(urls_list)):
+        track_data = spotify.track(urls_list[i])
+        track_feature = spotify.audio_features(urls_list[i])[0]
+        artist_url.append(track_data['album']['artists'][0]['external_urls']['spotify']),
+
+        results.append(spotify.artist(artist_url[i])),
+        genres.append(results[i]['genres']),
+        popularity.append(results[i]['popularity']),
+        tracks.append(track_data['name']),
+        artist.append(track_data['album']['artists'][0]['name']),
+        danceability.append(track_feature['danceability']),
+        energy.append(track_feature['energy']),
+        key.append(track_feature['key']),
+        loudness.append(track_feature['loudness']),
+        mode.append(track_feature['mode']),
+        speechiness.append(track_feature['speechiness']),
+        acousticness.append(track_feature['acousticness']),
+        instrumentalness.append(track_feature['instrumentalness']),
+        liveness.append(track_feature['liveness']),
+        valence.append(track_feature['valence']),
+        tempo.append(track_feature['tempo']),
+        type.append(track_feature['type']),
+        url.append(urls_list[i]),
+        track_id.append(track_feature['id']),
+        uri.append(track_feature['uri']),
+        track_href.append(track_feature['track_href']),
+        analysis_url.append(track_feature['analysis_url']),
+        duration_ms.append(track_feature['duration_ms']),
+        time_signature.append(track_feature['time_signature']),
 
     for track in result['tracks']['items']:
         cnt += 1
         # プレイリスト内の曲のidを抜き出してリスト化
         id = track['track']['id']
         id_list.append(id)
-
         #print(id_list)
         if cnt == 50:
             features.extend(spotify.audio_features(id_list))
@@ -374,13 +240,78 @@ def spotifyLoad(request):
 
     cnt = 0
 
-    count = 0
     name = []
+
+#################################################################################
+
+    select_year = []
+    if request.method == 'POST':
+        select_year = request.POST['select_year']
+            # プレイリストを取得
+        print('POST')
+    else:
+        select_year = '2022'
+        print('GET')
+
+
+
+    count = 0
+    Music_by_feelingList.objects.all().delete()
+    allMusics = AllMusic.objects.order_by('id')
+
+    for msc in allMusics:
+        #select_yearには"2022,"のように最後に","が入っているようなので","を除外する処理追加
+        s = select_year[0:len(select_year) - 1]
+        if msc.created_year == int(s):
+            if(0.5 <= msc.energy <= 0.6 and \
+            0.5 <= msc.danceability <= 0.6):
+
+                newmbfList = Music_by_feelingList.objects.create(
+                    # ユニークな値
+                    tracks = msc.tracks,
+                    artist = msc.artist,
+                    danceability = msc.danceability,
+                    energy = msc.energy,
+                    key = msc.key,
+                    loudness = msc.loudness,
+                    mode = msc.mode,
+                    speechiness = msc.speechiness,
+                    acousticness = msc.acousticness,
+                    instrumentalness = msc.instrumentalness,
+                    liveness = msc.liveness,
+                    valence = msc.valence,
+                    tempo = msc.tempo,
+                    type = msc.type,
+                    url =msc.url,
+                    track_id = msc.track_id,
+                    uri = msc.uri,
+                    track_href = msc.track_href,
+                    analysis_url = msc.analysis_url,
+                    duration_ms = msc.duration_ms,
+                    time_signature = msc.time_signature,
+                    artist_url = msc.artist_url,
+                    genres = msc.genres,
+                    popularity = msc.popularity,
+                    track_url =  msc.track_url,
+                    created_year =  msc.created_year,
+                    rank =  msc.rank,
+                    order =  count,
+                )
+                newmbfList.save()
+
+                count += 1
+                if count == 50:
+                   break
+
+    mbfl = Music_by_feelingList.objects.order_by('id')
+
+#################################################################################
+
+
     for feature in features:
         if(0.5 <= feature['energy'] <= 0.6 and \
         0.5 <= feature['danceability'] <= 0.6):
            match = spotify.track(feature['id'])
-           #print(match['name'], "はenergyが0.5〜0.6、danceabilityが0.5〜0.6の曲です。")
 
            name.append(match)
            count += 1
@@ -389,36 +320,34 @@ def spotifyLoad(request):
     print('処理が終了しました。')
 
     i = 0
-    #for i in range(len(match)): #resultの数をカウントしてfor文を回す
-        #name.append(match[i]['name']),#(match[i]['name']),
 
     name0 = name[0]
     name1 = name[1]
 
-    #追加
-    for nm in name:
-        newmbfList = Music_by_feelingList.objects.create(
-         # ユニークな値
-            user=request.user,
-            name = nm['name'],
-#           genres = nm['genres'],
-#           images = nm['images'],
-            popularity = nm['popularity'],
-            external_urls = nm['external_urls'],
-            uri = nm['uri'],
-#           result1 = nm['url'],
-            result1 = nm['id'],
-        )
-        newmbfList.save()
-
-
     txt2 = {
         'name0':name[0]['name'],
         'name1':name[1]['name'],
-
+        'mbfl':mbfl,
         'select_year':select_year,
-
-
+        'Track' : tracks,
+        'Artist' : artist,
+        'danceability' : danceability,
+        'energy' : energy,
+        'key' : track_feature['key'],
+        'loudness' : track_feature['loudness'],
+        'mode' : track_feature['mode'],
+        'speechiness' : track_feature['speechiness'],
+        'acousticness' : track_feature['acousticness'],
+        'instrumentalness' : track_feature['instrumentalness'],
+        'liveness' : track_feature['liveness'],
+        'valence' : track_feature['valence'],
+        'tempo' : track_feature['tempo'],
+        'type' : track_feature['type'],
+        'URL' : url,
+        'track_data' : track_data,
+        'urls_list' : urls_list,
+        'list_data_items' : list_data['items'][0],
+        'genres' : genres,
     }
     return render(request, 'music_by_feeling/spotifyLoad.html', txt2)
 
@@ -429,7 +358,6 @@ def page3(request):
         form_m = MusicForm(request.POST)
         if form_m.is_valid():
             music = form_m.save(commit=False)
-            music.user=request.user
             music.save()
             return redirect('music_by_feeling:page3')
     else:
@@ -444,91 +372,108 @@ def music_render(request):
     }
     return render(request, 'music_by_feeling/page3.html', context)
 
-#新規登録
-class  SignUpView(TemplateView):
 
-    def __init__(self):
-        self.params = {
-        "AccountCreate":False,
-        "account_form": AccountForm(),
-        "add_account_form":AddAccountForm(),
-        }
+"""メンテナンス：音楽データダウンロード"""
+def maintenance(request):
 
-    #Get処理
-    def get(self,request):
-        self.params["account_form"] = AccountForm()
-        self.params["add_account_form"] = AddAccountForm()
-        self.params["AccountCreate"] = False
-        return render(request,"music_by_feeling/signup.html",context=self.params)
+    #認証パート
+    my_id ='ed4ef8d322064f90b989bedef7c194b4' #client ID
+    my_secret = 'dd02269b70424359a84b1ecb14b16df7' #client secret
+    ccm = SpotifyClientCredentials(client_id = my_id, client_secret = my_secret)
+    spotify = spotipy.Spotify(client_credentials_manager = ccm)
 
-    #Post処理
-    def post(self,request):
-        self.params["account_form"] = AccountForm(data=request.POST)
-        self.params["add_account_form"] = AddAccountForm(data=request.POST)
+    result = '' #'JPOP Hits 2022のplaylist'
+    select_year = []
+    if request.method == 'POST':
+        select_year = request.POST['select_year']
 
-        #フォーム入力の有効検証
-        if self.params["account_form"].is_valid() and self.params["add_account_form"].is_valid():
-            # アカウント情報をDB保存
-            account = self.params["account_form"].save()
-            # パスワードをハッシュ化
-            account.set_password(account.password)
-            # ハッシュ化パスワード更新
-            account.save()
-
-            # 下記追加情報
-            # 下記操作のため、コミットなし
-            add_account = self.params["add_account_form"].save(commit=False)
-            # AccountForm & AddAccountForm 1vs1 紐付け
-            add_account.user = account
-
-            # モデル保存
-            add_account.save()
-
-            # アカウント作成情報更新
-            self.params["AccountCreate"] = True
-
-            login(request,account)
-            return redirect('login')
-
+        if select_year == '2022':
+            # プレイリストを取得
+            result = spotify.user_playlist('Madoka Sota','7GkvWsIFKewgwTDPBZgpt3')#'JPOP Hits 2022のplaylist'
+        elif select_year == '2021':
+            result = spotify.user_playlist('Madoka Sota','6uszFyxWd5Jt3z0lTZG3AO?si=1c68012b5f094018')#'JPOP Hits 2021のplaylist'
+        elif select_year == '2020':
+            result = spotify.user_playlist('Madoka Sota','19pd98k52F2lQYnwvyWIRy?si=128dd502b1a14b70')#'JPOP Hits 2020のplaylist'
         else:
-            # フォームが有効でない場合
-            print(self.params["account_form"].errors)
+            result = spotify.user_playlist('Madoka Sota','7GkvWsIFKewgwTDPBZgpt3')#'JPOP Hits 2022のplaylist'
 
-            return render(request,"music_by_feeling/signup.html",context=self.params)
+        list_data = result['tracks']
+        urls_list =[]
 
-def login(request):
-    if request.method == "POST":
-        ID = request.POST.get('userid')
-        Pass = request.POST.get('password')
-        user = authenticate(username=ID, password=Pass)
+        artist_url =[]
+        genres =[]
+        results =[]
 
-        # ユーザー認証
-        if user:
-            #ユーザーアクティベート判定
-            if user.is_active:
-                # ログイン
-                login(request,user)
-                # ホームページ遷移
-                return HttpResponseRedirect(reverse('home'))
-            else:
-                # アカウント利用不可
-                return HttpResponse("アカウントが有効ではありません")
-        # ユーザー認証失敗
-        else:
-            return HttpResponse("ログインIDまたはパスワードが間違っています")
-    # GET
-    else:
-        return render(request, "music_by_feeling/login.html")
+        tracks = []
+        artist = []
+        danceability = []
+        energy = []
+        key = []
+        loudness = []
+        mode = []
+        speechiness = []
+        acousticness = []
+        instrumentalness = []
+        liveness = []
+        valence = []
+        tempo = []
+        type = []
+        url = []
+        track_id = []
+        uri = []
+        track_href = []
+        analysis_url = []
+        duration_ms = []
+        time_signature = []
+        popularity = []
+
+        for i in range(len(list_data['items'])):
+            track_url = list_data['items'][i]['track']['external_urls']['spotify']
+            urls_list.append(track_url)
+
+        for i in range(len(urls_list)):
+            track_data = spotify.track(urls_list[i])
+            track_feature = spotify.audio_features(urls_list[i])[0]
+
+            artist_url.append(track_data['album']['artists'][0]['external_urls']['spotify']),
+            results.append(spotify.artist(artist_url[i])),
+
+            #追加
+            newMusic = AllMusic.objects.create(
+             # ユニークな値
+              tracks = track_data['name'],
+              artist = track_data['album']['artists'][0]['name'],
+              danceability = track_feature['danceability'],
+              energy = track_feature['energy'],
+              key = track_feature['key'],
+              loudness = track_feature['loudness'],
+              mode = track_feature['mode'],
+              speechiness = track_feature['speechiness'],
+              acousticness = track_feature['acousticness'],
+              instrumentalness = track_feature['instrumentalness'],
+              liveness = track_feature['liveness'],
+              valence = track_feature['valence'],
+              tempo = track_feature['tempo'],
+              type = track_feature['type'],
+              url = urls_list[i],
+              track_id = track_feature['id'],
+              uri = track_feature['uri'],
+              track_href = track_feature['track_href'],
+              analysis_url = track_feature['analysis_url'],
+              duration_ms = track_feature['duration_ms'],
+              time_signature = track_feature['time_signature'],
+              artist_url = track_data['album']['artists'][0]['external_urls']['spotify'],
+              genres = results[i]['genres'],
+              popularity = results[i]['popularity'],
+              track_url = 'https://open.spotify.com/embed/track/' + track_feature['id'],
+              created_year = select_year,
+              rank = i + 1,
+            )
+            newMusic.save()
+
+    txt = {
+
+    }
 
 
-@login_required
-def logout(request):
-    logout(request)
-    # ログイン画面遷移
-    return HttpResponseRedirect(reverse('Login'))
-'''
-def feeling(request,pk):
-    feel=get_object_or_404(spotifyLoad, pk=pk)
-    return render(request, 'music_by_feeling/feeling.html', {spotifyLoad: spotifyLoad})
-'''
-
+    return render(request, 'music_by_feeling/maintenance.html', txt)

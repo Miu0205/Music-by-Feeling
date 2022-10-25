@@ -33,7 +33,7 @@ body{
         <h4>お気に入りプレイリスト</h4>
             {% for fml in fmList %}
 <!--                <a href="javascript:playVideo()">{{fml.name}}</a><br>-->
-                <a href="javascript:playVideo('{{fml.result1}}')">{{fml.name}}</a><br>
+                <a href="javascript:playVideo('{{fml.track_url}}')">{{fml.tracks}}</a><br>
             {% endfor %}
 <!--
         <h4>戦闘0</h4><br>
@@ -75,6 +75,7 @@ body{
   console.log("storage.Key=" + storage.Key);
   console.log("storage.Key1=" + storage.Key1);
 
+  console.log("urlList=" + urlList[storage.Key1]);
 
   if(storage.Key1 != 0){
     var tag = document.getElementsByTagName("iframe")[0];
@@ -83,5 +84,7 @@ body{
   function playVideo(url1) {
       var tag = document.getElementsByTagName("iframe")[0];
       tag.src = url1;
+      console.log("url1=" + url1);
+
   }
 </script>
