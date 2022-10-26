@@ -1,3 +1,4 @@
+
 {% load static %}
 <style>
 .video-textarea-sidebyside{
@@ -222,17 +223,23 @@ fieldset{
         <a href="{% url 'music_by_feeling:playlist' %}">
             <h3>リスト</h3>
         </a>
-
+<!--
+{{ track_name }}<br><br>
+{{ artist_name }}<br><br>
+{{ album_name }}<br><br>
+{{ artist_url }}<br><br>
+{{ genres }}<br><br>
+-->
         </div>
     </body>
 </html>
 
 <script>
     var count1 = 0;
-    var urlList = {{ url | safe}};
+    var urlList = '{{url|safe}}';
     var storage = localStorage;
     var count = storage.Key;
-    var mbfCount = {{ mbfCount | safe}};
+    var mbfCount = '{{ mbfCount | safe}}';
 
     storage.UrlList = urlList;
 
@@ -345,7 +352,6 @@ fieldset{
                 break;
         }
     }
-
     (function() {
       // 自動切り替え1
       "use strict";

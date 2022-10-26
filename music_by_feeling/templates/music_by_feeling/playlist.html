@@ -68,13 +68,14 @@ body{
 
 <script>
   var storage = localStorage;
-  var urlList = {{ url | safe}};
+  var urlList = '{{url|safe}}';
 
 //  console.log("num=" + num);
 //  console.log("count=" + count);
   console.log("storage.Key=" + storage.Key);
   console.log("storage.Key1=" + storage.Key1);
 
+  console.log("urlList=" + urlList[storage.Key1]);
 
   if(storage.Key1 != 0){
     var tag = document.getElementsByTagName("iframe")[0];
@@ -83,5 +84,6 @@ body{
   function playVideo(url1) {
       var tag = document.getElementsByTagName("iframe")[0];
       tag.src = url1;
+      console.log("url1=" + url1);
   }
 </script>
