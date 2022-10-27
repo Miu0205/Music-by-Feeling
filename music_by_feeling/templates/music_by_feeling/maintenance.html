@@ -22,14 +22,7 @@
                     <option value="2020">2020年</option>
                   </select></li>
 
-
-<br>
-
-            {% for category in category_list %}
-                <a href="{% url 'music_by_feeling:music_by_feeling_category' category %}">
-                    <li>{{ category }}></li>
-                </a>
-            {% endfor %}
+            <br>
         </ul>
 
         <form action="{% url 'music_by_feeling:maintenance' %}" method="post">
@@ -40,15 +33,11 @@
             <input type="submit" onclick="select_year_reflect()" value="ダウンロード">
         </form>
 
-            <br>
-            <hr>
+        <br>
+        <hr>
 
         <a href="{% url 'music_by_feeling:index' %}">
           <button type="button">メインページに戻る</button></a>
-
-
-        {% block content %}
-        {% endblock %}
 
     </body>
 </html>

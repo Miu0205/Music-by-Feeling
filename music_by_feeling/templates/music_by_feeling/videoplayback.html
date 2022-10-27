@@ -222,13 +222,6 @@ fieldset{
         <a href="{% url 'music_by_feeling:playlist' %}">
             <h3>リスト</h3>
         </a>
-<!--
-{{ track_name }}<br><br>
-{{ artist_name }}<br><br>
-{{ album_name }}<br><br>
-{{ artist_url }}<br><br>
-{{ genres }}<br><br>
--->
         </div>
     </body>
 </html>
@@ -272,10 +265,6 @@ fieldset{
         tag.src = urlList[count];
       }
       elm1.value = count;
-      console.log("num=" + num);
-      console.log("count=" + count);
-      console.log("storage.Key=" + storage.Key);
-      console.log("mbfCount=" + mbfCount);
     }
     function video_back() {
     	//前の画面へ

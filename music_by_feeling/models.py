@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 
 """カテゴリー"""
@@ -101,6 +102,7 @@ class Music_by_feelingList(models.Model):
     created_year = models.IntegerField('年',blank=True, null=True,default=0)
     rank = models.IntegerField('順位',blank=True, null=True,default=0)
     order = models.IntegerField('通し番号',blank=True, null=True,default=0)
+    display_order = models.IntegerField('表示番号',blank=True, null=True,default=0)
 
     def __str__(self):
         return self.tracks
@@ -135,6 +137,7 @@ class FavoriteMusicList(models.Model):
     created_year = models.IntegerField('年',blank=True, null=True,default=0)
     rank = models.IntegerField('順位',blank=True, null=True,default=0)
     order = models.IntegerField('通し番号',blank=True, null=True,default=0)
+    display_order = models.IntegerField('表示番号',blank=True, null=True,default=0)
 
     def __str__(self):
         return self.tracks
@@ -153,6 +156,9 @@ class FavoriteMusicList(models.Model):
     '''
 
 class Music(models.Model):
+
+    # ユーザー(ユーザー名、パスワード、メールアドレス）
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
 
     category=(
     ('1', '0.1'),
@@ -208,3 +214,18 @@ class Music(models.Model):
 
     def __str__(self):
         return self.feeling_1
+
+class Account(models.Model):
+
+    # ユーザー認証のインスタンス(1vs1関係)
+    # ユーザー(ユーザー名、パスワード、メールアドレス）
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
+
+    # 追加フィールド
+    age=models.SmallIntegerField()
+    sex_category=(('1','male'),('2','female'),('3','other'))
+
+    sex=models.CharField(max_length=3,default='',choices=sex_category,blank=True)
+
+    def __str__(self):
+        return self.user.username
