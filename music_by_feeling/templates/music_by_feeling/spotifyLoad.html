@@ -14,11 +14,18 @@ body{
         <a href="{% url 'music_by_feeling:index' %}">
             <h2><font size="6">Music By Feeling</font></h2>
         </a>
-        <p>energyが0.5〜0.6、danceabilityが0.5〜0.6の曲</p>
-        <a href="javascript:playVideo(0)">01 {{ name0 }}</a><br>
-        <a href="javascript:playVideo(1)">02 {{ name1 }}</a><br>
-
     </body>
+
+    <table>
+        <tr>
+            <th>曲名</th>
+        </tr>
+        {% for mbf in mbfl %}
+              <tr>
+                <td><a href="javascript:playVideo({{mbf.order}})">0{{mbf.display_order}} {{mbf.tracks}}</td>
+              </tr>
+        {% endfor %}
+    </table>
 </html>
 
 <script>

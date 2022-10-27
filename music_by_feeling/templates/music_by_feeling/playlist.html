@@ -32,7 +32,7 @@ body{
         <iframe style="border-radius:12px" src={{ url_0 }} width="750" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         <h4>お気に入りプレイリスト</h4>
             {% for fml in fmList %}
-                <a href="javascript:playVideo()">{{fml.name}}</a><br>
+                <a href="javascript:playVideo('{{fml.track_url}}')">{{fml.tracks}}</a><br>
             {% endfor %}
       </body>
   </html>
@@ -45,8 +45,8 @@ body{
     var tag = document.getElementsByTagName("iframe")[0];
     tag.src = urlList[storage.Key1];
   }
-  function playVideo() {
+  function playVideo(url1) {
       var tag = document.getElementsByTagName("iframe")[0];
-      tag.src = urlList[0];
+      tag.src = url1;
   }
 </script>
