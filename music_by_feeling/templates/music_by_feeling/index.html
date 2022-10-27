@@ -4,22 +4,12 @@
 
 {% block content %}
 
-    <!--<h2>MUSIC_BY_FEELINGリスト</h2>-->
-
-
-
-    <br>
-    {% if category %}
-        <!--<h2>カテゴリー: {{ category.title }}</h2>-->
-    {% endif %}
-
     {% for page3 in music_by_feeling %}
      {{feeling_1}}
         <ul>
             <li>{{ musics_by_feeling.title }}--{{ musics_by_feeling.created_at }}</li>
             <form method="POST" action="{% url 'music_by_feeling:delete' musics_by_feeling.pk %}">
                 {% csrf_token %}
-
             </form>
         </ul>
     {% endfor %}
@@ -30,7 +20,5 @@
     <br><br>
     <a href="{% url 'music_by_feeling:maintenance' %}">メンテナンス</a>
     <br><br>
-
-
 
 {% endblock %}

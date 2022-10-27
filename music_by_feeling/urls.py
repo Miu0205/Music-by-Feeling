@@ -17,5 +17,10 @@ urlpatterns = [
 
         path('page3/', views.music_render, name='page3'),  # ３
 
+        #path('feeling/<int:pk>',views.feeling, name='feeling'),
 
+        #spath('signup', views.SignUpView.as_view(), name="signup"),
+        #path('logout',views.logout, name="logout"),
+
+        
 ]
