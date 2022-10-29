@@ -86,6 +86,8 @@ def playlist(request):
 
     url_0 = url[0]
 
+    arr = []#dancealibity, energy, valenceの三次元配列
+
     if request.method == 'POST':
         url1 = request.POST['url1']
         num = int(url1)
@@ -124,6 +126,12 @@ def playlist(request):
                     order =  cnt,
                     display_order =  cnt + 1,
                 )
+
+                ##追加
+                arr.append([msc.danceability, msc.energy, msc.valence])
+
+
+
                 break
             cnt = cnt + 1
 
@@ -141,6 +149,10 @@ def spotifyLoad(request):
     select_year = []
     if request.method == 'POST':
         select_year = request.POST['select_year']
+
+        ##追加
+        feeling_1 = request.POST['feeling_1']
+        feeling_2 = request.POST['feeling_2']
     else:
         select_year = '2022'
 
@@ -148,12 +160,23 @@ def spotifyLoad(request):
     Music_by_feelingList.objects.all().delete()
     allMusics = AllMusic.objects.order_by('id')
 
+
+    ##追加
+    ##feeling_1 = ''
+    ##feeling_2 = ''
+    Music.feeling_1 = feeling_1
+    Music.feeling_2 = feeling_2
+    print(feeling_1 , 'aaaaaaa', feeling_2)
+
+    #####################################
     for msc in allMusics:
         #select_yearには"2022,"のように最後に","が入っているようなので","を除外する処理追加
         s = select_year[0:len(select_year) - 1]
         if msc.created_year == int(s):
-            if(0.5 <= msc.energy <= 0.6 and \
-            0.5 <= msc.danceability <= 0.6):
+            if(float(feeling_1) <= msc.energy <= float(feeling_1)+0.1 and \
+            float(feeling_1) <= msc.valence <= float(feeling_1)+0.1 and \
+            float(feeling_2) <= msc.danceability <= float(feeling_2)+0.1):
+                print(msc.energy,'----',msc.valence,'---', msc.danceability)
 
                 newmbfList = Music_by_feelingList.objects.create(
                     # ユニークな値
@@ -192,6 +215,56 @@ def spotifyLoad(request):
                 count += 1
                 if count == 50:
                    break
+        ########################
+
+    """
+    for msc in allMusics:
+        #select_yearには"2022,"のように最後に","が入っているようなので","を除外する処理追加
+        s = select_year[0:len(select_year) - 1]
+        if msc.created_year == int(s):
+            if(float(feeling_1) <= msc.energy <= float(feeling_1)+0.1 and \
+            float(feeling_1) <= msc.valence <= float(feeling_1)+0.1 and \
+            float(feeling_2) <= msc.danceability <= float(feeling_2)+0.1):
+                print(msc.energy,'----',msc.valence,'---', msc.danceability)
+
+                newmbfList = Music_by_feelingList.objects.create(
+                    # ユニークな値
+                    tracks = msc.tracks,
+                    artist = msc.artist,
+                    danceability = msc.danceability,
+                    energy = msc.energy,
+                    key = msc.key,
+                    loudness = msc.loudness,
+                    mode = msc.mode,
+                    speechiness = msc.speechiness,
+                    acousticness = msc.acousticness,
+                    instrumentalness = msc.instrumentalness,
+                    liveness = msc.liveness,
+                    valence = msc.valence,
+                    tempo = msc.tempo,
+                    type = msc.type,
+                    url =msc.url,
+                    track_id = msc.track_id,
+                    uri = msc.uri,
+                    track_href = msc.track_href,
+                    analysis_url = msc.analysis_url,
+                    duration_ms = msc.duration_ms,
+                    time_signature = msc.time_signature,
+                    artist_url = msc.artist_url,
+                    genres = msc.genres,
+                    popularity = msc.popularity,
+                    track_url =  msc.track_url,
+                    created_year =  msc.created_year,
+                    rank =  msc.rank,
+                    order =  count,
+                    display_order =  count + 1,
+                )
+                newmbfList.save()
+
+                count += 1
+                if count == 50:
+                   break
+    """
 
     mbfl = Music_by_feelingList.objects.order_by('id')
     txt2 = {
