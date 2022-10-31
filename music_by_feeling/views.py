@@ -155,12 +155,14 @@ def spotifyLoad(request):
     select_year = []
     if request.method == 'POST':
         select_year = request.POST['select_year']
+        if select_year == ',':
+            select_year = '2022,'
 
         ##追加
         feeling_1 = request.POST['feeling_1']
         feeling_2 = request.POST['feeling_2']
     else:
-        select_year = '2022'
+        select_year = '2022,'
 
     count = 0
     Music_by_feelingList.objects.all().delete()
@@ -231,6 +233,7 @@ def spotifyLoad(request):
                 display_order =  count + 1,
             )
             newmbfList.save()
+            count += 1
             break
 
 
@@ -363,6 +366,63 @@ def maintenance(request):
               rank = i + 1,
             )
             newMusic.save()
+
+    txt = {
+
+    }
+
+    return render(request, 'music_by_feeling/maintenance.html', txt)
+
+
+def graph(request):
+    #入力パート
+    output_filename = 'zep_related_track.csv' #.csv形式で名前を入力
+
+    allMusics = AllMusic.objects.order_by('id')
+
+    track_df = pd.DataFrame(index=[],
+                            columns=['tracks', 'artist', 'danceability', 'energy',
+                            'key', 'loudness', 'mode', 'speechiness', 'acousticness',
+                            'instrumentalness', 'liveness', 'valence','tempo', 'type',
+                            'url', 'track_id', 'uri', 'track_href', 'analysis_url',
+                            'duration_ms', 'time_signature', 'artist_url', 'genres',
+                            'popularity', 'track_url', 'created_year', 'rank'])
+
+    for msc in allMusics:
+        #time.sleep(1) #1sec stop
+        track_df = track_df.append({
+
+            'tracks' : msc.tracks,
+            'artist' : msc.artist,
+            'danceability' : msc.danceability,
+            'energy' : msc.energy,
+            'key' : msc.key,
+            'loudness' : msc.loudness,
+            'mode' : msc.mode,
+            'speechiness' : msc.speechiness,
+            'acousticness' : msc.acousticness,
+            'instrumentalness' : msc.instrumentalness,
+            'liveness' : msc.liveness,
+            'valence' : msc.valence,
+            'tempo' : msc.tempo,
+            'type' : msc.type,
+            'url' : msc.url,
+            'track_id' : msc.track_id,
+            'uri' : msc.uri,
+            'track_href' : msc.track_href,
+            'analysis_url' : msc.analysis_url,
+            'duration_ms' : msc.duration_ms,
+            'time_signature' : msc.time_signature,
+            'artist_url' : msc.artist_url,
+            'genres' : msc.genres,
+            'popularity' : msc.popularity,
+            'track_url' : msc.track_url,
+            'created_year' : msc.created_year,
+            'rank' : msc.rank}, ignore_index=True)
+
+    track_df.to_csv(output_filename, encoding='utf-8') #csvファイル出力
+    with open(output_filename, 'a', newline='') as f:
+        writer = csv.writer(f)
 
     txt = {
 
