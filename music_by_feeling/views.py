@@ -1,7 +1,8 @@
 # /music_by_feeling/views.py
 
+from multiprocessing import context
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Music_by_feeling, Category, Comment, AllMusic, Music, Music_by_feelingList, FavoriteMusicList, Account
+from .models import Music_by_feeling, Category, Comment, AllMusic, Music, Music_by_feelingList, FavoriteMusicList, History, Account
 from .forms import CommentForm, MusicForm, AccountForm, AddAccountForm
 import spotipy
 
@@ -11,12 +12,12 @@ import csv
 
 
 import numpy as np
-from scipy.spatial.distance import pdist, squareform
+#from scipy.spatial.distance import pdist, squareform
 
 
 
 from django.urls import reverse
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
@@ -101,6 +102,9 @@ def playlist(request):
             if cnt == num:
 
                 newfmList = FavoriteMusicList.objects.create(
+                    #ログイン中のユーザ情報の取得
+                    user=request.user,
+
                     tracks = msc.tracks,
                     artist = msc.artist,
                     danceability = msc.danceability,
@@ -163,7 +167,7 @@ def spotifyLoad(request):
         select_year = '2022'
 
     count = 0
-    Music_by_feelingList.objects.all().delete()
+    Music_by_feelingList.objects.all().delete() #?
     allMusics = AllMusic.objects.order_by('id')
 
 
@@ -199,6 +203,9 @@ def spotifyLoad(request):
             print(msc.energy,'----',msc.valence,'---', msc.danceability)
 
             newmbfList = Music_by_feelingList.objects.create(
+                #ログイン中のユーザ情報の取得
+                user=request.user,
+
                 # ユニークな値
                 tracks = msc.tracks,
                 artist = msc.artist,
@@ -233,12 +240,6 @@ def spotifyLoad(request):
             newmbfList.save()
             break
 
-
-
-
-
-
-
     mbfl = Music_by_feelingList.objects.order_by('id')
     txt2 = {
         'mbfl':mbfl,
@@ -246,11 +247,13 @@ def spotifyLoad(request):
     return render(request, 'music_by_feeling/spotifyLoad.html', txt2)
 
 """ページ３"""
+'''
 def page3(request):
     if request.method == "POST":
         form_m = MusicForm(request.POST)
         if form_m.is_valid():
             music = form_m.save(commit=False)
+            #ログイン中のユーザ情報の取得
             music.user=request.user
             music.save()
             return redirect('music_by_feeling:page3')
@@ -258,9 +261,43 @@ def page3(request):
         form_m = MusicForm()
 
     return render(request, 'music_by_feeling/page3.html', {'forms':form_m})
+'''
+'''
+def page3(request):
+    if request.method == "POST":
+        form_m = MusicForm(request.POST)
+        if form_m.is_valid():
+            music = form_m.save(commit=False)
+            #ログイン中のユーザ情報の取得
+            music.user=request.user
+            #music_db=Music(**form_m.cleaned_data) #create?
+            #music_db.save() #save?
+            #music_db=Music.objects.create(**form_m.cleaned_data)
+            music.save()
+            return redirect('music_by_feeling:page3')
+    else:
+        form_m = MusicForm()
+
+    return render(request, 'music_by_feeling/page3.html', {'forms':form_m})
+'''
 
 """音楽リストを表示"""
 def music_render(request):
+    if request.method == "POST":
+        form_m = MusicForm(request.POST)
+        if form_m.is_valid():
+            music = form_m.save(commit=False)
+            #ログイン中のユーザ情報の取得
+            music.user=request.user
+            #music_db=Music(**form_m.cleaned_data) #create?
+            #music_db.save() #save?
+            music_db=Music.objects.create(**music.cleaned_data)
+            music_db.save()
+            music.save()
+            return redirect('music_by_feeling:page3')
+    else:
+        form_m = MusicForm()
+
     context = {
         'music_list': Music.objects.all(),
     }
@@ -370,6 +407,23 @@ def maintenance(request):
 
     return render(request, 'music_by_feeling/maintenance.html', txt)
 
+class MusicList(ListView):
+    model=Music
+    context_object_name="music_list"
+    template_name="music_list.html"
+
+class HistoryList(ListView):
+    model=History
+    context_object_name="history_list"
+    template_name="History_list.html"
+
+class LikeList(ListView):
+    model=FavoriteMusicList
+    context_object_name="fm_list"
+    template_name="FavoriteMusicList_list.html"
+
+
+    
 #新規登録
 class  SignUpView(TemplateView):
 

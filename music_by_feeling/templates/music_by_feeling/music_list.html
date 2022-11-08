@@ -1,0 +1,28 @@
+{% extends 'music_by_feeling/base.html' %}
+{% block content %}
+<h2>感情一覧</h2>
+        <div class="music">
+            <table border="1">
+                    <tr>
+                        <!--Feeling1-->
+                        <th>楽しい度</th>
+                        <!--Feeling2-->
+                        <th>アクティブ度</th>
+                        <th>アーティスト名</th>
+                        <th>ジャンル</th>
+                        <th>年代</th>
+                        <th>人気</th>
+                    </tr>
+                    {% for music in music_list %}
+                    <tr>
+                        <td>{{ music.feeling_1 }}</td>
+                        <td>{{ music.feeling_2 }}</td>
+                        <td>{{ music.artist }}</td>
+                        <td>{{ music.genre }}</td>
+                        <td>{{ music.era }}</td>
+                        <td>{{ music.famous }}</td>
+                    </tr>
+                    {% endfor %}
+            </table>
+        </div>
+{% endblock %}
