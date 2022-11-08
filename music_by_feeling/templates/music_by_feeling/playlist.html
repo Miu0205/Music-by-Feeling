@@ -39,7 +39,7 @@ body{
 
 <script>
   var storage = localStorage;
-  var urlList = {{ url | safe}};
+  var urlList = '{{ url | safe}}';
 
   if(storage.Key1 != 0){
     var tag = document.getElementsByTagName("iframe")[0];

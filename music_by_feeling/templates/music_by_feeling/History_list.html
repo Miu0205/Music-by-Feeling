@@ -1,0 +1,29 @@
+{% extends 'music_by_feeling/base.html' %}
+{% block content %}
+<html>
+<h2>履歴一覧</h2>
+    <div class="mbf">
+        <table border="1">
+                <tr>
+                    <th>曲名</th>
+                    <th>アーティスト名</th>
+                </tr>
+                {% for his in history_list %}
+                <tr>
+                    <td><a href="javascript:playVideo({{his.order}})">0{{his.display_order}} {{his.tracks}}</td>
+                    <td>{{ his.artist }}</td>
+                </tr>
+                {% endfor %}
+        </table>
+    </div>
+</html>
+
+<script>
+    // オーディオタグの取得
+    function playVideo(num) {
+        var storage = localStorage;
+            storage.Key = num;
+        window.location.href = "{% url 'music_by_feeling:videoplayback' %}";
+    }
+</script>
+{% endblock %}

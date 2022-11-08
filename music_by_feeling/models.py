@@ -73,6 +73,9 @@ class Comment(models.Model):
         return self.text
 
 class Music_by_feelingList(models.Model):
+    #ユーザー
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
+
     tracks = models.CharField('トラックタイトル', max_length=50, null=True)
     artist = models.CharField('アーティストタイトル', max_length=50, null=True)
 #    artist = models.IntegerField('アーティストタイトル',blank=True, null=True,default=1)
@@ -108,6 +111,9 @@ class Music_by_feelingList(models.Model):
         return self.tracks
 
 class FavoriteMusicList(models.Model):
+    #ユーザー
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
+
     tracks = models.CharField('トラックタイトル', max_length=50, null=True)
     artist = models.CharField('アーティストタイトル', max_length=50, null=True)
 #    artist = models.IntegerField('アーティストタイトル',blank=True, null=True,default=1)
@@ -214,6 +220,44 @@ class Music(models.Model):
 
     def __str__(self):
         return self.feeling_1
+
+class History(models.Model):
+    #ユーザー
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, null=True)
+
+    tracks = models.CharField('トラックタイトル', max_length=50, null=True)
+    artist = models.CharField('アーティストタイトル', max_length=50, null=True)
+#    artist = models.IntegerField('アーティストタイトル',blank=True, null=True,default=1)
+    danceability = models.FloatField('踊りやすさ',blank=True, null=True,default=0.0)
+    energy = models.FloatField('エネルギッシュ',blank=True, null=True,default=0.0)
+    key = models.FloatField('曲の高さ',blank=True, null=True,default=0.0)
+    loudness = models.FloatField('音圧',blank=True, null=True,default=0.0)
+    mode = models.FloatField('スケール',blank=True, null=True,default=0.0)
+    speechiness = models.FloatField('話し言葉度',blank=True, null=True,default=0.0)
+    acousticness = models.FloatField('アコースティック感',blank=True, null=True,default=0.0)
+    instrumentalness = models.FloatField('ボーカル無し度',blank=True, null=True,default=0.0)
+    liveness = models.FloatField('ライブ感',blank=True, null=True,default=0.0)
+    valence = models.FloatField('ポジティブ',blank=True, null=True,default=0.0)
+    tempo = models.FloatField('テンポ',blank=True, null=True,default=0.0)
+    type = models.CharField('タイプ', max_length=50, null=True)
+    url = models.CharField('URL', max_length=100, null=True)
+    track_id = models.CharField('track_id', max_length=100, null=True)
+    uri = models.CharField('URI', max_length=100, null=True)
+    track_href = models.CharField('曲の詳細情報にアクセスするAPIリンク', max_length=100, null=True)
+    analysis_url = models.CharField('曲のオーディオ分析にアクセスするAPIリンク', max_length=100, null=True)
+    duration_ms = models.FloatField('曲の長さ',blank=True, null=True,default=0.0)
+    time_signature = models.FloatField('拍数',blank=True, null=True,default=0.0)
+    artist_url = models.CharField('アーティストURL', max_length=100, null=True)
+    genres = models.CharField('ジャンル', max_length=100, null=True)
+    popularity = models.IntegerField('人気度',blank=True, null=True,default=0)
+    track_url = models.CharField('track_url', max_length=100, null=True)
+    created_year = models.IntegerField('年',blank=True, null=True,default=0)
+    rank = models.IntegerField('順位',blank=True, null=True,default=0)
+    order = models.IntegerField('通し番号',blank=True, null=True,default=0)
+    display_order = models.IntegerField('表示番号',blank=True, null=True,default=0)
+
+    def __str__(self):
+        return self.tracks
 
 class Account(models.Model):
 

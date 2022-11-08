@@ -228,10 +228,10 @@ fieldset{
 
 <script>
     var count1 = 0;
-    var urlList = {{ url | safe}};
+    var urlList = '{{ url | safe}}';
     var storage = localStorage;
     var count = storage.Key;
-    var mbfCount = {{ mbfCount | safe}};
+    var mbfCount = '{{ mbfCount | safe}}';
 
     storage.UrlList = urlList;
 

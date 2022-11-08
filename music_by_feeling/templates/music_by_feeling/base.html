@@ -8,12 +8,18 @@
 
     </head>
     <body>
-      <a href="{% url 'music_by_feeling:index' %}">
-          <h2>Music By Feeling</h2>
-      </a>
+        <a href="{% url 'music_by_feeling:index' %}">
+            <h2>Music By Feeling</h2>
+        </a>
 
         {% block content %}
         {% endblock %}
+    
+        <br>
+        <a href="{% url 'music_by_feeling:music_list' %}">感情履歴</a><br>
+        <a href="{% url 'music_by_feeling:history_list' %}">音楽履歴</a><br>
+        <a href="{% url 'music_by_feeling:like_list' %}">お気に入り</a><br>
+        <br>
 
     </body>
 </html>
