@@ -139,7 +139,8 @@
       num1 = elm1.selectedIndex;
       num3 = elm3.selectedIndex;
 
-      array = [elm1.options[num1].value, elm3.options[num3].value];
+      array.splice(0);//配列クリア
+      array.push(elm1.options[num1].value, elm3.options[num3].value);
 
       elm2.value = array;
 
