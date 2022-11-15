@@ -2,7 +2,7 @@
 
 from multiprocessing import context
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Music_by_feeling, Category, Comment, AllMusic, Music, Music_by_feelingList, FavoriteMusicList, History, Account
+from .models import Music_by_feeling, Category, Comment, AllMusic, Music, Music_by_feelingList, Music_by_feeling_History, Music_by_feeling_Selection_History, FavoriteMusicList, History, Account
 from .forms import CommentForm, MusicForm, AccountForm, AddAccountForm
 import spotipy
 
@@ -21,6 +21,9 @@ from django.views.generic import TemplateView, ListView
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
+
+from tkinter import messagebox
+import tkinter as tk
 
 """一覧表示"""
 def index(request):
@@ -156,17 +159,23 @@ def playlist(request):
 
 def spotifyLoad(request):
 
-    select_year = []
+    select_year = ''
     if request.method == 'POST':
-        select_year = request.POST['select_year']
-        if select_year == ',':
-            select_year = '2022,'
+        selects = request.POST['select_year']
+        select_list = selects.split(',')
+        select_year = select_list[0]
+        select_genre = select_list[1]
+        print(1)
+        print(request.POST['select_year'])
+        print(select_year)
+        print(select_genre)
+        print(2)
 
         ##追加
         feeling_1 = request.POST['feeling_1']
         feeling_2 = request.POST['feeling_2']
     else:
-        select_year = '2022,'
+        select_year = '2022'
 
     count = 0
     Music_by_feelingList.objects.all().delete() #?
@@ -183,10 +192,24 @@ def spotifyLoad(request):
 
 
     for msc in allMusics:
-        s = select_year[0:len(select_year) - 1]#select_yearには"2022,"のように最後に","が入っているようなので","を除外する処理追加
+#        s = select_year[0:len(select_year) - 1]#select_yearには"2022,"のように最後に","が入っているようなので","を除外する処理追加
 
-        if msc.created_year == int(s):
-            arr.append([msc.energy, msc.danceability, msc.uri, 0])#distanceを0と置いて場所を作った
+#        if msc.created_year == int(s):
+#        if msc.created_year == select_year:
+#            arr.append([msc.energy, msc.danceability, msc.uri, 0])#distanceを0と置いて場所を作った
+        if msc.created_year == int(select_year):
+            genres_wk = msc.genres.strip()
+            genres_wk = genres_wk.replace('[', '')
+            genres_wk = genres_wk.replace(']', '')
+            genres_wk = genres_wk.replace("'", '')
+#            genres_wk = genres_wk.replace(' ', '')
+            genres_list = genres_wk.split(',')
+            genres_list = [s.strip() for s in genres_list]
+
+            for gnr in genres_list:
+
+                if gnr == select_genre:
+                    arr.append([msc.energy, msc.danceability, msc.uri, 0])#distanceを0と置いて場所を作った
 
 
     point = np.array([float(feeling_1),float(feeling_2)])#指定した感情
@@ -199,55 +222,116 @@ def spotifyLoad(request):
     arr.sort(key = lambda x:x[3])#4番目の要素(distance)をキーにして小さい順に並べ替え
 
 
-    for i in range(5):#5回繰り返す
-      for msc in allMusics:
-        if(arr[i][2] == msc.uri):
-            print(msc.energy,'----',msc.valence,'---', msc.danceability)
+    #########################################
+    cnt = 5             #繰り返し回数5回
+    print(101)
+    if len(arr) >= 1:  #選曲した曲数が1以上の場合は実施（0の場合は何もせずメッセージ表示）
+        print(102)
+        if len(arr) < cnt:  #選曲した曲数が5回より少なければ曲数分のみ繰り返し
+            cnt = len(arr)
 
-            newmbfList = Music_by_feelingList.objects.create(
-                #ログイン中のユーザ情報の取得
-                user=request.user,
+        #for i in range(5):#5回繰り返す
+        for i in range(cnt):#繰り返す（5回または選曲数分）
+          for msc in allMusics:
+            if(arr[i][2] == msc.uri):
+                print(msc.energy,'----',msc.valence,'---', msc.danceability)
 
-                # ユニークな値
-                tracks = msc.tracks,
-                artist = msc.artist,
-                danceability = msc.danceability,
-                energy = msc.energy,
-                key = msc.key,
-                loudness = msc.loudness,
-                mode = msc.mode,
-                speechiness = msc.speechiness,
-                acousticness = msc.acousticness,
-                instrumentalness = msc.instrumentalness,
-                liveness = msc.liveness,
-                valence = msc.valence,
-                tempo = msc.tempo,
-                type = msc.type,
-                url =msc.url,
-                track_id = msc.track_id,
-                uri = msc.uri,
-                track_href = msc.track_href,
-                analysis_url = msc.analysis_url,
-                duration_ms = msc.duration_ms,
-                time_signature = msc.time_signature,
-                artist_url = msc.artist_url,
-                genres = msc.genres,
-                popularity = msc.popularity,
-                track_url =  msc.track_url,
-                created_year =  msc.created_year,
-                rank =  msc.rank,
-                order =  count,
-                display_order =  count + 1,
-            )
-            newmbfList.save()
-            count += 1
-            break
+                newmbfList = Music_by_feelingList.objects.create(
+                    # ユニークな値
+                    tracks = msc.tracks,
+                    artist = msc.artist,
+                    danceability = msc.danceability,
+                    energy = msc.energy,
+                    key = msc.key,
+                    loudness = msc.loudness,
+                    mode = msc.mode,
+                    speechiness = msc.speechiness,
+                    acousticness = msc.acousticness,
+                    instrumentalness = msc.instrumentalness,
+                    liveness = msc.liveness,
+                    valence = msc.valence,
+                    tempo = msc.tempo,
+                    type = msc.type,
+                    url =msc.url,
+                    track_id = msc.track_id,
+                    uri = msc.uri,
+                    track_href = msc.track_href,
+                    analysis_url = msc.analysis_url,
+                    duration_ms = msc.duration_ms,
+                    time_signature = msc.time_signature,
+                    artist_url = msc.artist_url,
+                    genres = msc.genres,
+                    popularity = msc.popularity,
+                    track_url =  msc.track_url,
+                    created_year =  msc.created_year,
+                    rank =  msc.rank,
+                    order =  count,
+                    display_order =  count + 1,
+                )
+                newmbfList.save()
+                newmbfh = Music_by_feeling_History.objects.create(
+                    # ユニークな値
+                    tracks = msc.tracks,
+                    artist = msc.artist,
+                    danceability = msc.danceability,
+                    energy = msc.energy,
+                    key = msc.key,
+                    loudness = msc.loudness,
+                    mode = msc.mode,
+                    speechiness = msc.speechiness,
+                    acousticness = msc.acousticness,
+                    instrumentalness = msc.instrumentalness,
+                    liveness = msc.liveness,
+                    valence = msc.valence,
+                    tempo = msc.tempo,
+                    type = msc.type,
+                    url =msc.url,
+                    track_id = msc.track_id,
+                    uri = msc.uri,
+                    track_href = msc.track_href,
+                    analysis_url = msc.analysis_url,
+                    duration_ms = msc.duration_ms,
+                    time_signature = msc.time_signature,
+                    artist_url = msc.artist_url,
+                    genres = msc.genres,
+                    popularity = msc.popularity,
+                    track_url =  msc.track_url,
+                    created_year =  msc.created_year,
+                    rank =  msc.rank,
+                    order =  count,
+                    display_order =  count + 1,
+                )
+                newmbfh.save()
+                count += 1
+                break
+    else:                                   #選択した曲数が0の時メッセージのみ表示
+        root = tk.Tk()
+        root.attributes('-topmost', True)
+        root.withdraw()
+        root.lift()
+        root.focus_force()
+        messagebox.showinfo('メッセージ','選択した内容にあう曲が見つかりませんでした。再度入力し直してください。')
+        root.destroy()
+
+
+    newmbfsh = Music_by_feeling_Selection_History.objects.create(
+        # ユニークな値
+        danceability = float(feeling_1),
+        energy = float(feeling_2),
+        artist = "津田梅子",
+        period = select_year,
+        genres = select_genre,
+        popularity = False,
+    )
+    newmbfsh.save()
+
 
     mbfl = Music_by_feelingList.objects.order_by('id')
     txt2 = {
         'mbfl':mbfl,
     }
     return render(request, 'music_by_feeling/spotifyLoad.html', txt2)
+    
 
 """ページ３"""
 '''
@@ -427,7 +511,7 @@ class LikeList(ListView):
     template_name="FavoriteMusicList_list.html"
 
 
-    
+
 
 def graph(request):
     #入力パート
