@@ -28,7 +28,7 @@
 
                 <li>
                   <label for="name">アーティスト名：</label>
-                  <input type="text" id="name" name="name" required minlength="4" maxlength="8" size="10">
+                  <input type="text" id="name" name="name" required minlength="1" maxlength="100" size="20">
                 </li><br>
 
 
@@ -75,7 +75,8 @@
             <div class="field">
               <input type="hidden" name="feeling_1" id="feeling_1">
               <input type="hidden" name="feeling_2" id="feeling_2">
-                <input type="hidden" name="select_year" id="select_year">
+                <input type="hidden" name="select_list" id="select_list">
+                <input type="hidden" name="select_list_1" id="select_list_1">
             </div>
             <input type="submit" onclick="select_year_reflect()" value="音楽を聴く">
         </form>
@@ -114,15 +115,18 @@
 <script>
 
     var elm1 = document.getElementById('jpop_hits_select');
-    var elm2 = document.getElementById('select_year');
+    var elm2 = document.getElementById('select_list');
+    var elm6 = document.getElementById('select_list_1');
 
     var elm3 = document.getElementById('genres-select');
+    var elm4 = document.getElementById('name');
+    var elm5 = document.getElementById('scales');
 
     var array = [];
     var num1;
     var num3;
-
-
+    //var num4;
+    //var num5;
 
     //追加
     let f1_1 = document.getElementById('select_feeling_1');
@@ -138,17 +142,44 @@
       //年代選択反映
       num1 = elm1.selectedIndex;
       num3 = elm3.selectedIndex;
+      //num4 = elm4.selectedIndex;
+      //console.log(1);
+      //await sleep(5000);
+      //num4 = elm4.get_attribute("value");
+
+      //num5 = elm5.is_selected();
+      //console.log(num4);
+      //console.log(num5);
 
       array.splice(0);//配列クリア
-      array.push(elm1.options[num1].value, elm3.options[num3].value);
+      //array.push(elm1.options[num1].value, elm3.options[num3].value);
+      //num4 = elm4.get_attribute("value");
+      //num5 = elm5.is_selected();
+
+      array.push(elm1.options[num1].value, elm3.options[num3].value, elm4.value, elm5.checked);
+      //array.push(elm1.options[num1].value, elm3.options[num3].value, elm5.options[num5].value);
 
       elm2.value = array;
 
+      //elm6.value = elm4.get_attribute("value");
+      //elm6.value = elm4.getAttribute("value");
+      //elm6.value = elm4.getAttribute('value');
+      //elm6.value = elm4.value;
+      //elm6.value = elm5.is_selected();
+      //elm6.value = elm5.checked;
 
       //
       f1_2.value = f1_1.value / 10;
       f2_2.value = f2_1.value / 10;
       console.log("f1_1:"+f1_1+", f1_2:"+f1_2.value);
+    }
+
+    function sleep(msec) {
+       return new Promise(function(resolve) {
+
+          setTimeout(function() {resolve()}, msec);
+
+       })
     }
 
 </script>

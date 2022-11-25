@@ -95,8 +95,6 @@ def playlist(request):
 
     url_0 = url[0]
 
-
-
     if request.method == 'POST':
         url1 = request.POST['url1']
         num = int(url1)
@@ -139,12 +137,6 @@ def playlist(request):
                     display_order =  cnt + 1,
                 )
 
-                ##追加
-                #arr.append([msc.danceability, msc.energy, msc.valence])
-
-
-
-
                 break
             cnt = cnt + 1
 
@@ -161,15 +153,13 @@ def spotifyLoad(request):
 
     select_year = ''
     if request.method == 'POST':
-        selects = request.POST['select_year']
+        selects = request.POST['select_list']
         select_list = selects.split(',')
         select_year = select_list[0]
+
         select_genre = select_list[1]
-        print(1)
-        print(request.POST['select_year'])
-        print(select_year)
-        print(select_genre)
-        print(2)
+        select_name = select_list[2]
+        select_scales = select_list[3]
 
         ##追加
         feeling_1 = request.POST['feeling_1']
@@ -181,6 +171,9 @@ def spotifyLoad(request):
     Music_by_feelingList.objects.all().delete() #?
     allMusics = AllMusic.objects.order_by('id')
 
+    #select_yearが選択なしの時はselect_year=0とする（select_yearは整数のため）
+    if select_year == "":
+        select_year = 0
 
     ##追加
     ##feeling_1 = ''
@@ -190,27 +183,45 @@ def spotifyLoad(request):
 
     arr = []#dancealibity, energy, uri, 指定した感情とのdistanceの4つが入った配列
 
-
     for msc in allMusics:
-#        s = select_year[0:len(select_year) - 1]#select_yearには"2022,"のように最後に","が入っているようなので","を除外する処理追加
+        flg = 0
+        if select_year == 0:
+            flg = 1
+        else:
+            if msc.created_year == int(select_year):
+                flg = 1
 
-#        if msc.created_year == int(s):
-#        if msc.created_year == select_year:
-#            arr.append([msc.energy, msc.danceability, msc.uri, 0])#distanceを0と置いて場所を作った
-        if msc.created_year == int(select_year):
-            genres_wk = msc.genres.strip()
-            genres_wk = genres_wk.replace('[', '')
-            genres_wk = genres_wk.replace(']', '')
-            genres_wk = genres_wk.replace("'", '')
-#            genres_wk = genres_wk.replace(' ', '')
-            genres_list = genres_wk.split(',')
-            genres_list = [s.strip() for s in genres_list]
+        if flg == 1:
+            flg1 = 0
+            if select_genre == "":
+                flg1 = 1
+            else:
+                genres_wk = msc.genres.strip()
+                genres_wk = genres_wk.replace('[', '')
+                genres_wk = genres_wk.replace(']', '')
+                genres_wk = genres_wk.replace("'", '')
+                genres_list = genres_wk.split(',')
+                genres_list = [s.strip() for s in genres_list]
 
-            for gnr in genres_list:
+                for gnr in genres_list:
+                    if gnr == select_genre:
+                        flg1 = 1
+            if flg1 == 1:
 
-                if gnr == select_genre:
-                    arr.append([msc.energy, msc.danceability, msc.uri, 0])#distanceを0と置いて場所を作った
+                flg2 = 0
+                if select_name != "":
+                    if msc.artist == select_name:
+                        flg2 = 1
+                else:
+                    flg2 = 1
 
+                if flg2 == 1:
+
+                    if select_scales == "true":
+                        if msc.popularity >= 60:
+                            arr.append([msc.energy, msc.danceability, msc.uri, 0])#distanceを0と置いて場所を作った
+                    else:
+                        arr.append([msc.energy, msc.danceability, msc.uri, 0])#distanceを0と置いて場所を作った
 
     point = np.array([float(feeling_1),float(feeling_2)])#指定した感情
 
@@ -218,12 +229,10 @@ def spotifyLoad(request):
         distance = np.linalg.norm(point-(daen[0],daen[1]))#二点間の距離
         arr[daen_i][3] = distance
 
-
     arr.sort(key = lambda x:x[3])#4番目の要素(distance)をキーにして小さい順に並べ替え
 
-
     #########################################
-    cnt = 5             #繰り返し回数5回
+    cnt = 10             #繰り返し回数10回
     print(101)
     if len(arr) >= 1:  #選曲した曲数が1以上の場合は実施（0の場合は何もせずメッセージ表示）
         print(102)
@@ -234,7 +243,8 @@ def spotifyLoad(request):
         for i in range(cnt):#繰り返す（5回または選曲数分）
           for msc in allMusics:
             if(arr[i][2] == msc.uri):
-                print(msc.energy,'----',msc.valence,'---', msc.danceability)
+                print('energy----valence---danceability---artist')
+                print(msc.energy,'----',msc.valence,'---', msc.danceability,'---', msc.artist)
 
                 newmbfList = Music_by_feelingList.objects.create(
                     # ユニークな値
@@ -313,25 +323,71 @@ def spotifyLoad(request):
         messagebox.showinfo('メッセージ','選択した内容にあう曲が見つかりませんでした。再度入力し直してください。')
         root.destroy()
 
-
     newmbfsh = Music_by_feeling_Selection_History.objects.create(
         # ユニークな値
         danceability = float(feeling_1),
         energy = float(feeling_2),
-        artist = "津田梅子",
+        artist = select_name,
         period = select_year,
         genres = select_genre,
-        popularity = False,
+        popularity = bool(select_scales),
     )
     newmbfsh.save()
 
+    output_filename = 'track_data.csv' #.csv形式で名前を入力
+
+    allMusics = Music_by_feelingList.objects.order_by('id')
+
+    track_df = pd.DataFrame(index=[],
+                            columns=['tracks', 'artist', 'danceability', 'energy',
+                            'key', 'loudness', 'mode', 'speechiness', 'acousticness',
+                            'instrumentalness', 'liveness', 'valence','tempo', 'type',
+                            'url', 'track_id', 'uri', 'track_href', 'analysis_url',
+                            'duration_ms', 'time_signature', 'artist_url', 'genres',
+                            'popularity', 'track_url', 'created_year', 'rank'])
+
+    for msc in allMusics:
+        #time.sleep(1) #1sec stop
+        track_df = track_df.append({
+
+            'tracks' : msc.tracks,
+            'artist' : msc.artist,
+            'danceability' : msc.danceability,
+            'energy' : msc.energy,
+            'key' : msc.key,
+            'loudness' : msc.loudness,
+            'mode' : msc.mode,
+            'speechiness' : msc.speechiness,
+            'acousticness' : msc.acousticness,
+            'instrumentalness' : msc.instrumentalness,
+            'liveness' : msc.liveness,
+            'valence' : msc.valence,
+            'tempo' : msc.tempo,
+            'type' : msc.type,
+            'url' : msc.url,
+            'track_id' : msc.track_id,
+            'uri' : msc.uri,
+            'track_href' : msc.track_href,
+            'analysis_url' : msc.analysis_url,
+            'duration_ms' : msc.duration_ms,
+            'time_signature' : msc.time_signature,
+            'artist_url' : msc.artist_url,
+            'genres' : msc.genres,
+            'popularity' : msc.popularity,
+            'track_url' : msc.track_url,
+            'created_year' : msc.created_year,
+            'rank' : msc.rank}, ignore_index=True)
+
+    track_df.to_csv(output_filename, encoding='utf-8') #csvファイル出力
+    with open(output_filename, 'a', newline='') as f:
+        writer = csv.writer(f)
 
     mbfl = Music_by_feelingList.objects.order_by('id')
     txt2 = {
         'mbfl':mbfl,
     }
     return render(request, 'music_by_feeling/spotifyLoad.html', txt2)
-    
+
 
 """ページ３"""
 '''
