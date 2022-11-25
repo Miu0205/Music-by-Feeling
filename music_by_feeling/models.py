@@ -149,7 +149,7 @@ class Music_by_feeling_Selection_History(models.Model):
     danceability = models.FloatField('踊りやすさ',blank=True, null=True,default=0.0)
     energy = models.FloatField('エネルギッシュ',blank=True, null=True,default=0.0)
     artist = models.CharField('アーティスト名', max_length=50, null=True)
-    period = models.IntegerField('年代',blank=True, null=True,default=0)
+    period = models.IntegerField('年代',blank=True, null=True,default=0)              #選択なしの時は0が入る
     genres = models.CharField('ジャンル', max_length=100, null=True)
     popularity = models.BooleanField('人気の曲から選ぶ',default=False, blank=True)
     date = models.DateTimeField('実施日',default=timezone.now)
