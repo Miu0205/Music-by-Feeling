@@ -1,5 +1,12 @@
 <!-- /music_by_feeling/templates/music_by_feeling/base.html -->
-
+<style>
+  body{
+    background-color: e1dcd9;
+  }
+  h2 {
+    color: 8f8681;
+  }
+</style>
 <!doctype html>
 <html>
     <head>
@@ -8,18 +15,12 @@
 
     </head>
     <body>
-        <a href="{% url 'music_by_feeling:index' %}">
-            <h2>Music By Feeling</h2>
-        </a>
+      <a href="{% url 'music_by_feeling:index' %}">
+          <h2>Music By Feeling</h2>
+      </a>
 
         {% block content %}
         {% endblock %}
-    
-        <br>
-        <a href="{% url 'music_by_feeling:music_list' %}">感情履歴</a><br>
-        <a href="{% url 'music_by_feeling:history_list' %}">音楽履歴</a><br>
-        <a href="{% url 'music_by_feeling:like_list' %}">お気に入り</a><br>
-        <br>
 
     </body>
 </html>

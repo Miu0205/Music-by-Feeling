@@ -1,8 +1,99 @@
-<!-- /music_by_feeling/templates/music_by_feeling/index.html -->
 
-{% extends 'music_by_feeling/base.html' %}
+{% load static %}
 
-{% block content %}
+<style>
+  body{
+    background-color: e1dcd9;
+  }
+  h2 {
+    color: 8f8681;
+  }
+
+  *,
+*:before,
+*:after {
+  -webkit-box-sizing: inherit;
+  box-sizing: inherit;
+}
+
+html {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  font-size: 62.5%;/*rem算出をしやすくするために*/
+}
+
+.btn,
+a.btn,
+button.btn {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.5;
+  position: relative;
+  display: inline-block;
+  padding: 1rem 4rem;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  text-align: center;
+  vertical-align: middle;
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  color: #a67f78;
+  border-radius: 0.5rem;
+}
+
+.center{
+  text-align:center;
+}
+
+  a.btn-flat {
+  overflow: hidden;
+  padding: 1.5rem 6rem;
+  color: #fff;
+  border-radius: 0;
+  background: #414143;
+
+}
+
+a.btn-flat span {
+  position: relative;
+}
+
+a.btn-flat:before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  content: '';
+  -webkit-transition: all .5s ease-in-out;
+  transition: all .5s ease-in-out;
+  -webkit-transform: translateX(-96%);
+  transform: translateX(-96%);
+  background: #a67f78;
+}
+
+a.btn-flat:hover:before {
+  -webkit-transform: translateX(0%);
+  transform: translateX(0%);
+}
+
+</style>
+
+<html>
+ <head>
+    <title>MUSIC_BY_FEELING</title>
+
+ </head>
+ <body>
+   <a href="{% url 'music_by_feeling:index' %}">
+       <h2><font size="6">Music By Feeling</font></h2>
+   </a>
+ {% block content %}
 
     {% for page3 in music_by_feeling %}
      {{feeling_1}}
@@ -13,12 +104,15 @@
             </form>
         </ul>
     {% endfor %}
+    <div class = "center">
+    <a href="{% url 'music_by_feeling:page3' %}" class="btn btn-flat"><span>音楽を聴く　</span></a>
+    <br><br>
+    <a href="{% url 'music_by_feeling:spotifyLoad' %}" class="btn btn-flat"><span>結果　　　　</span></a>
+    <br><br>
+    <a href="{% url 'music_by_feeling:maintenance' %}" class="btn btn-flat"><span>メンテナンス</span></a>
+    <br><br>
+    </div>
 
-    <a href="{% url 'music_by_feeling:page3' %}">音楽を聴く</a>
-    <br><br>
-    <a href="{% url 'music_by_feeling:spotifyLoad' %}">結果</a>
-    <br><br>
-    <a href="{% url 'music_by_feeling:maintenance' %}">メンテナンス</a>
-    <br><br>
-
-{% endblock %}
+ {% endblock %}
+ </body>
+</html>

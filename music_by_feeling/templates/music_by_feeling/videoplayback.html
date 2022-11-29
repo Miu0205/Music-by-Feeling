@@ -1,5 +1,11 @@
 {% load static %}
 <style>
+  body{
+    background-color: e1dcd9;
+  }
+  h2 {
+    color: 8f8681;
+  }
 .video-textarea-sidebyside{
       display: flex;                /*内部要素の横並び*/
       margin: 20px 20px 0 20px;     /*上、右、下、左*/
@@ -228,10 +234,10 @@ fieldset{
 
 <script>
     var count1 = 0;
-    var urlList = '{{ url | safe}}';
+    var urlList = {{ url | safe}};
     var storage = localStorage;
     var count = storage.Key;
-    var mbfCount = '{{ mbfCount | safe}}';
+    var mbfCount = {{ mbfCount | safe}};
 
     storage.UrlList = urlList;
 

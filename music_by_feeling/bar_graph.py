@@ -7,7 +7,7 @@ df_data = pd.read_csv('../zep_related_track.csv', encoding = 'utf-8')
 fig = plt.figure()
 ax = fig.add_subplot(111)
 plt.grid() #グリッド
-plot_data = 'danceability' #analysis target
+plot_data = 'tempo'#'danceability' #analysis target
 #plot_data = 'energy' #analysis target
 ax.hist([df_data[plot_data]],
         #bins=10, density=True, ec='black')

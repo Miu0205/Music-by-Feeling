@@ -10,6 +10,8 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import pandas as pd
 import csv
 
+from django.utils import timezone
+
 
 import numpy as np
 #from scipy.spatial.distance import pdist, squareform
@@ -160,13 +162,14 @@ def spotifyLoad(request):
     if request.method == 'POST':
         select_year = request.POST['select_year']
         if select_year == ',':
-            select_year = '2022,'
+
+            select_year = '9999,'
 
         ##追加
         feeling_1 = request.POST['feeling_1']
         feeling_2 = request.POST['feeling_2']
-    else:
-        select_year = '2022,'
+
+
 
     count = 0
     Music_by_feelingList.objects.all().delete() #?
@@ -176,17 +179,34 @@ def spotifyLoad(request):
     ##追加
     ##feeling_1 = ''
     ##feeling_2 = ''
-    Music.feeling_1 = feeling_1
-    Music.feeling_2 = feeling_2
+    date_f = timezone.now()
+    music_feeling = Music.objects.create(
+       user=request.user,
+       feeling_1 = feeling_1,
+       feeling_2 = feeling_2,
+       genre = request.POST['genres'],
+       era =select_year[0:len(select_year) - 1],
+       date = date_f,
+    )
+    music_feeling.save()
+
+
 
     arr = []#dancealibity, energy, uri, 指定した感情とのdistanceの4つが入った配列
+    temp_1 = 0
 
 
     for msc in allMusics:
         s = select_year[0:len(select_year) - 1]#select_yearには"2022,"のように最後に","が入っているようなので","を除外する処理追加
 
         if msc.created_year == int(s):
-            arr.append([msc.energy, msc.danceability, msc.uri, 0])#distanceを0と置いて場所を作った
+            arr.append([msc.energy*0.3, msc.danceability, msc.uri, 0])#distanceを0と置いて場所を作った
+            temp_1 =1
+
+    if(temp_1 == 0):
+        for msc in allMusics:
+            arr.append([msc.energy*0.3, msc.danceability, msc.uri, 0])
+    temp_1 =0
 
 
     point = np.array([float(feeling_1),float(feeling_2)])#指定した感情
@@ -198,51 +218,64 @@ def spotifyLoad(request):
 
     arr.sort(key = lambda x:x[3])#4番目の要素(distance)をキーにして小さい順に並べ替え
 
+    temp1 = 'abcdef'
+    temp2 = 0
 
-    for i in range(5):#5回繰り返す
-      for msc in allMusics:
-        if(arr[i][2] == msc.uri):
-            print(msc.energy,'----',msc.valence,'---', msc.danceability)
+    for i in range(10):#5回繰り返す
+        for msc in allMusics:
+            temp = arr[i][2]
+            if(arr[i][2] == msc.uri):
+                if(temp1!= 'abcdef' and temp1 ==arr[i][2]):
+                    break
+                temp1 = arr[i][2]
+                print(msc.energy,'----',msc.valence,'---', msc.danceability, 'tempo: ', msc.tempo, 'valenve:', msc.valence)
 
-            newmbfList = Music_by_feelingList.objects.create(
-                #ログイン中のユーザ情報の取得
-                user=request.user,
+                temp2 += 1
 
-                # ユニークな値
-                tracks = msc.tracks,
-                artist = msc.artist,
-                danceability = msc.danceability,
-                energy = msc.energy,
-                key = msc.key,
-                loudness = msc.loudness,
-                mode = msc.mode,
-                speechiness = msc.speechiness,
-                acousticness = msc.acousticness,
-                instrumentalness = msc.instrumentalness,
-                liveness = msc.liveness,
-                valence = msc.valence,
-                tempo = msc.tempo,
-                type = msc.type,
-                url =msc.url,
-                track_id = msc.track_id,
-                uri = msc.uri,
-                track_href = msc.track_href,
-                analysis_url = msc.analysis_url,
-                duration_ms = msc.duration_ms,
-                time_signature = msc.time_signature,
-                artist_url = msc.artist_url,
-                genres = msc.genres,
-                popularity = msc.popularity,
-                track_url =  msc.track_url,
-                created_year =  msc.created_year,
-                rank =  msc.rank,
-                order =  count,
-                display_order =  count + 1,
-            )
-            newmbfList.save()
-            count += 1
+                newmbfList = Music_by_feelingList.objects.create(
+                    #ログイン中のユーザ情報の取得
+                    user=request.user,
+
+                    # ユニークな値
+                    tracks = msc.tracks,
+                    artist = msc.artist,
+                    danceability = msc.danceability,
+                    energy = msc.energy,
+                    key = msc.key,
+                    loudness = msc.loudness,
+                    mode = msc.mode,
+                    speechiness = msc.speechiness,
+                    acousticness = msc.acousticness,
+                    instrumentalness = msc.instrumentalness,
+                    liveness = msc.liveness,
+                    valence = msc.valence,
+                    tempo = msc.tempo,
+                    type = msc.type,
+                    url =msc.url,
+                    track_id = msc.track_id,
+                    uri = msc.uri,
+                    track_href = msc.track_href,
+                    analysis_url = msc.analysis_url,
+                    duration_ms = msc.duration_ms,
+                    time_signature = msc.time_signature,
+                    artist_url = msc.artist_url,
+                    genres = msc.genres,
+                    popularity = msc.popularity,
+                    track_url =  msc.track_url,
+                    created_year =  msc.created_year,
+                    rank =  msc.rank,
+                    order =  count,
+                    display_order =  count + 1,
+                )
+                newmbfList.save()
+                count += 1
+                break
+        if(temp2 ==5):
             break
 
+
+    temp1 = 0
+    temp2 = 0
     mbfl = Music_by_feelingList.objects.order_by('id')
     txt2 = {
         'mbfl':mbfl,
@@ -327,8 +360,25 @@ def maintenance(request):
             result = spotify.user_playlist('Madoka Sota','6uszFyxWd5Jt3z0lTZG3AO?si=1c68012b5f094018')#'JPOP Hits 2021のplaylist'
         elif select_year == '2020':
             result = spotify.user_playlist('Madoka Sota','19pd98k52F2lQYnwvyWIRy?si=128dd502b1a14b70')#'JPOP Hits 2020のplaylist'
+
+        elif select_year == '2010':
+            result = spotify.user_playlist('Madoka Sota','5GPeulW5qPJ48iXHGWiVyM')#2010年代ヒットリスト
+        elif select_year == '11111':
+            result = spotify.user_playlist('Madoka Sota','4pXAr4qIBBEgMOQ95myqwc')#kpop 人気曲　１００曲
+        elif select_year == '1990':
+            result = spotify.user_playlist('Madoka Sota', '7IGNg8tfbTYKZYkz4ti0sB?utm_source=generator')#JPOP 90年代
+        elif select_year == '2000':
+            result = spotify.user_playlist('Madoka Sota', '4zgLoxulQZBRCsFwUCnyhe?utm_source=generator')#JPOP 2000年代
+
+        elif select_year == '10000':
+            result = spotify.user_playlist('Madoka Sota', '37i9dQZF1DWT8aqnwgRt92?utm_source=generator')#アニメ 75曲
+
+
         else:
             result = spotify.user_playlist('Madoka Sota','7GkvWsIFKewgwTDPBZgpt3')#'JPOP Hits 2022のplaylist'
+            print(AllMusic.objects.distinct().query)
+
+            AllMusic.objects.order_by('url').distinct().values_list('url')#重複をクリアする操作
 
         list_data = result['tracks']
         urls_list =[]
@@ -372,6 +422,8 @@ def maintenance(request):
             results.append(spotify.artist(artist_url[i])),
 
             #追加
+
+            '''
             newMusic = AllMusic.objects.create(
              # ユニークな値
               tracks = track_data['name'],
@@ -402,7 +454,7 @@ def maintenance(request):
               created_year = select_year,
               rank = i + 1,
             )
-            newMusic.save()
+            newMusic.save()'''
 
     txt = {
 
@@ -427,7 +479,7 @@ class LikeList(ListView):
     template_name="FavoriteMusicList_list.html"
 
 
-    
+
 
 def graph(request):
     #入力パート
