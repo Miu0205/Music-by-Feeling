@@ -653,58 +653,38 @@ def graph(request):
 
 
 #新規登録
-class  SignUpView(TemplateView):
-
-    def __init__(self):
-        self.params = {
+def Signup(request):
+    params = {
         "AccountCreate":False,
-        "account_form": AccountForm(),
+        "account_form":AccountForm(),
         "add_account_form":AddAccountForm(),
-        }
+    }
 
-    #Get処理
-    def get(self,request):
-        self.params["account_form"] = AccountForm()
-        self.params["add_account_form"] = AddAccountForm()
-        self.params["AccountCreate"] = False
-        return render(request,"music_by_feeling/signup.html",context=self.params)
+    if request.method == 'POST':
+        params["account_form"] = AccountForm(request.POST)
+        params["add_account_form"] = AddAccountForm(request.POST)
 
-    #Post処理
-    def post(self,request):
-        self.params["account_form"] = AccountForm(data=request.POST)
-        self.params["add_account_form"] = AddAccountForm(data=request.POST)
-
-        #フォーム入力の有効検証
-        if self.params["account_form"].is_valid() and self.params["add_account_form"].is_valid():
-            # アカウント情報をDB保存
-            account = self.params["account_form"].save()
-            # パスワードをハッシュ化
+        if params["account_form"].is_valid() and params["add_account_form"].is_valid():
+            account = params["account_form"].save()
             account.set_password(account.password)
-            # ハッシュ化パスワード更新
             account.save()
 
-            # 下記追加情報
-            # 下記操作のため、コミットなし
-            add_account = self.params["add_account_form"].save(commit=False)
-            # AccountForm & AddAccountForm 1vs1 紐付け
+            add_account = params["add_account_form"].save(commit=False)
             add_account.user = account
-
-            # モデル保存
+            
             add_account.save()
-
-            # アカウント作成情報更新
-            self.params["AccountCreate"] = True
-
-            login(request,account)
-            return redirect('login')
-
+            
+            params["AccountCreate"] = True        
         else:
-            # フォームが有効でない場合
-            print(self.params["account_form"].errors)
+            print(params["account_form"].errors)
+            return render(request, 'music_by_feeling/signup.html', context=params)
+        
+    return render(request, 'music_by_feeling/signin.html', params)
 
-            return render(request,"music_by_feeling/signup.html",context=self.params)
-
-def login(request):
+def signin(request):
+    return render(request, 'music_by_feeling/signin.html', {})
+    
+def Login(request):
     if request.method == "POST":
         ID = request.POST.get('userid')
         Pass = request.POST.get('password')
@@ -717,25 +697,26 @@ def login(request):
                 # ログイン
                 login(request,user)
                 # ホームページ遷移
-                return HttpResponseRedirect(reverse('home'))
+                return render(request, 'music_by_feeling/index.html')
             else:
                 # アカウント利用不可
-                return HttpResponse("アカウントが有効ではありません")
+                context = {
+                    'etext':"アカウントが有効ではありません",
+                }
+                return render(request, 'music_by_feeling/e-text-login.html', context)
         # ユーザー認証失敗
         else:
-            return HttpResponse("ログインIDまたはパスワードが間違っています")
+            context = {
+                    'etext':"ログインIDまたはパスワードが間違っています",
+                }
+            return render(request, 'music_by_feeling/e-text-login.html', context)
     # GET
     else:
         return render(request, "music_by_feeling/login.html")
 
 
 @login_required
-def logout(request):
+def Logout(request):
     logout(request)
     # ログイン画面遷移
-    return HttpResponseRedirect(reverse('Login'))
-'''
-def feeling(request,pk):
-    feel=get_object_or_404(spotifyLoad, pk=pk)
-    return render(request, 'music_by_feeling/feeling.html', {spotifyLoad: spotifyLoad})
-'''
+    return render(request, 'music_by_feeling/login.html')

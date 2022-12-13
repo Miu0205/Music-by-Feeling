@@ -18,12 +18,13 @@ urlpatterns = [
 
         path('page3/', views.music_render, name='page3'),  # ３
 
-        path('music_list/',views.MusicList.as_view(), name='music_list'),
-        path('FavoriteMusicList_list/',views.LikeList.as_view(), name='like_list'),
-        path('History_list/',views.HistoryList.as_view(), name='history_list'),
+        #path('FavoriteMusicList_list/',views.LikeList.as_view(), name='like_list'),
+        path('History_list/',views.HistoryList, name='history_list'),
 
-        #spath('signup', views.SignUpView.as_view(), name="signup"),
-        #path('logout',views.logout, name="logout"),
+        path('login/',views.Login, name='login'),
+        path('signup/', views.Signup, name="signup"),
+        path('signin/', views.signin, name='signin'),
+        path('logout/',views.Logout, name="logout"),
 
 
 ]

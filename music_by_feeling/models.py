@@ -294,4 +294,4 @@ class Account(models.Model):
     sex=models.CharField(max_length=3,default='',choices=sex_category,blank=True)
 
     def __str__(self):
-        return self.user.username
+        return str(self.user)

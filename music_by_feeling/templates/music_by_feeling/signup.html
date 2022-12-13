@@ -1,0 +1,44 @@
+{% extends 'music_by_feeling/base.html' %}
+{% block content %}
+
+    <!--<form action='{% url "music_by_feeling:signup" %}' enctype="multipart/form-data" method="post" autocomplete="off"></form>-->
+    <form action='{% url "music_by_feeling:signup" %}' enctype="multipart/form-data" method="post">
+
+        {% csrf_token %}
+        <h1>新規登録</h1>
+
+        <div class="reg">
+            {{ form.non_field_errors }}
+            <table class="reg_form">
+
+                <tr>
+                    <td>{{ account_form.username.label }}</td>
+                    <td>{{ account_form.username }}</td>
+                    {{ account_form.username.errors }}
+                </tr>
+                <tr>
+                    <td>{{ account_form.email.label }}</td>
+                    <td>{{ account_form.email }}</td>
+                    {{ account_form.email.errors }}
+                </tr>
+                <tr>
+                    <td>{{ account_form.password.label }}</td>
+                    <td>{{ account_form.password }}</td>
+                    {{ account_form.password.errors }}
+                </tr>
+                <tr>
+                    <td>{{ add_account_form.age.label }}</td>
+                    <td>{{ add_account_form.age }}</td>
+                    {{ add_account_form.age.errors }}
+                </tr>
+                <tr>
+                    <td>{{ add_account_form.sex.label }}</td>
+                    <td>{{ add_account_form.sex }}</td>
+                    {{ add_account_form.sex.errors }}
+                </tr>
+            </table>
+
+        </div>
+        <input type="submit" value="登録">
+    </form>
+{% endblock %}
