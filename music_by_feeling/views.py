@@ -10,7 +10,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import pandas as pd
 import csv
 
-
+from django.utils import timezone
 import numpy as np
 #from scipy.spatial.distance import pdist, squareform
 
@@ -166,6 +166,8 @@ def spotifyLoad(request):
         feeling_2 = request.POST['feeling_2']
     else:
         select_year = '2022'
+        feeling_1 = request.POST['feeling_1']
+        feeling_2 = request.POST['feeling_2']
 
     count = 0
     Music_by_feelingList.objects.all().delete() #?
@@ -178,8 +180,18 @@ def spotifyLoad(request):
     ##追加
     ##feeling_1 = ''
     ##feeling_2 = ''
-    Music.feeling_1 = feeling_1
-    Music.feeling_2 = feeling_2
+
+    date_f = timezone.now()
+    music_feeling = Music.objects.create(
+       user=request.user,
+       feeling_1 = feeling_1,
+       feeling_2 = feeling_2,
+       #genre = request.POST['genre'],
+       #era =select_year[0:len(select_year) - 1],
+       date = date_f,
+    )
+    music_feeling.save()
+
 
     arr = []#dancealibity, energy, uri, 指定した感情とのdistanceの4つが入った配列
 
@@ -467,8 +479,22 @@ def maintenance(request):
             result = spotify.user_playlist('Madoka Sota','6uszFyxWd5Jt3z0lTZG3AO?si=1c68012b5f094018')#'JPOP Hits 2021のplaylist'
         elif select_year == '2020':
             result = spotify.user_playlist('Madoka Sota','19pd98k52F2lQYnwvyWIRy?si=128dd502b1a14b70')#'JPOP Hits 2020のplaylist'
+
+        elif select_year == '2010':
+            result = spotify.user_playlist('Madoka Sota','5GPeulW5qPJ48iXHGWiVyM')#2010年代ヒットリスト
+        elif select_year == '11111':
+            result = spotify.user_playlist('Madoka Sota','4pXAr4qIBBEgMOQ95myqwc')#kpop 人気曲　１００曲
+        elif select_year == '1990':
+            result = spotify.user_playlist('Madoka Sota', '7IGNg8tfbTYKZYkz4ti0sB?utm_source=generator')#JPOP 90年代
+        elif select_year == '2000':
+            result = spotify.user_playlist('Madoka Sota', '4zgLoxulQZBRCsFwUCnyhe?utm_source=generator')#JPOP 2000年代
+
+        elif select_year == '10000':
+            result = spotify.user_playlist('Madoka Sota', '37i9dQZF1DWT8aqnwgRt92?utm_source=generator')#アニメ 75曲
+
         else:
             result = spotify.user_playlist('Madoka Sota','7GkvWsIFKewgwTDPBZgpt3')#'JPOP Hits 2022のplaylist'
+            AllMusic.objects.order_by('url').distinct().values_list('url')#重複をクリアする操作
 
         list_data = result['tracks']
         urls_list =[]

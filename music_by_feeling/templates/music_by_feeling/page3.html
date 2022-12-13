@@ -1,7 +1,78 @@
 <!-- /music_by_feeling/templates/music_by_feeling/page3.html
 メイン画面：曲を聴くボタンを押すと4にpage4に飛ぶ
 過去に聞いた曲などの閲覧機能（？）-->
+{% load static %}
+<style>
+  body{
+    background-color: e1dcd9;
+  }
+  h2 {
+    color: 8f8681;
+  }
 
+  .center{
+    text-align:center;
+  }
+  *,
+*:before,
+*:after {
+  -webkit-box-sizing: inherit;
+  box-sizing: inherit;
+}
+
+html {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  font-size: 62.5%;/*rem算出をしやすくするために*/
+}
+
+.btn,
+a.btn,
+button.btn {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.5;
+  position: relative;
+  display: inline-block;
+  padding: 1rem 4rem;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  text-align: center;
+  vertical-align: middle;
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  color: #212529;
+  border-radius: 0.5rem;
+}
+
+.center{
+  text-align:center;
+}
+
+a.btn-border {
+  border: 2px solid #000;
+  border-radius: 0;
+  background: #fff;
+}
+
+a.btn-border:hover {
+  color: #fff;
+  background: #000;
+}
+
+li{
+  font-size: 1.5rem;
+}
+
+
+
+
+</style>
 <!doctype html>
 <html>
     <head>
@@ -10,15 +81,18 @@
 
     </head>
     <body>
+      <a href="{% url 'music_by_feeling:index' %}">
+          <h2><font size="6">Music By Feeling</font></h2>
+      </a>
 
         <ul>
             <br>
                 <li><div>
                   <label for="scales">なりたい気分を選択</label>
                   <br><br>
-                  <p>悲<input type="range" min="0" max="10" value="5" id="select_feeling_1">楽</p>
+                  <p><font size="5">悲<input type="range" min="0" max="10" value="5" id="select_feeling_1">楽</p>
 
-                  <p>落<input type="range" min="0" max="10" value="5" id="select_feeling_2">アクティブ</p>
+                  <p><font size="5">落<input type="range" min="0" max="10" value="5" id="select_feeling_2">アクティブ</p>
 
 
 <br><br>
@@ -51,6 +125,9 @@
                     <option value="2022">2022年</option>
                     <option value="2021">2021年</option>
                     <option value="2020">2020年</option>
+                    <option value="2010">2010年</option>
+                    <option value="2000">2000年</option>
+                    <option value="1990">1990年</option>
                   </select></li>
 
 
@@ -87,20 +164,9 @@
         <a href="{% url 'music_by_feeling:index' %}">
           <button type="button">メインページに戻る</button></a>
 
-    <br><br>音楽リスト
-<br>
-    {% for music in music_list %}
-    ＊
-
-    悲・楽(1~10)：{{ music.feeling_1}}<br>
-    落・アクティブ(1~10)：{{ music.feeling_2}}<br>
-    アーティスト名：{{ music.artist}}<br>
-    ジャンル：{{ music.genre}}<br>
-    年代：{{ music.era}}<br>
-    有名：{{music.famous}}<br><br>
 
 
-    {% endfor %}
+    
 
 
 
