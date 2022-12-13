@@ -1,0 +1,22 @@
+{% extends 'music_by_feeling/base.html' %}
+{% block content %}
+    <div>
+        <form action="{% url 'music_by_feeling:login' %}" method="POST">
+            {% csrf_token %}
+          
+            <table class="reg_form">
+                <tr>
+                    <td><label for="userid">ユーザーID:</label></td>
+                    <td><input type="text" name="userid"></td>
+                </tr>
+                <br>
+                <tr>
+                    <td><label for="password">パスワード：</label></td>
+                    <td><input type="password" name="password"></td>
+                </tr>
+            </table>
+
+            <input type="submit" value="ログイン">
+        </form>
+    </div>
+{% endblock %}
