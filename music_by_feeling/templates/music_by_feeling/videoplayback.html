@@ -168,10 +168,14 @@ fieldset{
           </div>
         </div>
 
+        <!--
         <button type="button" class="btn btn-warning" onclick="video_play()">再生</button>
         <button type="button" class="btn btn-warning" onclick="video_pause()">停止</button>
+      -->
+
         <button type="button" class="btn btn-warning" onclick="video_next(1)">次へ</button>
         <button type="button" class="btn btn-warning" onclick="video_back()">戻る</button>
+        <!--
         <button type="button" class="btn btn-warning" onclick="video_mute()">ミュート</button>
         <button type="button" class="btn btn-warning" onClick="upVolume()">↑</button>
         <button type="button" class="btn btn-warning" onClick="downVolume()">↓</button>
@@ -186,15 +190,25 @@ fieldset{
             <option value="1">一回ずつ</option>
             <option value="2">リピート</option>
         </select>
-
         <button type="button" class="btn btn-warning" onclick="music_favorite()">お気に入り</button>
+-->
+        <button type="button" class="btn btn-warning" onclick="feedback()">評価</button>
 
+        <!--コメント追加要素
+        <form method="post">
+            {% csrf_token %}
+            <div class="field">
+                <input type="hidden" name="url2" id="url2">
+            </div>
+            <input type="submit" onclick="feedback()" value="評価">
+        </form>
+-->
         <form action="{% url 'music_by_feeling:playlist' %}" method="post">
             {% csrf_token %}
             <div class="field">
                 <input type="hidden" name="url1" id="url1">
             </div>
-            <input type="submit" onclick="music_favorite()" value="保存">
+            <input type="submit" onclick="music_favorite()" value="お気に入り">
         </form>
 
         <!--コメント追加要素-->
@@ -232,15 +246,24 @@ fieldset{
     var storage = localStorage;
     var count = storage.Key;
     var mbfCount = {{ mbfCount | safe}}; //エラー？
+    var myWindow
 
     storage.UrlList = urlList;
 
     var elm1 = document.getElementById('url1');
     elm1.value = count;
 
+    var elm2 = document.getElementById('url2');
+    elm2.value = count;
+
     if(storage.Key != 0){
       var tag = document.getElementsByTagName("iframe")[0];
       tag.src = urlList[storage.Key];
+    }
+
+    function feedback() {
+      myWindow = window.open("{% url 'music_by_feeling:feedback' %}","myWindow","fullscreen=yes");
+      storage.Key1 = count;
     }
 
     function video_play() {
