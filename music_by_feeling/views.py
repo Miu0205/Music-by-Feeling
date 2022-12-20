@@ -83,16 +83,20 @@ def videoplayback(request):
 
 def playlist(request):
 
-    favoriteMusicList = FavoriteMusicList.objects.order_by('id')
-    music_by_feelingList = Music_by_feelingList.objects.order_by('id')
-
+    favoriteMusicList = FavoriteMusicList.objects.filter(user=request.user).order_by('id','user')
+    music_by_feelingList = Music_by_feelingList.objects.order_by('id','user')
+    
     url = []
     name1 = []
 
-    for msc in music_by_feelingList:
-        name1.append( msc.tracks),
-        url.append('https://open.spotify.com/embed/track/' + msc.track_id),
+    for mbl in music_by_feelingList:
+        name1.append( mbl.tracks),
+        url.append('https://open.spotify.com/embed/track/' + mbl.track_id),
 
+    if favoriteMusicList.first() is None:
+        return render(request, 'music_by_feeling/playlist_null.html')
+        
+    
     url_0 = url[0]
 
     if request.method == 'POST':
@@ -148,6 +152,9 @@ def playlist(request):
         'url_0':url_0,
     }
     return render(request, 'music_by_feeling/playlist.html', txt)
+
+def playlistNull(request):
+    return render(request, 'music_by_feeling/playlist_null.html')
 
 def spotifyLoad(request):
 
@@ -576,23 +583,86 @@ def maintenance(request):
 
     return render(request, 'music_by_feeling/maintenance.html', txt)
 
+def HistoryList(request):
 
-class MusicList(ListView):
-    model=Music
-    context_object_name="music_list"
-    template_name="music_list.html"
+    #favoriteMusicList = FavoriteMusicList.objects.order_by('id')
+    HistoryList=History.objects.filter(user=request.user).order_by('id','user')
 
-class HistoryList(ListView):
-    model=History
-    context_object_name="history_list"
-    template_name="History_list.html"
+    url = []
+    name1 = []
 
-class LikeList(ListView):
-    model=FavoriteMusicList
-    context_object_name="fm_list"
-    template_name="FavoriteMusicList_list.html"
+    for hl in HistoryList:
+        name1.append( hl.tracks),
+        url.append('https://open.spotify.com/embed/track/' + hl.track_id),
+        
+    if not url:
+        return render(request, 'music_by_feeling/History_null.html')
+    url_0 = url[0]
 
 
+
+    if request.method == 'POST':
+        url1 = request.POST['url1']
+        num = int(url1)
+        cnt = 0
+        for hl in HistoryList:
+            if cnt == num:
+
+                newhlList = HistoryList.objects.create(
+                    #ログイン中のユーザ情報の取得
+                    user=request.user,
+
+                    tracks = hl.tracks,
+                    artist = hl.artist,
+                    danceability = hl.danceability,
+                    energy = hl.energy,
+                    key = hl.key,
+                    loudness = hl.loudness,
+                    mode = hl.mode,
+                    speechiness = hl.speechiness,
+                    acousticness = hl.acousticness,
+                    instrumentalness = hl.instrumentalness,
+                    liveness = hl.liveness,
+                    valence = hl.valence,
+                    tempo = hl.tempo,
+                    type = hl.type,
+                    url = hl.url,
+                    track_id = hl.track_id,
+                    uri = hl.uri,
+                    track_href = hl.track_href,
+                    analysis_url = hl.analysis_url,
+                    duration_ms = hl.duration_ms,
+                    time_signature = hl.time_signature,
+                    artist_url = hl.artist_url,
+                    genres = hl.genres,
+                    popularity = hl.popularity,
+                    track_url =  hl.track_url,
+                    created_year =  hl.created_year,
+                    rank =  hl.rank,
+                    order =  cnt,
+                    display_order =  cnt + 1,
+                )
+
+                ##追加
+                #arr.append([msc.danceability, msc.energy, msc.valence])
+
+
+
+
+                break
+            cnt = cnt + 1
+
+        newhlList.save()
+
+    txt = {
+        'hlList':HistoryList,
+        'url':url,
+        'url_0':url_0,
+    }
+    return render(request, 'music_by_feeling/History_list.html', txt)
+
+def historyNull(request):
+    return render(request, 'music_by_feeling/History_null.html')
 
 
 def graph(request):
@@ -651,6 +721,18 @@ def graph(request):
 
     return render(request, 'music_by_feeling/maintenance.html', txt)
 
+class MusicList(ListView):
+    context_object_name="music_list"
+    template_name="music_list.html"
+    model=Music
+    def get_queryset(self):
+        return Music.objects.filter(user=self.request.user.id)
+
+'''
+def MusicList(request):
+    music_list=Music.objects.filter(user=request.user).order_by('date')
+    return render(request, 'music_by_feeling/music_list.html', {'music_list': music_list})
+'''
 
 #新規登録
 def Signup(request):
@@ -679,10 +761,7 @@ def Signup(request):
             print(params["account_form"].errors)
             return render(request, 'music_by_feeling/signup.html', context=params)
         
-    return render(request, 'music_by_feeling/signin.html', params)
-
-def signin(request):
-    return render(request, 'music_by_feeling/signin.html', {})
+    return render(request, 'music_by_feeling/signup.html', context=params)
     
 def Login(request):
     if request.method == "POST":

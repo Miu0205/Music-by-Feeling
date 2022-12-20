@@ -1,29 +1,38 @@
 {% extends 'music_by_feeling/base.html' %}
 {% block content %}
+
 <html>
-<h2>履歴一覧</h2>
-    <div class="mbf">
-        <table border="1">
-                <tr>
-                    <th>曲名</th>
-                    <th>アーティスト名</th>
-                </tr>
-                {% for his in history_list %}
-                <tr>
-                    <td><a href="javascript:playVideo({{his.order}})">0{{his.display_order}} {{his.tracks}}</td>
-                    <td>{{ his.artist }}</td>
-                </tr>
-                {% endfor %}
-        </table>
-    </div>
+    <head>
+        <title>MUSIC_BY_FEELING</title>
+    </head>
+    <body>
+        <div class="title-button-sidebyside">
+            <a href="{% url 'music_by_feeling:videoplayback' %}">
+                <div class="class1">
+                    <img src="/static/images/icon_close.png" width="48" height="43">
+                </div>
+            </a>
+        </div>
+        <iframe style="border-radius:12px" src={{ url_0 }} width="750" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <h4>履歴</h4>
+            {% for hl in hlList %}
+                <a href="javascript:playVideo('{{hl.track_url}}')">{{hl.tracks}}</a><br>
+            {% endfor %}
+    </body>
 </html>
 
 <script>
-    // オーディオタグの取得
-    function playVideo(num) {
-        var storage = localStorage;
-            storage.Key = num;
-        window.location.href = "{% url 'music_by_feeling:videoplayback' %}";
-    }
+  var storage = localStorage;
+  var urlList = {{ url | safe}};
+
+  if(storage.Key1 != 0){
+    var tag = document.getElementsByTagName("iframe")[0];
+    tag.src = urlList[storage.Key1];
+  }
+  function playVideo(url1) {
+      var tag = document.getElementsByTagName("iframe")[0];
+      tag.src = url1;
+  }
 </script>
+
 {% endblock %}

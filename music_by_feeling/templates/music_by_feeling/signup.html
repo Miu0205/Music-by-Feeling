@@ -1,6 +1,14 @@
 {% extends 'music_by_feeling/base.html' %}
 {% block content %}
 
+{% if AccountCreate %}
+    <h1>登録完了!</h1>
+    <a href="{% url 'music_by_feeling:index' %}">トップへ</a>
+    <br>
+    <a href="{% url 'music_by_feeling:login' %}">ログイン</a>
+
+{% else %}
+
     <!--<form action='{% url "music_by_feeling:signup" %}' enctype="multipart/form-data" method="post" autocomplete="off"></form>-->
     <form action='{% url "music_by_feeling:signup" %}' enctype="multipart/form-data" method="post">
 
@@ -41,4 +49,7 @@
         </div>
         <input type="submit" value="登録">
     </form>
+
+{% endif %}
+
 {% endblock %}
