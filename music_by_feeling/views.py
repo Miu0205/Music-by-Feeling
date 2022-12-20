@@ -135,6 +135,10 @@ def playlist(request):
                     rank =  msc.rank,
                     order =  cnt,
                     display_order =  cnt + 1,
+                    dance_up =  msc.dance_up,
+                    dance_down =  msc.dance_down,
+                    energy_up =  msc.energy_up,
+                    energy_down =  msc.energy_down,
                 )
 
                 break
@@ -228,12 +232,33 @@ def spotifyLoad(request):
                     flg2 = 1
 
                 if flg2 == 1:
-
+                    #元のままのenergy,danceabilityに、評価されたup,down分を反映して調整したenergy,danceabilityを作成
+                    adjustEnergy = msc.energy + (msc.energy_up - msc.energy_down) * 0.05
+                    adjustDanceability = msc.danceability + (msc.dance_up - msc.dance_down) * 0.05
                     if select_scales == "true":
                         if msc.popularity >= 60:
-                            arr.append([msc.energy, msc.danceability, msc.uri, 0])#distanceを0と置いて場所を作った
+#                            arr.append([msc.energy, msc.danceability, msc.uri, 0])
+                            flg3 = 0
+                            for arr_m in arr:
+#                                print("msc.uri=",msc.uri,"arr_m[2]=",arr_m[2])
+                                if msc.uri == arr_m[2]:
+#                                    print("#########msc.uri= ",msc.tracks," ",msc.uri," ","##########arr_m[2]=",arr_m[2])
+                                    flg3 = 1
+                                    break
+                            if flg3 == 0:
+#                                print("#########msc.uri= ",msc.tracks," ",msc.uri," ","##########arr_m[2]=",arr_m[2])
+                                arr.append([adjustEnergy, adjustDanceability, msc.uri, 0])#distanceを0と置いて場所を作った
                     else:
-                        arr.append([msc.energy, msc.danceability, msc.uri, 0])#distanceを0と置いて場所を作った
+#                        arr.append([msc.energy, msc.danceability, msc.uri, 0])
+                        flg3 = 0
+                        for arr_m in arr:
+                            if msc.uri == arr_m[2]:
+#                                print("#########msc.uri=",msc.tracks," ",msc.uri," ","##########arr_m[2]=",arr_m[2])
+                                flg3 = 1
+                                break
+                        if flg3 == 0:
+#                            print("#########msc.uri= ",msc.tracks," ",msc.uri," ","##########arr_m[2]=",arr_m[2])
+                            arr.append([adjustEnergy, adjustDanceability, msc.uri, 0])#distanceを0と置いて場所を作った
 
     point = np.array([float(feeling_1),float(feeling_2)])#指定した感情
 
@@ -289,6 +314,10 @@ def spotifyLoad(request):
                     rank =  msc.rank,
                     order =  count,
                     display_order =  count + 1,
+                    dance_up =  msc.dance_up,
+                    dance_down =  msc.dance_down,
+                    energy_up =  msc.energy_up,
+                    energy_down =  msc.energy_down,
                 )
                 newmbfList.save()
                 newmbfh = Music_by_feeling_History.objects.create(
@@ -322,6 +351,10 @@ def spotifyLoad(request):
                     rank =  msc.rank,
                     order =  count,
                     display_order =  count + 1,
+                    dance_up =  msc.dance_up,
+                    dance_down =  msc.dance_down,
+                    energy_up =  msc.energy_up,
+                    energy_down =  msc.energy_down,
                 )
                 newmbfh.save()
                 count += 1
@@ -400,6 +433,132 @@ def spotifyLoad(request):
     }
     return render(request, 'music_by_feeling/spotifyLoad.html', txt2)
 
+def feedback(request):
+
+    allMusics = AllMusic.objects.order_by('id')
+    favoriteMusicList = FavoriteMusicList.objects.order_by('id')
+    music_by_feelingList = Music_by_feelingList.objects.order_by('id')
+    music_by_feeling_History = Music_by_feeling_History.objects.order_by('id')
+
+    if request.method == 'POST':
+#        url2 = request.POST['url2']
+#        num = int(url2)
+        cnt = 0
+        selects = request.POST['select_feedback2']
+        select_feedback = selects.split(',')
+
+        print(1000)
+        print(selects)
+        print(select_feedback[0])
+        print(select_feedback[1])
+        print(select_feedback[2])
+        print(select_feedback[3])
+        print(select_feedback[4])
+        print(select_feedback[5])
+        print(select_feedback[6])
+        print(select_feedback[7])
+        print(select_feedback[8])
+        print(1001)
+
+        #0-3:システムの評価、4-7:曲の評価、8:music_by_feelingList内での今回聞いた曲順
+        select_feedback_1 = select_feedback[0]
+        select_feedback_2 = select_feedback[1]
+        select_feedback_3 = select_feedback[2]
+        select_feedback_4 = select_feedback[3]
+        select_feedback_5 = select_feedback[4]
+        select_feedback_6 = select_feedback[5]
+        select_feedback_7 = select_feedback[6]
+        select_feedback_8 = select_feedback[7]
+        select_feedback_9 = int(select_feedback[8])
+        print(select_feedback[0])
+        print(select_feedback[1])
+        print(select_feedback[2])
+        print(select_feedback[3])
+        print(select_feedback[4])
+        print(select_feedback[5])
+        print(select_feedback[6])
+        print(select_feedback[7])
+        print(select_feedback_9)
+        print(10)
+        #music_by_feelingListに選曲された曲の何番目かをチェック、一致した曲の要素変更
+        for msc in music_by_feelingList:
+            if cnt == select_feedback_9:
+                if select_feedback_5 == "true":
+                    msc.dance_down += 1
+                    print(11)
+                elif select_feedback_6 == "true":
+                    msc.dance_up += 1
+                    print(12)
+                if select_feedback_7 == "true":
+                    msc.energy_down += 1
+                    print(13)
+                elif select_feedback_8 == "true":
+                    msc.energy_up += 1
+                    print(14)
+                msc.save()
+                break
+            cnt += 1
+        #music_by_feelingList側で一致した曲とアーティスト名、曲名が一致した曲は同じ曲と判断
+        for msc2 in allMusics:
+            print(999)
+            if msc2.artist == msc.artist:
+                if msc2.tracks == msc.tracks:
+                    print(msc2.danceability)
+                    print(msc2.energy)
+                    print(msc2.tracks)
+
+                    if select_feedback_5 == "true":
+                        msc2.dance_down += 1
+                    elif select_feedback_6 == "true":
+                        msc2.dance_up += 1
+                    if select_feedback_7 == "true":
+                        msc2.energy_down += 1
+                    elif select_feedback_8 == "true":
+                        msc2.energy_up += 1
+                    msc2.save()
+        #music_by_feelingList側で一致した曲とアーティスト名、曲名が一致した曲は同じ曲と判断
+        for msc3 in favoriteMusicList:
+            print(999)
+            if msc3.artist == msc.artist:
+                if msc3.tracks == msc.tracks:
+                    print(msc3.danceability)
+                    print(msc3.energy)
+                    print(msc3.tracks)
+
+                    if select_feedback_5 == "true":
+                        msc3.dance_down += 1
+                    elif select_feedback_6 == "true":
+                        msc3.dance_up += 1
+                    if select_feedback_7 == "true":
+                        msc3.energy_down += 1
+                    elif select_feedback_8 == "true":
+                        msc3.energy_up += 1
+                    msc3.save()
+        #music_by_feelingList側で一致した曲とアーティスト名、曲名が一致した曲は同じ曲と判断
+        for msc4 in music_by_feeling_History:
+            if msc4.artist == msc.artist:
+                if msc4.tracks == msc.tracks:
+                    print(msc4.danceability)
+                    print(msc4.energy)
+                    print(msc4.tracks)
+
+                    if select_feedback_5 == "true":
+                        msc4.dance_down += 1
+                    elif select_feedback_6 == "true":
+                        msc4.dance_up += 1
+                    if select_feedback_7 == "true":
+                        msc4.energy_down += 1
+                    elif select_feedback_8 == "true":
+                        msc4.energy_up += 1
+                    msc4.save()
+
+
+    txt = {
+        #'fmList':favoriteMusicList,
+        #'url':url,
+        #'url_0':url_0,
+    }
+    return render(request, 'music_by_feeling/feedback.html', txt)
 
 """ページ３"""
 '''
@@ -671,19 +830,19 @@ def Signup(request):
 
             add_account = params["add_account_form"].save(commit=False)
             add_account.user = account
-            
+
             add_account.save()
-            
-            params["AccountCreate"] = True        
+
+            params["AccountCreate"] = True
         else:
             print(params["account_form"].errors)
             return render(request, 'music_by_feeling/signup.html', context=params)
-        
+
     return render(request, 'music_by_feeling/signin.html', params)
 
 def signin(request):
     return render(request, 'music_by_feeling/signin.html', {})
-    
+
 def Login(request):
     if request.method == "POST":
         ID = request.POST.get('userid')
