@@ -2,7 +2,7 @@
 {% block content %}
 <h2>感情一覧</h2>
         <div class="music">
-            <table border="1">
+                <table border="1">
                     <tr>
                         <!--Feeling1-->
                         <th>楽しい度</th>
@@ -12,6 +12,7 @@
                         <th>ジャンル</th>
                         <th>年代</th>
                         <th>人気</th>
+                        <th>日付</th>
                     </tr>
                     {% for music in music_list %}
                     <tr>
@@ -21,8 +22,12 @@
                         <td>{{ music.genre }}</td>
                         <td>{{ music.era }}</td>
                         <td>{{ music.famous }}</td>
+                        <td><a href="{% url 'music_by_feeling:page3' %}">{{ music.date }}</a></td>
                     </tr>
+                    {% empty %}
+                        <a href="{% url 'music_by_feeling:page3' %}">感情入力履歴がありません。気分を入力しよう！</a>
                     {% endfor %}
-            </table>
+                </table>
+                
         </div>
 {% endblock %}

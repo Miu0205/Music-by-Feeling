@@ -63,7 +63,7 @@
     // オーディオタグの取得
     function playVideo(num) {
         var storage = localStorage;
-            storage.Key = num;
+        storage.Key = num;
         window.location.href = "{% url 'music_by_feeling:videoplayback' %}";
     }
 </script>

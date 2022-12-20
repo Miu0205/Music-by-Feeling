@@ -195,19 +195,6 @@ class FavoriteMusicList(models.Model):
     def __str__(self):
         return self.tracks
 
-    '''
-    name = models.CharField('名前', max_length=50)
-    genres = models.CharField('ジャンル', max_length=50, null=True)
-    images = models.CharField('イメージ', max_length=50, null=True)
-    popularity = models.IntegerField('人気度',blank=True, null=True,default=1)
-    external_urls = models.CharField('外部URL', max_length=50, null=True)
-    uri = models.CharField('URI', max_length=50, null=True)
-    result1 = models.CharField('結果1', max_length=50, null=True)
-
-    def __str__(self):
-        return self.name
-    '''
-
 class Music(models.Model):
 
     # ユーザー(ユーザー名、パスワード、メールアドレス）
@@ -216,27 +203,20 @@ class Music(models.Model):
     feeling_1 = models.CharField(max_length=10, default='5')
     feeling_2 = models.CharField(max_length=10, default='5')
     artist = models.CharField(max_length=20,default='5',blank=True, null=True)
-
-
     genre = models.CharField(
-
          max_length=10,
          default='',
          blank=True,
          null=True
          )
-
     era = models.CharField(
          '年代',
          max_length=5,
          default='',
-
-
          blank=True,
          null=True
          )
     date = models.DateTimeField('日付', null=True)
-
     famous = models.BooleanField(default=False, blank=True, null=True)
     """time = models.DateTimeField(default=timezone.now)"""
 
