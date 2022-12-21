@@ -12,6 +12,7 @@ urlpatterns = [
         path('music_by_feeling/<str:category>/', views.music_by_feeling_category, name='music_by_feeling_category'),  # ←カテゴリ
         path('videoplayback', views.videoplayback, name='videoplayback'),    # ←追加
         path('spotifyLoad', views.spotifyLoad, name='spotifyLoad'),    # ←追加
+        path('feedback', views.feedback, name='feedback'),    # ←追加
         path('maintenance', views.maintenance, name='maintenance'),    # ←追加
         path('graph', views.graph, name='graph'),    # ←追加
 

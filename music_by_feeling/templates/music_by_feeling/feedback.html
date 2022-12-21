@@ -1,0 +1,242 @@
+{% load static %}
+<style>
+body{
+    background-image: url(/static/images/1.jpg);
+}
+.class1 {
+  position: absolute;
+  top: 30px;
+  left: 750px;
+}
+.title-button-sidebyside{
+      display: flex;                /*内部要素の横並び*/
+      margin: 0px 20px 0 20px;     /*上、右、下、左*/
+}
+</style>
+
+<html>
+    <head>
+        <title>MUSIC_BY_FEELING</title>
+    </head>
+    <body>
+      <!--
+        <div class="title-button-sidebyside">
+            <a href="{% url 'music_by_feeling:index' %}">
+                <h2><font size="6">Music By Feeling</font></h2>
+            </a>
+            <button type="button" class="btn btn-warning" onclick="winClose()">
+                <div class="class1">
+                    <img src="/static/images/icon_close.png" width="48" height="43">
+                </div>
+            </button>
+        </div>
+        -->
+        <!--<iframe style="border-radius:12px" src={{ url_0 }} width="750" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+        <h4>feedback</h4>
+            {% for fml in fmList %}
+                <a href="javascript:playVideo('{{fml.track_url}}')">{{fml.tracks}}</a><br>
+            {% endfor %}
+          -->
+        <div>
+          <h4>feedback</h4>
+        </div>
+<!--
+        <div>
+        <label><input type="checkbox" name="check" class="check" value="チェック１">チェック1</label>
+        <label><input type="checkbox" name="check" class="check" value="チェック2">チェック2</label>
+        <label><input type="checkbox" name="check" class="check" value="チェック3">チェック3</label>
+        </div>
+
+        <div>
+          どのような気分だったか　
+          <input type="checkbox" id="scales_1">
+          <label for="scales">悲</label>
+          <input type="checkbox" id="scales_2">
+          <label for="scales">楽</label>
+        </div>
+        <div>
+          どのような気分になったか
+          <input type="checkbox" id="scales_3">
+          <label for="scales">悲</label>
+          <input type="checkbox" id="scales_4">
+          <label for="scales">楽</label>
+        </div>
+        <div>
+          この曲の評価（踊りやすさ）
+          <input type="checkbox" id="scales_5">
+          <label for="scales">悲</label>
+          <input type="checkbox" id="scales_6">
+          <label for="scales">楽</label>
+        </div>
+        <div>
+          この曲の評価（エネルギッシュ）
+          <input type="checkbox" id="scales_7">
+          <label for="scales">落</label>
+          <input type="checkbox" id="scales_8">
+          <label for="scales">アクティブ</label>
+        </div>
+-->
+        <!--ラジオボタンのnameを同じにすることでペアと認識-->
+        <div>
+          どのような気分だったか<br>
+          <input type="radio" name="radio_feeling_before" id="scales_1">
+          <label for="scales_1">悲</label>
+          <input type="radio" name="radio_feeling_before" id="scales_2">
+          <label for="scales_2">楽</label>
+        </div>
+        <div>
+          どのような気分になったか<br>
+          <input type="radio" name="radio_feeling_after" id="scales_3">
+          <label for="scales_3">悲</label>
+          <input type="radio" name="radio_feeling_after" id="scales_4">
+          <label for="scales_4">楽</label>
+        </div>
+        <div>
+          この曲の評価（踊りやすさ）<br>
+          <input type="radio" name="radio_dance" id="scales_5">
+          <label for="scales_5">落</label>
+          <input type="radio" name="radio_dance" id="scales_6">
+          <label for="scales_6">アクティブ</label>
+        </div>
+        <div>
+          この曲の評価（エネルギッシュ）<br>
+          <input type="radio" name="radio_energy" id="scales_7">
+          <label for="scales_7">悲</label>
+          <input type="radio" name="radio_energy" id="scales_8">
+          <label for="scales_8">楽</label>
+        </div>
+
+        <div>
+          <div class="feedback-btn">
+              <form method="POST" action="{% url 'music_by_feeling:feedback' %}">
+                  {% csrf_token %}
+                  <div class="field">
+                      <input type="hidden" id="scales_1">
+                      <input type="hidden" id="scales_2">
+                      <input type="hidden" id="scales_3">
+                      <input type="hidden" id="scales_4">
+                      <input type="hidden" id="scales_5">
+                      <input type="hidden" id="scales_6">
+                      <input type="hidden" id="scales_7">
+                      <input type="hidden" id="scales_8">
+
+                      <input type="hidden" name="select_feedback" id="select_feedback">
+                  </div>
+<!--                  <button type="button" class="btn btn-warning" onclick="winClose()">決定</button>-->
+              </form>
+          </div>
+
+          <form action="{% url 'music_by_feeling:feedback' %}" method="post">
+              {% csrf_token %}
+              <div class="field">
+                  <input type="hidden" name="select_feedback2" id="select_feedback2">
+              </div>
+              <input type="submit" onclick="select_reflect()" value="決定">
+          </form>
+<!--
+          <form action="{% url 'music_by_feeling:feedback' %}" method="post">
+              {% csrf_token %}
+
+              <p>どのような気分だったか<br>
+            		<input type="radio" id="scales_1" value="はじめて">悲
+                <input type="radio" id="scales_2" value="３回以上">楽
+                <p>どのような気分になったか<br>
+                <input type="radio" id="scales_3" value="はじめて">悲
+            		<input type="radio" id="scales_4" value="３回以上">楽
+            	</p>
+            	<p>この曲の評価（踊りやすさ）<br>
+            		<input type="radio" id="scales_5" value="はじめて">悲
+                <input type="radio" id="scales_6" value="３回以上">楽
+                <p>この曲の評価（踊りやすさ）<br>
+                <input type="radio" id="scales_7" value="はじめて">悲
+            		<input type="radio" id="scales_8" value="３回以上">楽
+            	</p>
+
+              <div class="field">
+                  <input type="hidden" name="select_feedback2" id="select_feedback2">
+              </div>
+              <input type="submit" onclick="select_reflect()" value="決定">
+          </form>
+
+
+          <form action="radio.php" method="post">
+          	<p>お名前（必須）：<br>
+          	<input type="text" name="name"></p>
+          	<p>メールアドレス：<br>
+          	<input type="text" name="mail"></p>
+          	<p>お問い合わせは？<br>
+          		<input type="radio" name="num_of_inq" value="はじめて">はじめて
+          		<input type="radio" name="num_of_inq" value="２回目">２回目
+          		<input type="radio" name="num_of_inq" value="３回以上">３回以上
+          	</p>
+          </form>
+-->
+
+      </body>
+  </html>
+
+<script>
+  /*var storage = localStorage;
+  var urlList = '{{ url | safe}}';*/
+  var storage = localStorage;
+  var count = storage.Key;
+
+  var myWindow;
+  var elm1 = document.getElementById('scales_1');
+  var elm2 = document.getElementById('scales_2');
+  var elm3 = document.getElementById('scales_3');
+  var elm4 = document.getElementById('scales_4');
+  var elm5 = document.getElementById('scales_5');
+  var elm6 = document.getElementById('scales_6');
+  var elm7 = document.getElementById('scales_7');
+  var elm8 = document.getElementById('scales_8');
+
+  var elm9 = document.getElementById('select_feedback');
+  var array = [];
+
+  console.log(count);
+
+  /*if(storage.Key1 != 0){
+    var tag = document.getElementsByTagName("iframe")[0];
+    tag.src = urlList[storage.Key1];
+  }
+  function playVideo(url1) {
+      var tag = document.getElementsByTagName("iframe")[0];
+      tag.src = url1;
+  }*/
+  function winClose() {
+//      myWindow = window.close();
+      array.splice(0);//配列クリア
+      array.push(elm1.checked, elm2.checked, elm3.checked, elm4.checked);
+      elm5.value = array;
+  }
+
+
+  var elm12 = document.getElementById('select_feedback2');
+  var num1;
+
+  function select_reflect() {
+    //年代選択反映
+//    bool = elm1.checked;
+//    elm12.value = bool;
+//      myWindow = window.close();
+    console.log(count);
+    console.log(elm1.checked);
+    array.splice(0);//配列クリア
+    array.push(elm1.checked, elm2.checked, elm3.checked, elm4.checked, elm5.checked, elm6.checked, elm7.checked, elm8.checked, count);
+//    array.push("elm1.checked", "elm2.checked", "elm3.checked", "elm4.checked", count);
+    elm12.value = array;
+  }
+
+/*
+  (function(){
+    $('.check').on('click', function() {
+      if ($(this).prop('checked')){
+        // 一旦全てをクリアして再チェックする
+        $('.check').prop('checked', false);
+        $(this).prop('checked', true);
+      }
+    });
+  });*/
+</script>

@@ -55,6 +55,10 @@ class AllMusic(models.Model):
     track_url = models.CharField('track_url', max_length=100, null=True)
     created_year = models.IntegerField('年',blank=True, null=True,default=0)
     rank = models.IntegerField('順位',blank=True, null=True,default=0)
+    dance_up = models.IntegerField('踊りやすさアップ',blank=True, null=True,default=0)           #danceabilityの"楽"クリック数
+    dance_down = models.IntegerField('踊りやすさダウン',blank=True, null=True,default=0)         #danceabilityの"悲"クリック数
+    energy_up = models.IntegerField('エネルギッシュアップ',blank=True, null=True,default=0)       #energyの"アクティブ"クリック数
+    energy_down = models.IntegerField('エネルギッシュダウン',blank=True, null=True,default=0)     #energyの"落"クリック数
 
     def __str__(self):
         return self.tracks
@@ -106,6 +110,10 @@ class Music_by_feelingList(models.Model):
     rank = models.IntegerField('順位',blank=True, null=True,default=0)
     order = models.IntegerField('通し番号',blank=True, null=True,default=0)
     display_order = models.IntegerField('表示番号',blank=True, null=True,default=0)
+    dance_up = models.IntegerField('踊りやすさアップ',blank=True, null=True,default=0)           #danceabilityの"楽"クリック数
+    dance_down = models.IntegerField('踊りやすさダウン',blank=True, null=True,default=0)         #danceabilityの"悲"クリック数
+    energy_up = models.IntegerField('エネルギッシュアップ',blank=True, null=True,default=0)       #energyの"アクティブ"クリック数
+    energy_down = models.IntegerField('エネルギッシュダウン',blank=True, null=True,default=0)     #energyの"落"クリック数
 
     def __str__(self):
         return self.tracks
@@ -141,6 +149,10 @@ class Music_by_feeling_History(models.Model):
     rank = models.IntegerField('順位',blank=True, null=True,default=0)
     order = models.IntegerField('通し番号',blank=True, null=True,default=0)
     display_order = models.IntegerField('表示番号',blank=True, null=True,default=0)
+    dance_up = models.IntegerField('踊りやすさアップ',blank=True, null=True,default=0)           #danceabilityの"楽"クリック数
+    dance_down = models.IntegerField('踊りやすさダウン',blank=True, null=True,default=0)         #danceabilityの"悲"クリック数
+    energy_up = models.IntegerField('エネルギッシュアップ',blank=True, null=True,default=0)       #energyの"アクティブ"クリック数
+    energy_down = models.IntegerField('エネルギッシュダウン',blank=True, null=True,default=0)     #energyの"落"クリック数
 
     def __str__(self):
         return self.tracks
@@ -155,7 +167,7 @@ class Music_by_feeling_Selection_History(models.Model):
     date = models.DateTimeField('実施日',default=timezone.now)
 
     def __str__(self):
-        return self.artist
+        return self.date.strftime("%Y/%m/%d %H:%M:%S")
 
 class FavoriteMusicList(models.Model):
     #ユーザー
@@ -191,6 +203,10 @@ class FavoriteMusicList(models.Model):
     rank = models.IntegerField('順位',blank=True, null=True,default=0)
     order = models.IntegerField('通し番号',blank=True, null=True,default=0)
     display_order = models.IntegerField('表示番号',blank=True, null=True,default=0)
+    dance_up = models.IntegerField('踊りやすさアップ',blank=True, null=True,default=0)           #danceabilityの"楽"クリック数
+    dance_down = models.IntegerField('踊りやすさダウン',blank=True, null=True,default=0)         #danceabilityの"悲"クリック数
+    energy_up = models.IntegerField('エネルギッシュアップ',blank=True, null=True,default=0)       #energyの"アクティブ"クリック数
+    energy_down = models.IntegerField('エネルギッシュダウン',blank=True, null=True,default=0)     #energyの"落"クリック数
 
     def __str__(self):
         return self.tracks
