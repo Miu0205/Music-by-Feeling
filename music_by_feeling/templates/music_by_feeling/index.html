@@ -113,6 +113,23 @@ a.btn-flat:hover:before {
     <br><br>
     </div>
 
+    <br>
+        <p>------------------------------------------------------</p>
+        {% if user.id  %}
+            <p>こんにちは{{ user.username }}さん</p>
+            <a href="{% url 'music_by_feeling:logout' %}">ログアウト</a><br>
+        {% else %}
+            <a href="{% url 'music_by_feeling:login' %}">ログインはこちら</a><br>
+            <a href="{% url 'music_by_feeling:signup' %}">新規登録</a><br>
+        {% endif %}
+        <p>------------------------------------------------------</p>
+        {% if user.id  %}
+            <a href="{% url 'music_by_feeling:history_list' %}">音楽履歴</a><br>
+            <a href="{% url 'music_by_feeling:playlist' %}">お気に入り</a><br>
+            <a href="{% url 'music_by_feeling:music_list' %}">感情履歴</a><br>
+        {% endif %}
+    <br>
+
  {% endblock %}
  </body>
 </html>

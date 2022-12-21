@@ -37,12 +37,27 @@
             {% for fml in fmList %}
                 <a href="javascript:playVideo('{{fml.track_url}}')">{{fml.tracks}}</a><br>
             {% endfor %}
+          <br>
+          <p>------------------------------------------------------</p>
+          {% if user.id  %}
+              <p>こんにちは{{ user.username }}さん</p>
+              <a href="{% url 'music_by_feeling:logout' %}">ログアウト</a><br>
+          {% else %}
+              <a href="{% url 'music_by_feeling:login' %}">ログインはこちら</a><br>
+              <a href="{% url 'music_by_feeling:signup' %}">新規登録</a><br>
+          {% endif %}
+          <p>------------------------------------------------------</p>
+          {% if user.id  %}
+              <a href="{% url 'music_by_feeling:history_list' %}">音楽履歴</a><br>
+              <a href="{% url 'music_by_feeling:playlist' %}">お気に入り</a><br>
+          {% endif %}
+          <br>
       </body>
   </html>
 
 <script>
   var storage = localStorage;
-  var urlList = '{{ url | safe}}';
+  var urlList = {{ url | safe}};
 
   if(storage.Key1 != 0){
     var tag = document.getElementsByTagName("iframe")[0];
