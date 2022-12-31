@@ -85,13 +85,16 @@ a.btn-flat:hover:before {
 
 <html>
  <head>
-    <title>MUSIC_BY_FEELING</title>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width">
+     <title>MUSIC_BY_FEELING</title>
 
  </head>
  <body>
    <a href="{% url 'music_by_feeling:index' %}">
        <h2><font size="6">Music By Feeling</font></h2>
    </a>
+   <br><br>
  {% block content %}
 
     {% for page3 in music_by_feeling %}
@@ -109,8 +112,10 @@ a.btn-flat:hover:before {
     <!--スライドショー
 <a href="{% url 'music_by_feeling:spotifyLoad' %}" class="btn btn-flat"><span>結果　　　　</span></a>
     <br><br>-->
+<!--
     <a href="{% url 'music_by_feeling:maintenance' %}" class="btn btn-flat"><span>メンテナンス</span></a>
-    <br><br>
+-->
+    <br><br><br><br>
     </div>
 
     <br>

@@ -8,6 +8,9 @@
       display: flex;                /*内部要素の横並び*/
       margin: 0px 20px 0 20px;     /*上、右、下、左*/
 }
+.video-textarea-sidebyside3{
+      display: flex;                /*内部要素の横並び*/
+}
 
 .background{
       /*margin: 0 0 0 0;  */   /*上、右、下、左*/
@@ -45,6 +48,8 @@ fieldset{
       height: 380px;
       width: 300px;
       overflow-y: scroll;
+      position: relative;
+      left: 30;
 }
 
 /*伸縮するテキストエリア*/
@@ -111,13 +116,57 @@ fieldset{
     padding: 300px;
 }
 
+.Video{
+  /*text-align: center;*/
+  position: relative;
+  /*text-align: center;*/
+  left: 11.5px;
+}
+/*btn btn-warning*/
+
+.btn--warning,
+a.btn--warning {
+  color: #fff;
+  background-color: #AFDFE4;
+  border-radius: 100vh;
+  border-bottom: 3px solid #000;
+}
+.btn--warning:hover,
+a.btn--warning:hover {
+  color: #fff;
+  background: #AFDFE4;
+  border-bottom: 2px solid #000;
+}
+a.btn--circle {
+  border-radius: 50%;
+  line-height: 100px;
+  width: 100px;
+  height: 100px;
+  padding: 0;
+}
+
+.btn--warning1,
+a.btn--warning1 {
+  color: #000;
+  background-color: #AFDFE4;
+  border-radius: 100vh;
+  border-bottom: 3px solid #000;
+}
+.btn--warning1:hover,
+a.btn--warning1:hover {
+  color: #000;
+  background: #AFDFE4;
+  border-bottom: 2px solid #000;
+}
 
 </style>
 
 <html>
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
         <title>MUSIC_BY_FEELING</title>
-        <!--<link rel="stylesheet" href="/static/css/style.css">-->
+        <link rel="stylesheet" href="/static/css/style.css">
     </head>
 <body>
 
@@ -125,15 +174,16 @@ fieldset{
       <!--スライドショー-->
     <aside id="mainimg">
         <img src="/static/images/1.jpg" alt="" class="slide0">
-        <!--<img src="/static/images/1.jpg" alt="" class="slide1">
+        <img src="/static/images/1.jpg" alt="" class="slide1">
         <img src="/static/images/2.jpg" alt="" class="slide2">
         <img src="/static/images/3.jpg" alt="" class="slide3">
-        <img src="/static/images/123_kazari.png" alt="" class="slide7">
-        <img src="/static/images/4.jpg" alt="" class="slide4">
+        <!--<img src="/static/images/123_kazari.png" alt="" class="slide7">-->
+        <img src="/static/images/123_kazari.png" alt="" class="kazari">-->
+        <!--<img src="/static/images/4.jpg" alt="" class="slide4">
         <img src="/static/images/5.jpg" alt="" class="slide5">
         <img src="/static/images/6.jpg" alt="" class="slide6">
-        <img src="/static/images/456_kazari.png" alt="" class="slide8">
-    </aside>-->
+        <img src="/static/images/456_kazari.png" alt="" class="slide8">-->
+    </aside>
 </header>
 
   <div class="background-kazari">
@@ -150,9 +200,11 @@ fieldset{
 
         <div class="video float-right">
           <div class="d-grid gap-2 mx-auto">
-            <div class="video-textarea-sidebyside">
+            <!--<div class="video-textarea-sidebyside">-->
+            <div class="Video">
               <iframe style="border-radius:12px" src={{ url_0 }} width="750" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-              <div class="video-textarea-sidebyside1"></div>
+            </div>
+              <!--<div class="video-textarea-sidebyside1"></div>
                 <div id="wrapper">
                   <fieldset>
                         {% for comment in commentsmodel %}
@@ -164,7 +216,7 @@ fieldset{
                         {% endfor %}
                   </fieldset>
                 </div>
-            </div>
+            </div>-->
           </div>
         </div>
 
@@ -172,9 +224,10 @@ fieldset{
         <button type="button" class="btn btn-warning" onclick="video_play()">再生</button>
         <button type="button" class="btn btn-warning" onclick="video_pause()">停止</button>
       -->
+      <div class="video-textarea-sidebyside3">
 
-        <button type="button" class="btn btn-warning" onclick="video_next(1)">次へ</button>
-        <button type="button" class="btn btn-warning" onclick="video_back()">戻る</button>
+        <button type="button" class="btn btn--warning btn--circle btn--circle-a" onclick="video_next(1)"><img width="20" src="/static/images/icon_jump1.png"></button>
+        <button type="button" class="btn btn--warning btn--circle btn--circle-a" onclick="video_back()"><img width="20" src="/static/images/icon_jump2.png"></button>
         <!--
         <button type="button" class="btn btn-warning" onclick="video_mute()">ミュート</button>
         <button type="button" class="btn btn-warning" onClick="upVolume()">↑</button>
@@ -192,9 +245,8 @@ fieldset{
         </select>
         <button type="button" class="btn btn-warning" onclick="music_favorite()">お気に入り</button>
 -->
-        <button type="button" class="btn btn-warning" onclick="feedback()">評価</button>
-
-        <!--コメント追加要素
+        <button type="button" class="btn btn--warning1" onclick="feedback()">評価</button>
+<!--
         <form method="post">
             {% csrf_token %}
             <div class="field">
@@ -208,8 +260,13 @@ fieldset{
             <div class="field">
                 <input type="hidden" name="url1" id="url1">
             </div>
-            <input type="submit" onclick="music_favorite()" value="お気に入り">
+            <input type="submit" class="btn btn--warning1" onclick="music_favorite()" value="お気に入り">
         </form>
+      </div>
+
+        <a href="{% url 'music_by_feeling:playlist' %}">
+            <h3>お気に入りリスト</h3>
+        </a>
 
         <!--コメント追加要素-->
         <div data-gb-custom-block data-tag="block"></div>
@@ -222,7 +279,7 @@ fieldset{
                 </div>
             </form>
 
-        <label for="FlexTextarea">コメント</label>
+        <!--<label for="FlexTextarea">コメント</label>
         <div class="video-textarea-sidebyside">
             <div class="FlexTextarea">
                 <div class="FlexTextarea__dummy" aria-hidden="true"></div>
@@ -231,11 +288,22 @@ fieldset{
             <div class="comment-textarea-sidebyside">
                 <button type="submit" class="save btn btn-default">送信</button>
             </div>
+        </div>-->
+
+        <br>
+
+        <div id="wrapper">
+          <fieldset>
+                {% for comment in commentsmodel %}
+                <hr>
+                {{ comment.author }}
+                {{ comment.created_date }}<br>
+                {{ comment.text }}<br>
+                <hr>
+                {% endfor %}
+          </fieldset>
         </div>
 
-        <a href="{% url 'music_by_feeling:playlist' %}">
-            <h3>リスト</h3>
-        </a>
         </div>
     </body>
 </html>
@@ -253,8 +321,8 @@ fieldset{
     var elm1 = document.getElementById('url1');
     elm1.value = count;
 
-    var elm2 = document.getElementById('url2');
-    elm2.value = count;
+//    var elm2 = document.getElementById('url2');
+//    elm2.value = count;
 
     if(storage.Key != 0){
       var tag = document.getElementsByTagName("iframe")[0];

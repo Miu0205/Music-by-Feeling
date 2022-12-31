@@ -59,6 +59,7 @@ class AllMusic(models.Model):
     dance_down = models.IntegerField('踊りやすさダウン',blank=True, null=True,default=0)         #danceabilityの"悲"クリック数
     energy_up = models.IntegerField('エネルギッシュアップ',blank=True, null=True,default=0)       #energyの"アクティブ"クリック数
     energy_down = models.IntegerField('エネルギッシュダウン',blank=True, null=True,default=0)     #energyの"落"クリック数
+    image_url = models.CharField('イメージURL', max_length=100, null=True)                      #イメージ画像URL
 
     def __str__(self):
         return self.tracks
@@ -114,6 +115,7 @@ class Music_by_feelingList(models.Model):
     dance_down = models.IntegerField('踊りやすさダウン',blank=True, null=True,default=0)         #danceabilityの"悲"クリック数
     energy_up = models.IntegerField('エネルギッシュアップ',blank=True, null=True,default=0)       #energyの"アクティブ"クリック数
     energy_down = models.IntegerField('エネルギッシュダウン',blank=True, null=True,default=0)     #energyの"落"クリック数
+    image_url = models.CharField('イメージURL', max_length=100, null=True)                      #イメージ画像URL
 
     def __str__(self):
         return self.tracks
@@ -153,6 +155,7 @@ class Music_by_feeling_History(models.Model):
     dance_down = models.IntegerField('踊りやすさダウン',blank=True, null=True,default=0)         #danceabilityの"悲"クリック数
     energy_up = models.IntegerField('エネルギッシュアップ',blank=True, null=True,default=0)       #energyの"アクティブ"クリック数
     energy_down = models.IntegerField('エネルギッシュダウン',blank=True, null=True,default=0)     #energyの"落"クリック数
+    image_url = models.CharField('イメージURL', max_length=100, null=True)                      #イメージ画像URL
 
     def __str__(self):
         return self.tracks
@@ -207,6 +210,7 @@ class FavoriteMusicList(models.Model):
     dance_down = models.IntegerField('踊りやすさダウン',blank=True, null=True,default=0)         #danceabilityの"悲"クリック数
     energy_up = models.IntegerField('エネルギッシュアップ',blank=True, null=True,default=0)       #energyの"アクティブ"クリック数
     energy_down = models.IntegerField('エネルギッシュダウン',blank=True, null=True,default=0)     #energyの"落"クリック数
+    image_url = models.CharField('イメージURL', max_length=100, null=True)                      #イメージ画像URL
 
     def __str__(self):
         return self.tracks
@@ -273,6 +277,11 @@ class History(models.Model):
     rank = models.IntegerField('順位',blank=True, null=True,default=0)
     order = models.IntegerField('通し番号',blank=True, null=True,default=0)
     display_order = models.IntegerField('表示番号',blank=True, null=True,default=0)
+    dance_up = models.IntegerField('踊りやすさアップ',blank=True, null=True,default=0)           #danceabilityの"楽"クリック数
+    dance_down = models.IntegerField('踊りやすさダウン',blank=True, null=True,default=0)         #danceabilityの"悲"クリック数
+    energy_up = models.IntegerField('エネルギッシュアップ',blank=True, null=True,default=0)       #energyの"アクティブ"クリック数
+    energy_down = models.IntegerField('エネルギッシュダウン',blank=True, null=True,default=0)     #energyの"落"クリック数
+    image_url = models.CharField('イメージURL', max_length=100, null=True)                      #イメージ画像URL
 
     def __str__(self):
         return self.tracks
