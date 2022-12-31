@@ -49,12 +49,74 @@ def music_by_feeling_category(request, category):
 def videoplayback(request):
     music_by_feelings = Music_by_feeling.objects.order_by('title')
     commentsmodel = Comment.objects.order_by('created_date')
+    music_by_feelingList = Music_by_feelingList.objects.order_by('id')
+    print("request.method=",request.method)
+    print("request.POST=",request.POST)
+#    print("select_music_button=",select_music_button)
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
             comment.save()
             return redirect('music_by_feeling:videoplayback')
+
+        #再生用選択曲をHistoryへ追加
+#        if 'select_music_button' in request.POST.keys() == True:
+        select_music_button = request.POST['select_music_button']
+        print("select_music_button=",select_music_button)
+
+        num = int(select_music_button)
+        for msc in music_by_feelingList:
+            if msc.display_order == num:
+
+                newHistory = History.objects.create(
+                    #ログイン中のユーザ情報の取得
+                    user=request.user,
+
+                    tracks = msc.tracks,
+                    artist = msc.artist,
+                    danceability = msc.danceability,
+                    energy = msc.energy,
+                    key = msc.key,
+                    loudness = msc.loudness,
+                    mode = msc.mode,
+                    speechiness = msc.speechiness,
+                    acousticness = msc.acousticness,
+                    instrumentalness = msc.instrumentalness,
+                    liveness = msc.liveness,
+                    valence = msc.valence,
+                    tempo = msc.tempo,
+                    type = msc.type,
+                    url =msc.url,
+                    track_id = msc.track_id,
+                    uri = msc.uri,
+                    track_href = msc.track_href,
+                    analysis_url = msc.analysis_url,
+                    duration_ms = msc.duration_ms,
+                    time_signature = msc.time_signature,
+                    artist_url = msc.artist_url,
+                    genres = msc.genres,
+                    popularity = msc.popularity,
+                    track_url =  msc.track_url,
+                    created_year =  msc.created_year,
+                    rank =  msc.rank,
+                    order =  msc.order,
+                    display_order =  msc.display_order,
+                    dance_up =  msc.dance_up,
+                    dance_down =  msc.dance_down,
+                    energy_up =  msc.energy_up,
+                    energy_down =  msc.energy_down,
+                    image_url = msc.image_url,
+                )
+
+                break
+
+        newHistory.save()
+
+        # if form.is_valid():
+        #     comment = form.save(commit=False)
+        #     comment.save()
+        #     return redirect('music_by_feeling:videoplayback')
     else:
         form = CommentForm()
 
@@ -85,7 +147,7 @@ def playlist(request):
 
     favoriteMusicList = FavoriteMusicList.objects.filter(user=request.user).order_by('id','user')
     music_by_feelingList = Music_by_feelingList.objects.order_by('id','user')
-    
+
     url = []
     name1 = []
 
@@ -95,8 +157,8 @@ def playlist(request):
 
     if favoriteMusicList.first() is None:
         return render(request, 'music_by_feeling/playlist_null.html')
-        
-    
+
+
     url_0 = url[0]
 
     if request.method == 'POST':
@@ -143,6 +205,7 @@ def playlist(request):
                     dance_down =  msc.dance_down,
                     energy_up =  msc.energy_up,
                     energy_down =  msc.energy_down,
+                    image_url = msc.image_url,
                 )
 
                 break
@@ -325,6 +388,8 @@ def spotifyLoad(request):
                     dance_down =  msc.dance_down,
                     energy_up =  msc.energy_up,
                     energy_down =  msc.energy_down,
+                    image_url = msc.image_url,
+#                    image_url = 'https://open.spotify.com/embed/track/' + msc.track_id + '?utm_source=generator',
                 )
                 newmbfList.save()
                 newmbfh = Music_by_feeling_History.objects.create(
@@ -362,6 +427,8 @@ def spotifyLoad(request):
                     dance_down =  msc.dance_down,
                     energy_up =  msc.energy_up,
                     energy_down =  msc.energy_down,
+                    image_url = msc.image_url,
+#                    image_url = 'https://open.spotify.com/embed/track/' + msc.track_id + '?utm_source=generator',
                 )
                 newmbfh.save()
                 count += 1
@@ -446,6 +513,7 @@ def feedback(request):
     favoriteMusicList = FavoriteMusicList.objects.order_by('id')
     music_by_feelingList = Music_by_feelingList.objects.order_by('id')
     music_by_feeling_History = Music_by_feeling_History.objects.order_by('id')
+    history = History.objects.order_by('id')
 
     if request.method == 'POST':
 #        url2 = request.POST['url2']
@@ -558,6 +626,23 @@ def feedback(request):
                     elif select_feedback_8 == "true":
                         msc4.energy_up += 1
                     msc4.save()
+        #music_by_feelingList側で一致した曲とアーティスト名、曲名が一致した曲は同じ曲と判断
+        for msc5 in history:
+            if msc5.artist == msc.artist:
+                if msc5.tracks == msc.tracks:
+                    print(msc5.danceability)
+                    print(msc5.energy)
+                    print(msc5.tracks)
+
+                    if select_feedback_5 == "true":
+                        msc5.dance_down += 1
+                    elif select_feedback_6 == "true":
+                        msc5.dance_up += 1
+                    if select_feedback_7 == "true":
+                        msc5.energy_down += 1
+                    elif select_feedback_8 == "true":
+                        msc5.energy_up += 1
+                    msc5.save()
 
 
     txt = {
@@ -654,7 +739,6 @@ def maintenance(request):
             result = spotify.user_playlist('Madoka Sota', '7IGNg8tfbTYKZYkz4ti0sB?utm_source=generator')#JPOP 90年代
         elif select_year == '2000':
             result = spotify.user_playlist('Madoka Sota', '4zgLoxulQZBRCsFwUCnyhe?utm_source=generator')#JPOP 2000年代
-
         elif select_year == '10000':
             result = spotify.user_playlist('Madoka Sota', '37i9dQZF1DWT8aqnwgRt92?utm_source=generator')#アニメ 75曲
 
@@ -704,40 +788,48 @@ def maintenance(request):
             results.append(spotify.artist(artist_url[i])),
 
             #追加
-            newMusic = AllMusic.objects.create(
-             # ユニークな値
-              tracks = track_data['name'],
-              artist = track_data['album']['artists'][0]['name'],
-              danceability = track_feature['danceability'],
-              energy = track_feature['energy'],
-              key = track_feature['key'],
-              loudness = track_feature['loudness'],
-              mode = track_feature['mode'],
-              speechiness = track_feature['speechiness'],
-              acousticness = track_feature['acousticness'],
-              instrumentalness = track_feature['instrumentalness'],
-              liveness = track_feature['liveness'],
-              valence = track_feature['valence'],
-              tempo = track_feature['tempo'],
-              type = track_feature['type'],
-              url = urls_list[i],
-              track_id = track_feature['id'],
-              uri = track_feature['uri'],
-              track_href = track_feature['track_href'],
-              analysis_url = track_feature['analysis_url'],
-              duration_ms = track_feature['duration_ms'],
-              time_signature = track_feature['time_signature'],
-              artist_url = track_data['album']['artists'][0]['external_urls']['spotify'],
-              genres = results[i]['genres'],
-              popularity = results[i]['popularity'],
-              track_url = 'https://open.spotify.com/embed/track/' + track_feature['id'],
-              created_year = select_year,
-              rank = i + 1,
-            )
-            newMusic.save()
+            #track_url_1 = 'https://open.spotify.com/embed/track/' + track_feature['id']
+            #results1 = spotify.track(track_url_1)
+
+            #追加
+            try:
+                newMusic = AllMusic.objects.create(
+                 # ユニークな値
+                  tracks = track_data['name'],
+                  artist = track_data['album']['artists'][0]['name'],
+                  danceability = track_feature['danceability'],
+                  energy = track_feature['energy'],
+                  key = track_feature['key'],
+                  loudness = track_feature['loudness'],
+                  mode = track_feature['mode'],
+                  speechiness = track_feature['speechiness'],
+                  acousticness = track_feature['acousticness'],
+                  instrumentalness = track_feature['instrumentalness'],
+                  liveness = track_feature['liveness'],
+                  valence = track_feature['valence'],
+                  tempo = track_feature['tempo'],
+                  type = track_feature['type'],
+                  url = urls_list[i],
+                  track_id = track_feature['id'],
+                  uri = track_feature['uri'],
+                  track_href = track_feature['track_href'],
+                  analysis_url = track_feature['analysis_url'],
+                  duration_ms = track_feature['duration_ms'],
+                  time_signature = track_feature['time_signature'],
+                  artist_url = track_data['album']['artists'][0]['external_urls']['spotify'],
+                  genres = results[i]['genres'],
+                  popularity = results[i]['popularity'],
+                  track_url = 'https://open.spotify.com/embed/track/' + track_feature['id'],
+                  created_year = select_year,
+                  rank = i + 1,
+                  image_url = results[i]['images'][0]['url'],
+                )
+                newMusic.save()
+            except:
+                pass
+
 
     txt = {
-
     }
 
     return render(request, 'music_by_feeling/maintenance.html', txt)
@@ -753,7 +845,7 @@ def HistoryList(request):
     for hl in HistoryList:
         name1.append( hl.tracks),
         url.append('https://open.spotify.com/embed/track/' + hl.track_id),
-        
+
     if not url:
         return render(request, 'music_by_feeling/History_null.html')
     url_0 = url[0]
@@ -919,9 +1011,9 @@ def Signup(request):
         else:
             print(params["account_form"].errors)
             return render(request, 'music_by_feeling/signup.html', context=params)
-        
+
     return render(request, 'music_by_feeling/signup.html', context=params)
-    
+
 def Login(request):
     if request.method == "POST":
         ID = request.POST.get('userid')

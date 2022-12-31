@@ -1,7 +1,7 @@
 {% load static %}
 
 <style>
-  
+
     body{
       background-color: e1dcd9;
     }
@@ -33,12 +33,49 @@
       display: inline-block;
 
   }
-
-
+  .wrapper {
+      /*overflow-y: scroll;*/
+      position: relative;
+      top: 50%;
+      left: 50%;
+      display:flex;
+      align-items: center;
+  }
+  .select_music_button {
+    /*border: 3px solid #8f8681;
+    background: linear-gradient(to right, #FFFFF0, #F7F0FF);*/
+    background: transparent;
+    border:none;
+    /*width: 850px;*/
+    width: 170px;
+    /*height: 150px;*/
+    text-align: left;
+  }
+  .select_music_button2 {
+    color: #8f8681;
+    font-size:20px;
+  }
+  p{
+    position: absolute;
+    top:200px;
+    left:50px;
+    font-size:30px;
+    color: #8f8681;
+    padding:0;
+    margin:0;
+  }
+  span{
+    font-size:20px;
+    color: #8f8681;
+    padding:0;
+    margin:0;
+  }
 </style>
 
 <html>
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
         <title>MUSIC_BY_FEELING</title>
     </head>
     <body>
@@ -51,19 +88,35 @@
         <tr>
             <th>曲名</th>
         </tr>
-        {% for mbf in mbfl %}
+        <!--{% for mbf in mbfl %}
               <tr>
                 <td><a href="javascript:playVideo({{mbf.order}})">0{{mbf.display_order}} {{mbf.tracks}}</td>
               </tr>
-        {% endfor %}
+        {% endfor %}]-->
+        <form action="{% url 'music_by_feeling:videoplayback' %}" method="post">
+            {% csrf_token %}
+            {% for mbf in mbfl %}
+                  <tr>
+                      <div class="wrapper">
+                          <td><button type="submit" class = "select_music_button" name="select_music_button" id="select_music_button" value="{{mbf.display_order}}" onclick="playVideo({{mbf.order}})"><img width="150" src={{mbf.image_url}} alt="送信">
+                          <!--<span>　{{mbf.artist}}</span></td>-->
+                          <!--<p>{{mbf.tracks}}</p>-->
+                          <td><h2><a href="javascript:playVideo({{mbf.order}})" class = "select_music_button2">{{mbf.tracks}}</h2></td>
+                      </div>
+                  </tr>
+            {% endfor %}
+        </form>
+
     </table>
 </html>
 
 <script>
     // オーディオタグの取得
     function playVideo(num) {
+//        var elm = document.getElementByName('select_music_button');
         var storage = localStorage;
         storage.Key = num;
+//        elm.value = num;
         window.location.href = "{% url 'music_by_feeling:videoplayback' %}";
     }
 </script>
