@@ -155,8 +155,8 @@ def playlist(request):
         name1.append( mbl.tracks),
         url.append('https://open.spotify.com/embed/track/' + mbl.track_id),
 
-    if favoriteMusicList.first() is None:
-        return render(request, 'music_by_feeling/playlist_null.html')
+    # if favoriteMusicList.first() is None:
+    #     return render(request, 'music_by_feeling/playlist_null.html')
 
 
     url_0 = url[0]
@@ -212,6 +212,9 @@ def playlist(request):
             cnt = cnt + 1
 
         newfmList.save()
+
+    if favoriteMusicList.first() is None:
+        return render(request, 'music_by_feeling/playlist_null.html')
 
     txt = {
         'fmList':favoriteMusicList,
