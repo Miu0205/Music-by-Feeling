@@ -979,14 +979,11 @@ class MusicList(ListView):
     context_object_name="music_list"
     template_name="music_list.html"
     model=Music
+    '''
+    #アンケート用にカット。アンケート後に変える。
     def get_queryset(self):
         return Music.objects.filter(user=self.request.user.id)
-
-'''
-def MusicList(request):
-    music_list=Music.objects.filter(user=request.user).order_by('date')
-    return render(request, 'music_by_feeling/music_list.html', {'music_list': music_list})
-'''
+    '''
 
 #新規登録
 def Signup(request):

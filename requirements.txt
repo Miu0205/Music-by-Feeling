@@ -1,2 +1,6 @@
 Django~=2.2.4
 pandas
+numpy
+spotipy
+matplotlib
+
