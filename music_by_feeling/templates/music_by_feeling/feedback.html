@@ -101,20 +101,19 @@ h2 {
           <h4>この曲がちょっと違うなと思ったら評価を入力しよう！</h4>
         </div>
         <div>
-          この曲の評価（踊りやすさ）<br>
-          <input type="radio" name="radio_dance" id="scales_5">
-          <label for="scales_5">もっとアクティブな曲がよかった</label>
-          <input type="radio" name="radio_dance" id="scales_6">
-          <label for="scales_6">もっと落ち着いた曲がよかった</label>
-        </div>
-        <div>
           この曲の評価（エネルギッシュ）<br>
           <input type="radio" name="radio_energy" id="scales_7">
           <label for="scales_7">もっと楽しい曲がよかった</label>
           <input type="radio" name="radio_energy" id="scales_8">
           <label for="scales_8">もっと悲しい曲がよかった</label>
         </div>
-
+        <div>
+          この曲の評価（踊りやすさ）<br>
+          <input type="radio" name="radio_dance" id="scales_5">
+          <label for="scales_5">もっとアクティブな曲がよかった</label>
+          <input type="radio" name="radio_dance" id="scales_6">
+          <label for="scales_6">もっと落ち着いた曲がよかった</label>
+        </div>
         <div>
           <div class="feedback-btn">
               <form method="POST" action="{% url 'music_by_feeling:feedback' %}">

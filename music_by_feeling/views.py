@@ -263,6 +263,10 @@ def spotifyLoad(request):
        user=request.user,
        feeling_1 = feeling_1,
        feeling_2 = feeling_2,
+       artist = select_name,
+        era = select_year,
+        genre = select_genre,
+        famous = bool(select_scales),
        #genre = request.POST['genre'],
        #era =select_year[0:len(select_year) - 1],
        date = date_f,
@@ -978,7 +982,9 @@ def graph(request):
 class MusicList(ListView):
     context_object_name="music_list"
     template_name="music_list.html"
+#    template_name="music_list.html"
     model=Music
+#    model=Music_by_feeling_Selection_History
     '''
     #アンケート用にカット。アンケート後に変える。
     def get_queryset(self):
