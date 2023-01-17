@@ -101,7 +101,7 @@
                           <td><button type="submit" class = "select_music_button" name="select_music_button" id="select_music_button" value="{{mbf.display_order}}" onclick="playVideo({{mbf.order}})"><img width="150" src={{mbf.image_url}} alt="送信">
                           <!--<span>　{{mbf.artist}}</span></td>-->
                           <!--<p>{{mbf.tracks}}</p>-->
-                          <td><h2><a href="javascript:playVideo({{mbf.order}})" class = "select_music_button2">{{mbf.tracks}}</h2></td>
+                          <td><h2><a href="javascript:playVideo({{mbf.order}})" class = "select_music_button2">{{mbf.display_order}} {{mbf.tracks}}</h2></td>
                       </div>
                   </tr>
             {% endfor %}
