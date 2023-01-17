@@ -582,12 +582,12 @@ def feedback(request):
             cnt += 1
         #music_by_feelingList側で一致した曲とアーティスト名、曲名が一致した曲は同じ曲と判断
         for msc2 in allMusics:
-            print(999)
+            #print(999)
             if msc2.artist == msc.artist:
                 if msc2.tracks == msc.tracks:
-                    print(msc2.danceability)
-                    print(msc2.energy)
-                    print(msc2.tracks)
+                    #print(msc2.danceability)
+                    #print(msc2.energy)
+                    #print(msc2.tracks)
 
                     if select_feedback_5 == "true":
                         msc2.dance_down += 1
@@ -600,7 +600,7 @@ def feedback(request):
                     msc2.save()
         #music_by_feelingList側で一致した曲とアーティスト名、曲名が一致した曲は同じ曲と判断
         for msc3 in favoriteMusicList:
-            print(999)
+            #print(999)
             if msc3.artist == msc.artist:
                 if msc3.tracks == msc.tracks:
                     print(msc3.danceability)
@@ -620,9 +620,9 @@ def feedback(request):
         for msc4 in music_by_feeling_History:
             if msc4.artist == msc.artist:
                 if msc4.tracks == msc.tracks:
-                    print(msc4.danceability)
-                    print(msc4.energy)
-                    print(msc4.tracks)
+                    #print(msc4.danceability)
+                    #print(msc4.energy)
+                    #print(msc4.tracks)
 
                     if select_feedback_5 == "true":
                         msc4.dance_down += 1
