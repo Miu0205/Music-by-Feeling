@@ -2,6 +2,7 @@
 
 from multiprocessing import context
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from .models import Music_by_feeling, Category, Comment, AllMusic, Music, Music_by_feelingList, Music_by_feeling_History, Music_by_feeling_Selection_History, FavoriteMusicList, History, Account
 from .forms import CommentForm, MusicForm, AccountForm, AddAccountForm
 import spotipy
@@ -693,6 +694,9 @@ def page3(request):
 '''
 
 """音楽リストを表示"""
+#↓ログインしないとこのページに移れない。
+#ログイン画面に遷移する。
+@login_required(login_url="/login/")
 def music_render(request):
     if request.method == "POST":
         form_m = MusicForm(request.POST)
