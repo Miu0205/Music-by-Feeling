@@ -135,5 +135,5 @@ MEDIA_URL = '/media/'   # ← 追加
 MEDIA_ROOT = BASE_DIR # 追加
 
 LOGIN_URL = 'login/'
-LOGIN_REDIRECT_URL = "index/"
+LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "login/"
