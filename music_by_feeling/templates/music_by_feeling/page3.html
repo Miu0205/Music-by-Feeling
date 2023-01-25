@@ -98,12 +98,12 @@ li{
 
 <br><br>
                 </div></li>
-
+<!--
                 <li>
                   <label for="name">アーティスト名：</label>
                   <input type="text" id="name" name="name" required minlength="1" maxlength="100" size="20">
                 </li><br>
-                
+-->
 
                 <li><label for="genres-select">ジャンル:</label>
                   <select name="genres" id="genres-select">
@@ -203,7 +203,7 @@ li{
     var elm6 = document.getElementById('select_list_1');
 
     var elm3 = document.getElementById('genres-select');
-    var elm4 = document.getElementById('name');
+//    var elm4 = document.getElementById('name');
     var elm5 = document.getElementById('scales');
 
     var array = [];
@@ -240,7 +240,8 @@ li{
       //num4 = elm4.get_attribute("value");
       //num5 = elm5.is_selected();
 
-      array.push(elm1.options[num1].value, elm3.options[num3].value, elm4.value, elm5.checked);
+      array.push(elm1.options[num1].value, elm3.options[num3].value, elm5.checked);
+//      array.push(elm1.options[num1].value, elm3.options[num3].value, elm4.value, elm5.checked);
       //array.push(elm1.options[num1].value, elm3.options[num3].value, elm5.options[num5].value);
 
       elm2.value = array;
