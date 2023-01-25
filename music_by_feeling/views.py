@@ -50,9 +50,9 @@ def music_by_feeling_category(request, category):
 def videoplayback(request, id):
     music_by_feelings = Music_by_feeling.objects.order_by('title')
     commentsmodel = Comment.objects.order_by('created_date')
-    
-    music_by_feelingList = Music_by_feelingList.objects.order_by('id') 
-    
+
+    music_by_feelingList = Music_by_feelingList.objects.order_by('id')
+
     print("request.method=",request.method)
     print("request.POST=",request.POST)
 #    print("select_music_button=",select_music_button)
@@ -229,23 +229,27 @@ def playlist(request, id):
 def playlistNull(request, id):
     return render(request, 'music_by_feeling/playlist_null.html')
 
-def spotifyLoad(request, id): 
+def spotifyLoad(request, id):
 
     select_year = ''
     if request.method == 'POST':
         selects = request.POST['select_list']
         select_list = selects.split(',')
-        
+
+        print(999)
+        print(select_list)
+
         #何をしているのか
         select_year = select_list[0]
         select_genre = select_list[1]
-        select_name = select_list[2]
-        select_scales = select_list[3]
-        
+#        select_name = select_list[2]
+#        select_scales = select_list[3]
+        select_scales = select_list[2]
+
         ##追加
         feeling_1 = request.POST['feeling_1']
         feeling_2 = request.POST['feeling_2']
-        
+
     else:
         select_year = '2022'
         feeling_1 = request.POST['feeling_1']
@@ -268,7 +272,7 @@ def spotifyLoad(request, id):
        user=request.user,
        feeling_1 = feeling_1,
        feeling_2 = feeling_2,
-       artist = select_name,
+#       artist = select_name,
        era = select_year,
        genre = select_genre,
        famous = bool(select_scales),
@@ -306,14 +310,14 @@ def spotifyLoad(request, id):
                         flg1 = 1
             if flg1 == 1:
 
-                flg2 = 0
-                if select_name != "":
-                    if msc.artist == select_name:
-                        flg2 = 1
-                else:
-                    flg2 = 1
-
-                if flg2 == 1:
+                # flg2 = 0
+                # if select_name != "":
+                #     if msc.artist == select_name:
+                #         flg2 = 1
+                # else:
+                #     flg2 = 1
+                #
+                # if flg2 == 1:
                     #元のままのenergy,danceabilityに、評価されたup,down分を反映して調整したenergy,danceabilityを作成
                     adjustEnergy = msc.energy + (msc.energy_up - msc.energy_down) * 0.05
                     adjustDanceability = msc.danceability + (msc.dance_up - msc.dance_down) * 0.05
@@ -458,7 +462,7 @@ def spotifyLoad(request, id):
         # ユニークな値
         danceability = float(feeling_1),
         energy = float(feeling_2),
-        artist = select_name,
+#        artist = select_name,
         period = select_year,
         genres = select_genre,
         popularity = bool(select_scales),
