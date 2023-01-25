@@ -93,7 +93,7 @@
                 <td><a href="javascript:playVideo({{mbf.order}})">0{{mbf.display_order}} {{mbf.tracks}}</td>
               </tr>
         {% endfor %}]-->
-        <form action="{% url 'music_by_feeling:videoplayback' %}" method="post">
+        <form action="{% url 'music_by_feeling:videoplayback' user.id %}" method="post">
             {% csrf_token %}
             {% for mbf in mbfl %}
                   <tr>
@@ -117,6 +117,6 @@
         var storage = localStorage;
         storage.Key = num;
 //        elm.value = num;
-        window.location.href = "{% url 'music_by_feeling:videoplayback' %}";
+        window.location.href = "{% url 'music_by_feeling:videoplayback' user.id %}";
     }
 </script>

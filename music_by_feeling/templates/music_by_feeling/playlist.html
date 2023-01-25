@@ -28,7 +28,7 @@
             <a href="{% url 'music_by_feeling:index' %}">
                 <h2><font size="6">Music by Feeling</font></h2>
             </a>
-            <a href="{% url 'music_by_feeling:videoplayback' %}">
+            <a href="{% url 'music_by_feeling:videoplayback' user.id %}">
                 <div class="class1">
                     <img src="/static/images/icon_close.png" width="48" height="43">
                 </div>
@@ -50,9 +50,9 @@
           {% endif %}
           <p>------------------------------------------------------</p>
           {% if user.id  %}
-              <a href="{% url 'music_by_feeling:music_list' %}">感情履歴</a>
-              <a href="{% url 'music_by_feeling:history_list' %}">音楽履歴</a><br>
-              <a href="{% url 'music_by_feeling:playlist' %}">お気に入り</a><br>
+              <a href="{% url 'music_by_feeling:music_list' user.id %}">感情履歴</a>
+              <a href="{% url 'music_by_feeling:history_list' user.id %}">音楽履歴</a><br>
+              <a href="{% url 'music_by_feeling:playlist' user.id %}">お気に入り</a><br>
           {% endif %}
           <br>
       </body>

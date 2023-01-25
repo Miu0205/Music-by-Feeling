@@ -47,10 +47,12 @@ def music_by_feeling_category(request, category):
     return render(request, 'music_by_feeling/index.html', {'music_by_feeling': music_by_feeling, 'category': category})
 
 """コメント表示"""
-def videoplayback(request):
+def videoplayback(request, id):
     music_by_feelings = Music_by_feeling.objects.order_by('title')
     commentsmodel = Comment.objects.order_by('created_date')
-    music_by_feelingList = Music_by_feelingList.objects.order_by('id')
+    
+    music_by_feelingList = Music_by_feelingList.objects.order_by('id') 
+    
     print("request.method=",request.method)
     print("request.POST=",request.POST)
 #    print("select_music_button=",select_music_button)
@@ -144,7 +146,7 @@ def videoplayback(request):
 
     return render(request, 'music_by_feeling/videoplayback.html',txt)
 
-def playlist(request):
+def playlist(request, id):
 
     favoriteMusicList = FavoriteMusicList.objects.filter(user=request.user).order_by('id','user')
     music_by_feelingList = Music_by_feelingList.objects.order_by('id','user')
@@ -224,31 +226,33 @@ def playlist(request):
     }
     return render(request, 'music_by_feeling/playlist.html', txt)
 
-def playlistNull(request):
+def playlistNull(request, id):
     return render(request, 'music_by_feeling/playlist_null.html')
 
-def spotifyLoad(request):
+def spotifyLoad(request, id): 
 
     select_year = ''
     if request.method == 'POST':
         selects = request.POST['select_list']
         select_list = selects.split(',')
+        
+        #何をしているのか
         select_year = select_list[0]
-
         select_genre = select_list[1]
         select_name = select_list[2]
         select_scales = select_list[3]
-
+        
         ##追加
         feeling_1 = request.POST['feeling_1']
         feeling_2 = request.POST['feeling_2']
+        
     else:
         select_year = '2022'
         feeling_1 = request.POST['feeling_1']
         feeling_2 = request.POST['feeling_2']
 
     count = 0
-    Music_by_feelingList.objects.all().delete() #?
+    Music_by_feelingList.objects.all().delete()
     allMusics = AllMusic.objects.order_by('id')
 
     #select_yearが選択なしの時はselect_year=0とする（select_yearは整数のため）
@@ -265,9 +269,9 @@ def spotifyLoad(request):
        feeling_1 = feeling_1,
        feeling_2 = feeling_2,
        artist = select_name,
-        era = select_year,
-        genre = select_genre,
-        famous = bool(select_scales),
+       era = select_year,
+       genre = select_genre,
+       famous = bool(select_scales),
        #genre = request.POST['genre'],
        #era =select_year[0:len(select_year) - 1],
        date = date_f,
@@ -515,7 +519,7 @@ def spotifyLoad(request):
     }
     return render(request, 'music_by_feeling/spotifyLoad.html', txt2)
 
-def feedback(request):
+def feedback(request, id):
 
     allMusics = AllMusic.objects.order_by('id')
     favoriteMusicList = FavoriteMusicList.objects.order_by('id')
@@ -660,58 +664,21 @@ def feedback(request):
     }
     return render(request, 'music_by_feeling/feedback.html', txt)
 
-"""ページ３"""
-'''
-def page3(request):
-    if request.method == "POST":
-        form_m = MusicForm(request.POST)
-        if form_m.is_valid():
-            music = form_m.save(commit=False)
-            #ログイン中のユーザ情報の取得
-            music.user=request.user
-            music.save()
-            return redirect('music_by_feeling:page3')
-    else:
-        form_m = MusicForm()
-
-    return render(request, 'music_by_feeling/page3.html', {'forms':form_m})
-'''
-'''
-def page3(request):
-    if request.method == "POST":
-        form_m = MusicForm(request.POST)
-        if form_m.is_valid():
-            music = form_m.save(commit=False)
-            #ログイン中のユーザ情報の取得
-            music.user=request.user
-            #music_db=Music(**form_m.cleaned_data) #create?
-            #music_db.save() #save?
-            #music_db=Music.objects.create(**form_m.cleaned_data)
-            music.save()
-            return redirect('music_by_feeling:page3')
-    else:
-        form_m = MusicForm()
-
-    return render(request, 'music_by_feeling/page3.html', {'forms':form_m})
-'''
-
 """音楽リストを表示"""
 #↓ログインしないとこのページに移れない。
 #ログイン画面に遷移する。
 @login_required(login_url="/login/")
-def music_render(request):
+def music_render(request, id):
     if request.method == "POST":
         form_m = MusicForm(request.POST)
         if form_m.is_valid():
             music = form_m.save(commit=False)
             #ログイン中のユーザ情報の取得
             music.user=request.user
-            #music_db=Music(**form_m.cleaned_data) #create?
-            #music_db.save() #save?
             music_db=Music.objects.create(**music.cleaned_data)
             music_db.save()
             music.save()
-            return redirect('music_by_feeling:page3')
+            return redirect('music_by_feeling:page3') #1/25
     else:
         form_m = MusicForm()
 
@@ -845,7 +812,7 @@ def maintenance(request):
 
     return render(request, 'music_by_feeling/maintenance.html', txt)
 
-def HistoryList(request):
+def HistoryList(request,id):
 
     #favoriteMusicList = FavoriteMusicList.objects.order_by('id')
     HistoryList=History.objects.filter(user=request.user).order_by('id','user')
@@ -923,7 +890,7 @@ def HistoryList(request):
     }
     return render(request, 'music_by_feeling/History_list.html', txt)
 
-def historyNull(request):
+def historyNull(request, id):
     return render(request, 'music_by_feeling/History_null.html')
 
 

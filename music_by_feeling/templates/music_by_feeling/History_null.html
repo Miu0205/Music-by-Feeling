@@ -2,7 +2,7 @@
 {% block content %}
 <html>
     <body>
-        <a href="{% url 'music_by_feeling:page3' %}">履歴がありません。気分を入力しよう！</a>
+        <a href="{% url 'music_by_feeling:page3' user.id %}">履歴がありません。気分を入力しよう！</a>
     </body>
 </html>
 {% endblock %}
