@@ -116,7 +116,7 @@ h2 {
         </div>
         <div>
           <div class="feedback-btn">
-              <form method="POST" action="{% url 'music_by_feeling:feedback' %}">
+              <form method="POST" action="{% url 'music_by_feeling:feedback' user.id %}">
                   {% csrf_token %}
                   <div class="field">
                       <input type="hidden" id="scales_1">
@@ -134,7 +134,7 @@ h2 {
               </form>
           </div>
 
-          <form action="{% url 'music_by_feeling:feedback' %}" method="post">
+          <form action="{% url 'music_by_feeling:feedback' user.id %}" method="post">
               {% csrf_token %}
               <div class="field">
                   <input type="hidden" name="select_feedback2" id="select_feedback2">
@@ -142,7 +142,7 @@ h2 {
               <input type="submit" onclick="select_reflect()" value="決定">
           </form>
 <!--
-          <form action="{% url 'music_by_feeling:feedback' %}" method="post">
+          <form action="{% url 'music_by_feeling:feedback' user.id %}" method="post">
               {% csrf_token %}
 
               <p>どのような気分だったか<br>

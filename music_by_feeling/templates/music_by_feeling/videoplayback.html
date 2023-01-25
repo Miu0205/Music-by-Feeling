@@ -191,7 +191,7 @@ a.btn--warning1:hover {
         <a href="{% url 'music_by_feeling:index' %}">
             <h2><font size="6">Music by Feeling</font></h2>
         </a>
-        <a href="{% url 'music_by_feeling:spotifyLoad' %}">
+        <a href="{% url 'music_by_feeling:spotifyLoad' user.id %}">
             <div class="class1">
               <img src="/static/images/icon_close.png" width="48" height="43">
             </div>
@@ -255,7 +255,7 @@ a.btn--warning1:hover {
             <input type="submit" onclick="feedback()" value="評価">
         </form>
 -->
-        <form action="{% url 'music_by_feeling:playlist' %}" method="post">
+        <form action="{% url 'music_by_feeling:playlist' user.id %}" method="post">
             {% csrf_token %}
             <div class="field">
                 <input type="hidden" name="url1" id="url1">
@@ -264,7 +264,7 @@ a.btn--warning1:hover {
         </form>
       </div>
 
-        <a href="{% url 'music_by_feeling:playlist' %}">
+        <a href="{% url 'music_by_feeling:playlist' user.id %}">
             <h3>お気に入りリスト</h3>
         </a>
 
@@ -330,7 +330,7 @@ a.btn--warning1:hover {
     }
 
     function feedback() {
-      myWindow = window.open("{% url 'music_by_feeling:feedback' %}","myWindow","fullscreen=yes");
+      myWindow = window.open("{% url 'music_by_feeling:feedback' user.id %}","myWindow","fullscreen=yes");
       storage.Key1 = count;
     }
 

@@ -99,19 +99,11 @@ li{
 <br><br>
                 </div></li>
 
-
-                <!--
-                  <li>
+                <li>
                   <label for="name">アーティスト名：</label>
                   <input type="text" id="name" name="name" required minlength="1" maxlength="100" size="20">
                 </li><br>
-                -->
-
-                <br>
-                <p>※ジャンルと年代の組み合わせによっては、ヒットせずにエラーが発生する場合がございます。</p>
-                <br>
-                <p>※どちらか一方を指定、またはどちらも指定せずに検索をお願いします。</p>
-                <br>
+                
 
                 <li><label for="genres-select">ジャンル:</label>
                   <select name="genres" id="genres-select">
@@ -137,6 +129,7 @@ li{
                     <option value="1990">1990年</option>
                   </select></li>
 
+                  <p><font size="2">※ジャンルと年代の組み合わせによっては、ヒットせずにエラーが発生する場合がございます。どちらか一方を指定、またはどちらも指定せずに検索をお願いします。</p>
 
 <br>
 
@@ -154,20 +147,20 @@ li{
             {% endfor %}
         </ul>
 
-        <form action="{% url 'music_by_feeling:spotifyLoad' %}" method="post">
+        <form action="{% url 'music_by_feeling:spotifyLoad' user.id %}" method="post">
             {% csrf_token %}
             <div class="field">
               <input type="hidden" name="feeling_1" id="feeling_1">
               <input type="hidden" name="feeling_2" id="feeling_2">
-                <input type="hidden" name="select_list" id="select_list">
-                <input type="hidden" name="select_list_1" id="select_list_1">
+              <input type="hidden" name="select_list" id="select_list">
+              <input type="hidden" name="select_list_1" id="select_list_1">
             </div>
             <input type="submit" onclick="select_year_reflect()" value="音楽を聴く">
         </form>
 
         <!--アンケート専用でリンクを貼る。提出の際には消す。-->
         <h6>なるべく幅広い数値で楽しい・悲しい、アクティブ・落ち着くの評価をしたいです！</h6>
-        <a href="{% url 'music_by_feeling:music_list' %}">過去の参加者の数値</a>
+        <a href="{% url 'music_by_feeling:music_list' user.id %}">過去の参加者の数値</a>
         <h6>(こちらのリンクでは過去の参加者の入力した数値の履歴が表示されます。)</h6>
         <h6>上記のリンクを参考に、被らないような値にしていただけると幸いです。</h6>
         <h6>例:(1.0,1.0),(0.8,0.9),(0.9,1.0)などが多い場合、(0.0,0.0)などの数値を入れてください</h6>
@@ -193,19 +186,12 @@ li{
           {% endif %}
           <p>------------------------------------------------------</p>
           {% if user.id  %}
-              <a href="{% url 'music_by_feeling:music_list' %}">感情履歴</a><br>
-              <a href="{% url 'music_by_feeling:history_list' %}">音楽履歴</a><br>
-              <a href="{% url 'music_by_feeling:playlist' %}">お気に入り</a><br>
+              <a href="{% url 'music_by_feeling:music_list' user.id %}">感情履歴</a><br>
+              <a href="{% url 'music_by_feeling:history_list' user.id %}">音楽履歴</a><br>
+              <a href="{% url 'music_by_feeling:playlist' user.id %}">お気に入り</a><br>
           {% endif %}
           <br>
 
-
-
-
-
-
-        {% block content %}
-        {% endblock %}
 
     </body>
 </html>
