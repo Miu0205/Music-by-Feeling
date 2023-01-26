@@ -17,6 +17,7 @@ class CommentForm(forms.ModelForm):
 class MusicForm(forms.ModelForm):
     class Meta:
         model = Music
+        #fields = ('feeling_1','feeling_2','genre', 'era', 'famous' )
         fields = ('feeling_1','feeling_2','artist','genre', 'era', 'famous' )
 
 # フォームクラス作成

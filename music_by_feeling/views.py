@@ -362,8 +362,6 @@ def spotifyLoad(request, id):
         for i in range(cnt):#繰り返す（5回または選曲数分）
           for msc in allMusics:
             if(arr[i][2] == msc.uri):
-                print('energy----valence---danceability---artist')
-                print(msc.energy,'----',msc.valence,'---', msc.danceability,'---', msc.artist)
 
                 newmbfList = Music_by_feelingList.objects.create(
                     # ユニークな値
