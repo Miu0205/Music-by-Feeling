@@ -252,7 +252,7 @@ class History(models.Model):
 
     tracks = models.CharField('トラックタイトル', max_length=50, null=True)
     artist = models.CharField('アーティストタイトル', max_length=50, null=True)
-    artist = models.IntegerField('アーティストタイトル',blank=True, null=True,default=1)
+    #artist = models.IntegerField('アーティストタイトル',blank=True, null=True,default=1)
     danceability = models.FloatField('踊りやすさ',blank=True, null=True,default=0.0)
     energy = models.FloatField('エネルギッシュ',blank=True, null=True,default=0.0)
     key = models.FloatField('曲の高さ',blank=True, null=True,default=0.0)

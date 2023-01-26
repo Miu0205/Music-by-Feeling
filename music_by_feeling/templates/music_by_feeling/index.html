@@ -107,7 +107,11 @@ a.btn-flat:hover:before {
         </ul>
     {% endfor %}
     <div class = "center">
-    <a href="{% url 'music_by_feeling:page3' user.id %}" class="btn btn-flat"><span>音楽を聴く　</span></a>
+      {% if user.id %}
+        <a href="{% url 'music_by_feeling:page3' user.id %}" class="btn btn-flat"><span>音楽を聴く　</span></a>
+      {% else %}
+        <p>本システムを利用するには、ログインが必要です。</p>
+      {% endif %}
     <br><br>
 
     <br><br><br><br>
@@ -124,7 +128,7 @@ a.btn-flat:hover:before {
         {% endif %}
         <p>------------------------------------------------------</p>
         {% if user.id  %}
-            <a href="{% url 'music_by_feeling:music_list' user.id %}">感情履歴</a>
+            <a href="{% url 'music_by_feeling:music_list' user.id %}">感情履歴</a><br>
             <a href="{% url 'music_by_feeling:history_list' user.id %}">音楽履歴</a><br>
             <a href="{% url 'music_by_feeling:playlist' user.id %}">お気に入り</a><br>
         {% endif %}
