@@ -236,21 +236,13 @@ def spotifyLoad(request, id):
         selects = request.POST['select_list']
         select_list = selects.split(',')
 
-        # print(999)
-        # print(select_list)
-
-
-
-
+        music_list_flg = 0
         #music_listからの選択
         if (select_list[1] == '0') and (select_list[2] == '0') and (select_list[3] == '0'):
+            music_list_flg = 1
             mscs = Music.objects.order_by('id')
             for msc in mscs:
                 if int(select_list[0]) == msc.id:
-                    # print(msc.id)
-                    # print(msc.era)
-                    # print(msc.artist)
-                    # print(msc.famous)
                     select_year = msc.era
                     select_genre = msc.genre
                     # select_name = msc.artist
@@ -272,20 +264,6 @@ def spotifyLoad(request, id):
             feeling_1 = request.POST['feeling_1']
             feeling_2 = request.POST['feeling_2']
 
-
-
-
-#         #何をしているのか
-#         select_year = select_list[0]
-#         select_genre = select_list[1]
-# #        select_name = select_list[2]
-# #        select_scales = select_list[3]
-#         select_scales = select_list[2]
-#
-#         ##追加
-#         feeling_1 = request.POST['feeling_1']
-#         feeling_2 = request.POST['feeling_2']
-
     else:
         select_year = '2022'
         feeling_1 = request.POST['feeling_1']
@@ -298,12 +276,6 @@ def spotifyLoad(request, id):
     #select_yearが選択なしの時はselect_year=0とする（select_yearは整数のため）
     if select_year == "":
         select_year = 0
-
-
-    # print(777)
-    # print(select_year)
-    # print(select_genre)
-    # print(select_scales)
 
     ##追加
     ##feeling_1 = ''
@@ -334,10 +306,7 @@ def spotifyLoad(request, id):
         else:
             if msc.created_year == int(select_year):
                 flg = 1
-        # print(11)
-        # print(flg)
         if flg == 1:
-            # print(12)
             flg1 = 0
             if select_genre == "":
                 flg1 = 1
@@ -353,16 +322,7 @@ def spotifyLoad(request, id):
                     if gnr == select_genre:
                         flg1 = 1
             if flg1 == 1:
-                    # print(13)
 
-                # flg2 = 0
-                # if select_name != "":
-                #     if msc.artist == select_name:
-                #         flg2 = 1
-                # else:
-                #     flg2 = 1
-                #
-                # if flg2 == 1:
                     #元のままのenergy,danceabilityに、評価されたup,down分を反映して調整したenergy,danceabilityを作成
                     adjustEnergy = msc.energy + (msc.energy_up - msc.energy_down) * 0.05
                     adjustDanceability = msc.danceability + (msc.dance_up - msc.dance_down) * 0.05
@@ -386,17 +346,14 @@ def spotifyLoad(request, id):
                                 ##############################################################################################################
 
                             if flg3 == 0:
-                                # print(3)
 #                                print("#########msc.uri= ",msc.tracks," ",msc.uri," ","##########arr_m[2]=",arr_m[2])
                                 ###############変更###############################################################################################
 #                                arr.append([adjustEnergy, adjustDanceability, msc.uri, 0])#distanceを0と置いて場所を作った
                                 arr.append([adjustEnergy, adjustDanceability, msc.uri, 0, msc.artist, msc.tracks])#distanceを0と置いて場所を作った
                                 ##############################################################################################################
                     else:
-                        # print(4)
 #                        arr.append([msc.energy, msc.danceability, msc.uri, 0])
                         flg3 = 0
-                        # print(5)
                         for arr_m in arr:
                             if msc.uri == arr_m[2]:
 #                                print("#########msc.uri=",msc.tracks," ",msc.uri," ","##########arr_m[2]=",arr_m[2])
@@ -408,8 +365,6 @@ def spotifyLoad(request, id):
                                 break
                             ##############################################################################################################
                         if flg3 == 0:
-                            # print(6)
-#                            print("#########msc.uri= ",msc.tracks," ",msc.uri," ","##########arr_m[2]=",arr_m[2])
                             ###############変更###############################################################################################
 #                           arr.append([adjustEnergy, adjustDanceability, msc.uri, 0])#distanceを0と置いて場所を作った
                             arr.append([adjustEnergy, adjustDanceability, msc.uri, 0, msc.artist, msc.tracks])#distanceを0と置いて場所を作った
@@ -516,14 +471,7 @@ def spotifyLoad(request, id):
             newmbfh.save()
             count += 1
             break
-    # else:                                   #選択した曲数が0の時メッセージのみ表示
-    #     root = tk.Tk()
-    #     root.attributes('-topmost', True)
-    #     root.withdraw()
-    #     root.lift()
-    #     root.focus_force()
-    #     messagebox.showinfo('メッセージ','選択した内容にあう曲が見つかりませんでした。再度入力し直してください。')
-    #     root.destroy()
+
 
     newmbfsh = Music_by_feeling_Selection_History.objects.create(
         # ユニークな値
@@ -586,11 +534,11 @@ def spotifyLoad(request, id):
 
     mbfl = Music_by_feelingList.objects.order_by('id')
     mbfl_len = len(mbfl)
-    # print(10000)
-    # print(mbfl_len)
+
     txt2 = {
         'mbfl':mbfl,
         'mbfl_len':mbfl_len,
+        'music_list_flg':music_list_flg,
     }
     return render(request, 'music_by_feeling/spotifyLoad.html', txt2)
 
@@ -609,18 +557,6 @@ def feedback(request, id):
         selects = request.POST['select_feedback2']
         select_feedback = selects.split(',')
 
-        # print(1000)
-        # print(selects)
-        # print(select_feedback[0])
-        # print(select_feedback[1])
-        # print(select_feedback[2])
-        # print(select_feedback[3])
-        # print(select_feedback[4])
-        # print(select_feedback[5])
-        # print(select_feedback[6])
-        # print(select_feedback[7])
-        # print(select_feedback[8])
-        # print(1001)
 
         #0-3:システムの評価、4-7:曲の評価、8:music_by_feelingList内での今回聞いた曲順
         select_feedback_1 = select_feedback[0]
@@ -632,16 +568,7 @@ def feedback(request, id):
         select_feedback_7 = select_feedback[6]
         select_feedback_8 = select_feedback[7]
         select_feedback_9 = int(select_feedback[8])
-        # print(select_feedback[0])
-        # print(select_feedback[1])
-        # print(select_feedback[2])
-        # print(select_feedback[3])
-        # print(select_feedback[4])
-        # print(select_feedback[5])
-        # print(select_feedback[6])
-        # print(select_feedback[7])
-        # print(select_feedback_9)
-        # print(10)
+
         #music_by_feelingListに選曲された曲の何番目かをチェック、一致した曲の要素変更
         for msc in music_by_feelingList:
             if cnt == select_feedback_9:
