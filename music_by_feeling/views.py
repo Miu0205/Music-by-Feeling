@@ -14,7 +14,7 @@ import csv
 from django.utils import timezone
 import numpy as np
 #from scipy.spatial.distance import pdist, squareform
-
+from distutils.util import strtobool
 
 
 from django.urls import reverse
@@ -23,8 +23,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 
-from tkinter import messagebox
-import tkinter as tk
+# from tkinter import messagebox
+# import tkinter as tk
 
 """一覧表示"""
 def index(request):
@@ -53,8 +53,8 @@ def videoplayback(request, id):
 
     music_by_feelingList = Music_by_feelingList.objects.order_by('id')
 
-    print("request.method=",request.method)
-    print("request.POST=",request.POST)
+    # print("request.method=",request.method)
+    # print("request.POST=",request.POST)
 #    print("select_music_button=",select_music_button)
     if request.method == "POST":
         form = CommentForm(request.POST)
@@ -66,7 +66,7 @@ def videoplayback(request, id):
         #再生用選択曲をHistoryへ追加
 #        if 'select_music_button' in request.POST.keys() == True:
         select_music_button = request.POST['select_music_button']
-        print("select_music_button=",select_music_button)
+        # print("select_music_button=",select_music_button)
 
         num = int(select_music_button)
         for msc in music_by_feelingList:
@@ -236,19 +236,33 @@ def spotifyLoad(request, id):
         selects = request.POST['select_list']
         select_list = selects.split(',')
 
-        print(999)
-        print(select_list)
+        music_list_flg = 0
+        #music_listからの選択
+        if (select_list[1] == '0') and (select_list[2] == '0') and (select_list[3] == '0'):
+            music_list_flg = 1
+            mscs = Music.objects.order_by('id')
+            for msc in mscs:
+                if int(select_list[0]) == msc.id:
+                    select_year = msc.era
+                    select_genre = msc.genre
+                    # select_name = msc.artist
+                    select_scales = msc.famous
 
-        #何をしているのか
-        select_year = select_list[0]
-        select_genre = select_list[1]
-#        select_name = select_list[2]
-#        select_scales = select_list[3]
-        select_scales = select_list[2]
+                    ##追加
+                    feeling_1 = msc.feeling_1
+                    feeling_2 = msc.feeling_2
 
-        ##追加
-        feeling_1 = request.POST['feeling_1']
-        feeling_2 = request.POST['feeling_2']
+        else:
+            #何をしているのか
+            select_year = select_list[0]
+            select_genre = select_list[1]
+            # select_name = select_list[2]
+            # select_scales = select_list[3]
+#            select_scales = select_list[2]
+            select_scales = bool(strtobool(select_list[2]))
+            ##追加
+            feeling_1 = request.POST['feeling_1']
+            feeling_2 = request.POST['feeling_2']
 
     else:
         select_year = '2022'
@@ -292,7 +306,6 @@ def spotifyLoad(request, id):
         else:
             if msc.created_year == int(select_year):
                 flg = 1
-
         if flg == 1:
             flg1 = 0
             if select_genre == "":
@@ -310,30 +323,34 @@ def spotifyLoad(request, id):
                         flg1 = 1
             if flg1 == 1:
 
-                # flg2 = 0
-                # if select_name != "":
-                #     if msc.artist == select_name:
-                #         flg2 = 1
-                # else:
-                #     flg2 = 1
-                #
-                # if flg2 == 1:
                     #元のままのenergy,danceabilityに、評価されたup,down分を反映して調整したenergy,danceabilityを作成
                     adjustEnergy = msc.energy + (msc.energy_up - msc.energy_down) * 0.05
                     adjustDanceability = msc.danceability + (msc.dance_up - msc.dance_down) * 0.05
-                    if select_scales == "true":
+                    # if (select_scales == "true") or (select_scales == "True"):
+                    if select_scales == True:
+                        # print(1)
                         if msc.popularity >= 60:
 #                            arr.append([msc.energy, msc.danceability, msc.uri, 0])
                             flg3 = 0
+                            # print(2)
                             for arr_m in arr:
 #                                print("msc.uri=",msc.uri,"arr_m[2]=",arr_m[2])
                                 if msc.uri == arr_m[2]:
 #                                    print("#########msc.uri= ",msc.tracks," ",msc.uri," ","##########arr_m[2]=",arr_m[2])
                                     flg3 = 1
                                     break
+                                ###############追加###############################################################################################
+                                elif (msc.artist == arr_m[4]) and (msc.tracks == arr_m[5]):
+                                    flg3 = 1
+                                    break
+                                ##############################################################################################################
+
                             if flg3 == 0:
 #                                print("#########msc.uri= ",msc.tracks," ",msc.uri," ","##########arr_m[2]=",arr_m[2])
-                                arr.append([adjustEnergy, adjustDanceability, msc.uri, 0])#distanceを0と置いて場所を作った
+                                ###############変更###############################################################################################
+#                                arr.append([adjustEnergy, adjustDanceability, msc.uri, 0])#distanceを0と置いて場所を作った
+                                arr.append([adjustEnergy, adjustDanceability, msc.uri, 0, msc.artist, msc.tracks])#distanceを0と置いて場所を作った
+                                ##############################################################################################################
                     else:
 #                        arr.append([msc.energy, msc.danceability, msc.uri, 0])
                         flg3 = 0
@@ -342,9 +359,16 @@ def spotifyLoad(request, id):
 #                                print("#########msc.uri=",msc.tracks," ",msc.uri," ","##########arr_m[2]=",arr_m[2])
                                 flg3 = 1
                                 break
+                            ###############追加###############################################################################################
+                            elif (msc.artist == arr_m[4]) and (msc.tracks == arr_m[5]):
+                                flg3 = 1
+                                break
+                            ##############################################################################################################
                         if flg3 == 0:
-#                            print("#########msc.uri= ",msc.tracks," ",msc.uri," ","##########arr_m[2]=",arr_m[2])
-                            arr.append([adjustEnergy, adjustDanceability, msc.uri, 0])#distanceを0と置いて場所を作った
+                            ###############変更###############################################################################################
+#                           arr.append([adjustEnergy, adjustDanceability, msc.uri, 0])#distanceを0と置いて場所を作った
+                            arr.append([adjustEnergy, adjustDanceability, msc.uri, 0, msc.artist, msc.tracks])#distanceを0と置いて場所を作った
+                            ##############################################################################################################
 
     point = np.array([float(feeling_1),float(feeling_2)])#指定した感情
 
@@ -356,107 +380,98 @@ def spotifyLoad(request, id):
 
     #########################################
     cnt = 10             #繰り返し回数10回
-    print(101)
-    if len(arr) >= 1:  #選曲した曲数が1以上の場合は実施（0の場合は何もせずメッセージ表示）
-        print(102)
-        if len(arr) < cnt:  #選曲した曲数が5回より少なければ曲数分のみ繰り返し
-            cnt = len(arr)
+    # if len(arr) >= 1:  #選曲した曲数が1以上の場合は実施（0の場合は何もせずメッセージ表示）
+    if len(arr) < cnt:  #選曲した曲数が5回より少なければ曲数分のみ繰り返し
+        cnt = len(arr)
 
-        #for i in range(5):#5回繰り返す
-        for i in range(cnt):#繰り返す（5回または選曲数分）
-          for msc in allMusics:
-            if(arr[i][2] == msc.uri):
-                #print('energy----valence---danceability---artist')
-                #print(msc.energy,'----',msc.valence,'---', msc.danceability,'---', msc.artist)
+    #for i in range(5):#5回繰り返す
+    for i in range(cnt):#繰り返す（5回または選曲数分）
+      for msc in allMusics:
+        if(arr[i][2] == msc.uri):
+            #print('energy----valence---danceability---artist')
+            #print(msc.energy,'----',msc.valence,'---', msc.danceability,'---', msc.artist)
 
-                newmbfList = Music_by_feelingList.objects.create(
-                    # ユニークな値
-                    tracks = msc.tracks,
-                    artist = msc.artist,
-                    danceability = msc.danceability,
-                    energy = msc.energy,
-                    key = msc.key,
-                    loudness = msc.loudness,
-                    mode = msc.mode,
-                    speechiness = msc.speechiness,
-                    acousticness = msc.acousticness,
-                    instrumentalness = msc.instrumentalness,
-                    liveness = msc.liveness,
-                    valence = msc.valence,
-                    tempo = msc.tempo,
-                    type = msc.type,
-                    url =msc.url,
-                    track_id = msc.track_id,
-                    uri = msc.uri,
-                    track_href = msc.track_href,
-                    analysis_url = msc.analysis_url,
-                    duration_ms = msc.duration_ms,
-                    time_signature = msc.time_signature,
-                    artist_url = msc.artist_url,
-                    genres = msc.genres,
-                    popularity = msc.popularity,
-                    track_url =  msc.track_url,
-                    created_year =  msc.created_year,
-                    rank =  msc.rank,
-                    order =  count,
-                    display_order =  count + 1,
-                    dance_up =  msc.dance_up,
-                    dance_down =  msc.dance_down,
-                    energy_up =  msc.energy_up,
-                    energy_down =  msc.energy_down,
-                    image_url = msc.image_url,
+            newmbfList = Music_by_feelingList.objects.create(
+                # ユニークな値
+                tracks = msc.tracks,
+                artist = msc.artist,
+                danceability = msc.danceability,
+                energy = msc.energy,
+                key = msc.key,
+                loudness = msc.loudness,
+                mode = msc.mode,
+                speechiness = msc.speechiness,
+                acousticness = msc.acousticness,
+                instrumentalness = msc.instrumentalness,
+                liveness = msc.liveness,
+                valence = msc.valence,
+                tempo = msc.tempo,
+                type = msc.type,
+                url =msc.url,
+                track_id = msc.track_id,
+                uri = msc.uri,
+                track_href = msc.track_href,
+                analysis_url = msc.analysis_url,
+                duration_ms = msc.duration_ms,
+                time_signature = msc.time_signature,
+                artist_url = msc.artist_url,
+                genres = msc.genres,
+                popularity = msc.popularity,
+                track_url =  msc.track_url,
+                created_year =  msc.created_year,
+                rank =  msc.rank,
+                order =  count,
+                display_order =  count + 1,
+                dance_up =  msc.dance_up,
+                dance_down =  msc.dance_down,
+                energy_up =  msc.energy_up,
+                energy_down =  msc.energy_down,
+                image_url = msc.image_url,
 #                    image_url = 'https://open.spotify.com/embed/track/' + msc.track_id + '?utm_source=generator',
-                )
-                newmbfList.save()
-                newmbfh = Music_by_feeling_History.objects.create(
-                    # ユニークな値
-                    tracks = msc.tracks,
-                    artist = msc.artist,
-                    danceability = msc.danceability,
-                    energy = msc.energy,
-                    key = msc.key,
-                    loudness = msc.loudness,
-                    mode = msc.mode,
-                    speechiness = msc.speechiness,
-                    acousticness = msc.acousticness,
-                    instrumentalness = msc.instrumentalness,
-                    liveness = msc.liveness,
-                    valence = msc.valence,
-                    tempo = msc.tempo,
-                    type = msc.type,
-                    url =msc.url,
-                    track_id = msc.track_id,
-                    uri = msc.uri,
-                    track_href = msc.track_href,
-                    analysis_url = msc.analysis_url,
-                    duration_ms = msc.duration_ms,
-                    time_signature = msc.time_signature,
-                    artist_url = msc.artist_url,
-                    genres = msc.genres,
-                    popularity = msc.popularity,
-                    track_url =  msc.track_url,
-                    created_year =  msc.created_year,
-                    rank =  msc.rank,
-                    order =  count,
-                    display_order =  count + 1,
-                    dance_up =  msc.dance_up,
-                    dance_down =  msc.dance_down,
-                    energy_up =  msc.energy_up,
-                    energy_down =  msc.energy_down,
-                    image_url = msc.image_url,
+            )
+            newmbfList.save()
+            newmbfh = Music_by_feeling_History.objects.create(
+                # ユニークな値
+                tracks = msc.tracks,
+                artist = msc.artist,
+                danceability = msc.danceability,
+                energy = msc.energy,
+                key = msc.key,
+                loudness = msc.loudness,
+                mode = msc.mode,
+                speechiness = msc.speechiness,
+                acousticness = msc.acousticness,
+                instrumentalness = msc.instrumentalness,
+                liveness = msc.liveness,
+                valence = msc.valence,
+                tempo = msc.tempo,
+                type = msc.type,
+                url =msc.url,
+                track_id = msc.track_id,
+                uri = msc.uri,
+                track_href = msc.track_href,
+                analysis_url = msc.analysis_url,
+                duration_ms = msc.duration_ms,
+                time_signature = msc.time_signature,
+                artist_url = msc.artist_url,
+                genres = msc.genres,
+                popularity = msc.popularity,
+                track_url =  msc.track_url,
+                created_year =  msc.created_year,
+                rank =  msc.rank,
+                order =  count,
+                display_order =  count + 1,
+                dance_up =  msc.dance_up,
+                dance_down =  msc.dance_down,
+                energy_up =  msc.energy_up,
+                energy_down =  msc.energy_down,
+                image_url = msc.image_url,
 #                    image_url = 'https://open.spotify.com/embed/track/' + msc.track_id + '?utm_source=generator',
-                )
-                newmbfh.save()
-                count += 1
-                break
-    else:                                   #選択した曲数が0の時メッセージのみ表示
-        root = tk.Tk()
-        root.attributes('-topmost', True)
-        root.withdraw()
-        root.lift()
-        root.focus_force()
-        messagebox.showinfo('メッセージ','選択した内容にあう曲が見つかりませんでした。再度入力し直してください。')
-        root.destroy()
+            )
+            newmbfh.save()
+            count += 1
+            break
+
 
     newmbfsh = Music_by_feeling_Selection_History.objects.create(
         # ユニークな値
@@ -518,8 +533,12 @@ def spotifyLoad(request, id):
         writer = csv.writer(f)
 
     mbfl = Music_by_feelingList.objects.order_by('id')
+    mbfl_len = len(mbfl)
+
     txt2 = {
         'mbfl':mbfl,
+        'mbfl_len':mbfl_len,
+        'music_list_flg':music_list_flg,
     }
     return render(request, 'music_by_feeling/spotifyLoad.html', txt2)
 
@@ -538,18 +557,6 @@ def feedback(request, id):
         selects = request.POST['select_feedback2']
         select_feedback = selects.split(',')
 
-        print(1000)
-        print(selects)
-        print(select_feedback[0])
-        print(select_feedback[1])
-        print(select_feedback[2])
-        print(select_feedback[3])
-        print(select_feedback[4])
-        print(select_feedback[5])
-        print(select_feedback[6])
-        print(select_feedback[7])
-        print(select_feedback[8])
-        print(1001)
 
         #0-3:システムの評価、4-7:曲の評価、8:music_by_feelingList内での今回聞いた曲順
         select_feedback_1 = select_feedback[0]
@@ -561,31 +568,22 @@ def feedback(request, id):
         select_feedback_7 = select_feedback[6]
         select_feedback_8 = select_feedback[7]
         select_feedback_9 = int(select_feedback[8])
-        print(select_feedback[0])
-        print(select_feedback[1])
-        print(select_feedback[2])
-        print(select_feedback[3])
-        print(select_feedback[4])
-        print(select_feedback[5])
-        print(select_feedback[6])
-        print(select_feedback[7])
-        print(select_feedback_9)
-        print(10)
+
         #music_by_feelingListに選曲された曲の何番目かをチェック、一致した曲の要素変更
         for msc in music_by_feelingList:
             if cnt == select_feedback_9:
                 if select_feedback_5 == "true":
                     msc.dance_down += 1
-                    print(11)
+                    # print(11)
                 elif select_feedback_6 == "true":
                     msc.dance_up += 1
-                    print(12)
+                    # print(12)
                 if select_feedback_7 == "true":
                     msc.energy_down += 1
-                    print(13)
+                    # print(13)
                 elif select_feedback_8 == "true":
                     msc.energy_up += 1
-                    print(14)
+                    # print(14)
                 msc.save()
                 break
             cnt += 1

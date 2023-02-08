@@ -1,33 +1,98 @@
 {% extends 'music_by_feeling/base.html' %}
 {% block content %}
 <h2>感情一覧</h2>
-        <div class="music">
-                <table border="1">
-                    <tr>
-                        <!--Feeling1-->
-                        <th>楽しい度</th>
-                        <!--Feeling2-->
-                        <th>アクティブ度</th>
-                        <!--<th>アーティスト名</th>-->
-                        <th>ジャンル</th>
-                        <th>年代</th>
-                        <th>人気</th>
-                        <th>日付</th>
-                    </tr>
-                    {% for music in music_list %}
-                    <tr>
-                        <td>{{ music.feeling_1 }}</td>
-                        <td>{{ music.feeling_2 }}</td>
-                        <!--<td>{{ music.artist }}</td>-->
-                        <td>{{ music.genre }}</td>
-                        <td>{{ music.era }}</td>
-                        <td>{{ music.famous }}</td>
-                        <td><a href="{% url 'music_by_feeling:page3' user.id %}">{{ music.date }}</a></td>
-                    </tr>
-                    {% empty %}
-                        <a href="{% url 'music_by_feeling:page3' user.id %}">感情入力履歴がありません。気分を入力しよう！</a>
-                    {% endfor %}
-                </table>
-                
-        </div>
+
+
+</style>
+<!doctype html>
+<html>
+
+    <body>
+
+        <ul>
+            <br>
+            <br>
+        </ul>
+
+        <form action="{% url 'music_by_feeling:spotifyLoad' user.id %}" method="post">
+            {% csrf_token %}
+            <div class="field">
+              <input type="hidden" name="feeling_1" id="feeling_1">
+              <input type="hidden" name="feeling_2" id="feeling_2">
+              <input type="hidden" name="select_list" id="select_list">
+              <input type="hidden" name="select_list_1" id="select_list_1">
+            </div>
+
+
+            <div class="music">
+                    <table border="1">
+                        <tr>
+                            <!--Feeling1-->
+                            <th>選択</th>
+                            <th>楽しい度</th>
+                            <!--Feeling2-->
+                            <th>アクティブ度</th>
+                            <!-- <th>アーティスト名</th> -->
+                            <th>ジャンル</th>
+                            <th>年代</th>
+                            <th>人気</th>
+                            <th>日付</th>
+                        </tr>
+                        {% for music in music_list %}
+                        <tr>
+                            <td>
+                              <!-- {{ music.feeling_1 }} -->
+                              <input type="submit" onclick="select_year_reflect({{ music.id }})" value="音楽を聴く">
+                            </td>
+                            <td>{{ music.feeling_1 }}</td>
+                            <td>{{ music.feeling_2 }}</td>
+                            <!-- <td>{{ music.artist }}</td> -->
+                            <td>{{ music.genre }}</td>
+                            <td>{{ music.era }}</td>
+                            <td>{{ music.famous }}</td>
+                            <td><a href="{% url 'music_by_feeling:page3' user.id %}">{{ music.date }}</a></td>
+                        </tr>
+                        {% empty %}
+                            <a href="{% url 'music_by_feeling:page3' user.id %}">感情入力履歴がありません。気分を入力しよう！</a>
+                        {% endfor %}
+                    </table>
+
+            </div>
+
+        </form>
+
+    </body>
+</html>
+
+
+<script>
+
+    // var elm1 = document.getElementById('jpop_hits_select');
+    var elm2 = document.getElementById('select_list');
+
+    var array = [];
+    var num1;
+    var num3;
+
+    function select_year_reflect(msc_id) {
+
+      array.splice(0);//配列クリア
+
+      array.push(msc_id, 0,0,0);
+      //array.push(elm1.options[num1].value, elm3.options[num3].value, elm5.options[num5].value);
+
+      elm2.value = array;
+
+    }
+
+    function sleep(msec) {
+       return new Promise(function(resolve) {
+
+          setTimeout(function() {resolve()}, msec);
+
+       })
+    }
+
+</script>
+
 {% endblock %}
