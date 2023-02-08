@@ -1,33 +1,321 @@
 {% extends 'music_by_feeling/base.html' %}
 {% block content %}
 <h2>感情一覧</h2>
-        <div class="music">
-                <table border="1">
-                    <tr>
-                        <!--Feeling1-->
-                        <th>楽しい度</th>
-                        <!--Feeling2-->
-                        <th>アクティブ度</th>
-                        <!--<th>アーティスト名</th>-->
-                        <th>ジャンル</th>
-                        <th>年代</th>
-                        <th>人気</th>
-                        <th>日付</th>
-                    </tr>
-                    {% for music in music_list %}
-                    <tr>
-                        <td>{{ music.feeling_1 }}</td>
-                        <td>{{ music.feeling_2 }}</td>
-                        <!--<td>{{ music.artist }}</td>-->
-                        <td>{{ music.genre }}</td>
-                        <td>{{ music.era }}</td>
-                        <td>{{ music.famous }}</td>
-                        <td><a href="{% url 'music_by_feeling:page3' user.id %}">{{ music.date }}</a></td>
-                    </tr>
-                    {% empty %}
-                        <a href="{% url 'music_by_feeling:page3' user.id %}">感情入力履歴がありません。気分を入力しよう！</a>
-                    {% endfor %}
-                </table>
-                
-        </div>
+
+
+</style>
+<!doctype html>
+<html>
+<!--
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width">
+        <title>曲を聴く</title>
+
+    </head>
+-->
+    <body>
+
+<!--
+      <div class="music">
+              <table border="1">
+                  <tr>
+                      <th>音楽を聴く</th>
+                      <th>楽しい度</th>
+                      <th>アクティブ度</th>
+                      <th>アーティスト名</th>
+                      <th>ジャンル</th>
+                      <th>年代</th>
+                      <th>人気</th>
+                      <th>日付</th>
+                  </tr>
+                  {% for music in music_list %}
+                  <tr>
+                      <td>
+                        {{ music.feeling_1 }}
+                      </td>
+                      <td>{{ music.feeling_1 }}</td>
+                      <td>{{ music.feeling_2 }}</td>
+                      <td>{{ music.artist }}</td>
+                      <td>{{ music.genre }}</td>
+                      <td>{{ music.era }}</td>
+                      <td>{{ music.famous }}</td>
+                      <td><a href="{% url 'music_by_feeling:page3' user.id %}">{{ music.date }}</a></td>
+                  </tr>
+                  {% empty %}
+                      <a href="{% url 'music_by_feeling:page3' user.id %}">感情入力履歴がありません。気分を入力しよう！</a>
+                  {% endfor %}
+              </table>
+
+      </div>
+-->
+
+
+<!--
+
+      <a href="{% url 'music_by_feeling:index' %}">
+          <h2><font size="6">Music by Feeling</font></h2>
+      </a>
+-->
+        <ul>
+            <br>
+<!--
+                <li><div>
+                  <label for="scales">なりたい気分を選択</label>
+                  <br><br>
+                  <p><font size="5">悲<input type="range" min="0" max="10" value="5" id="select_feeling_1">楽</p>
+
+                  <p><font size="5">静<input type="range" min="0" max="10" value="5" id="select_feeling_2">活</p>
+
+
+<br><br>
+                </div></li>
+
+                <li>
+                  <label for="name">アーティスト名：</label>
+                  <input type="text" id="name" name="name" required minlength="1" maxlength="100" size="20">
+                </li><br>
+
+
+                <li><label for="genres-select">ジャンル:</label>
+                  <select name="genres" id="genres-select">
+                    <option value="">選択してください</option>
+                    <option value="j-pop">J ポップ</option>
+                    <option value="k-pop">K ポップ</option>
+                    <option value="rock">ロック</option>
+                    <option value="anime">アニソン</option>
+                    <option value="vocaloid">ボカロ</option>
+
+                  </select></li>
+-->
+<br>
+<!--
+                <li><label for="pet-select">年代:</label>
+                  <select name="jpop_hits" id="jpop_hits_select">
+                    <option value="">選択してください</option>
+                    <option value="2022">2022年</option>
+                    <option value="2021">2021年</option>
+                    <option value="2020">2020年</option>
+                    <option value="2010">2010年</option>
+                    <option value="2000">2000年</option>
+                    <option value="1990">1990年</option>
+                  </select></li>
+
+                  <p><font size="2">※ジャンルと年代の組み合わせによっては、ヒットせずにエラーが発生する場合がございます。どちらか一方を指定、またはどちらも指定せずに検索をお願いします。</p>
+
+<br>
+
+                <li><div>
+                  <input type="checkbox" id="scales" checked>
+                  <label for="scales">人気の曲から選ぶ</label>
+                </div></li>
+
+
+
+            {% for category in category_list %}
+                <a href="{% url 'music_by_feeling:music_by_feeling_category' category %}">
+                    <li>{{ category }}></li>
+                </a>
+            {% endfor %}
+-->
+        </ul>
+
+        <form action="{% url 'music_by_feeling:spotifyLoad' user.id %}" method="post">
+            {% csrf_token %}
+            <div class="field">
+              <input type="hidden" name="feeling_1" id="feeling_1">
+              <input type="hidden" name="feeling_2" id="feeling_2">
+              <input type="hidden" name="select_list" id="select_list">
+              <input type="hidden" name="select_list_1" id="select_list_1">
+            </div>
+
+
+            <div class="music">
+                    <table border="1">
+                        <tr>
+                            <!--Feeling1-->
+                            <th>選択</th>
+                            <th>楽しい度</th>
+                            <!--Feeling2-->
+                            <th>アクティブ度</th>
+                            <!-- <th>アーティスト名</th> -->
+                            <th>ジャンル</th>
+                            <th>年代</th>
+                            <th>人気</th>
+                            <th>日付</th>
+                        </tr>
+                        {% for music in music_list %}
+                        <tr>
+                            <td>
+                              <!-- {{ music.feeling_1 }} -->
+                              <input type="submit" onclick="select_year_reflect({{ music.id }})" value="音楽を聴く">
+                            </td>
+                            <td>{{ music.feeling_1 }}</td>
+                            <td>{{ music.feeling_2 }}</td>
+                            <!-- <td>{{ music.artist }}</td> -->
+                            <td>{{ music.genre }}</td>
+                            <td>{{ music.era }}</td>
+                            <td>{{ music.famous }}</td>
+                            <td><a href="{% url 'music_by_feeling:page3' user.id %}">{{ music.date }}</a></td>
+                        </tr>
+                        {% empty %}
+                            <a href="{% url 'music_by_feeling:page3' user.id %}">感情入力履歴がありません。気分を入力しよう！</a>
+                        {% endfor %}
+                    </table>
+
+            </div>
+
+<!--
+            <input type="submit" onclick="select_year_reflect()" value="音楽を聴く">-->
+        </form>
+
+        <!--アンケート専用でリンクを貼る。提出の際には消す。-->
+<!--
+        <h6>なるべく幅広い数値で楽しい・悲しい、アクティブ・落ち着くの評価をしたいです！</h6>
+        <a href="{% url 'music_by_feeling:music_list' user.id %}">過去の参加者の数値</a>
+        <h6>(こちらのリンクでは過去の参加者の入力した数値の履歴が表示されます。)</h6>
+        <h6>上記のリンクを参考に、被らないような値にしていただけると幸いです。</h6>
+        <h6>例:(1.0,1.0),(0.8,0.9),(0.9,1.0)などが多い場合、(0.0,0.0)などの数値を入れてください</h6>
+        <h6>パラメータの数字は左が0.0、右が1.0となっています。</h6>-->
+        <!--ここまでアンケート専用コード-->
+
+            <!--<br>
+            <hr>
+
+        <a href="{% url 'music_by_feeling:index' %}">
+          <button type="button">メインページに戻る</button></a>-->
+
+<!--
+          <br>
+          <p>------------------------------------------------------</p>
+          {% if user.id  %}
+              <p>こんにちは{{ user.username }}さん</p>
+              <a href="{% url 'music_by_feeling:logout' %}">ログアウト</a><br>
+          {% else %}
+              <p>音楽を検索するにはログインする必要があります。</p><br>
+              <a href="{% url 'music_by_feeling:login' %}">ログインはこちら</a><br>
+              <a href="{% url 'music_by_feeling:signup' %}">新規登録</a><br>
+          {% endif %}
+          <p>------------------------------------------------------</p>
+          {% if user.id  %}
+              <a href="{% url 'music_by_feeling:music_list' user.id %}">感情履歴</a><br>
+              <a href="{% url 'music_by_feeling:history_list' user.id %}">音楽履歴</a><br>
+              <a href="{% url 'music_by_feeling:playlist' user.id %}">お気に入り</a><br>
+          {% endif %}
+          <br>
+-->
+
+    </body>
+</html>
+
+
+<script>
+
+    // var elm1 = document.getElementById('jpop_hits_select');
+    var elm2 = document.getElementById('select_list');
+    // var elm6 = document.getElementById('select_list_1');
+
+    // var elm3 = document.getElementById('genres-select');
+    // var elm4 = document.getElementById('name');
+    // var elm5 = document.getElementById('scales');
+
+    var array = [];
+    var num1;
+    var num3;
+    //var num4;
+    //var num5;
+
+    //追加
+    // let f1_1 = document.getElementById('select_feeling_1');
+    // let f1_2 = document.getElementById('feeling_1');
+    // f1_2.value = f1_1.value / 10;
+    //
+    // let f2_1 = document.getElementById('select_feeling_2');
+    // let f2_2 = document.getElementById('feeling_2');
+    // f2_2.value = f2_1.value / 10;
+
+
+    // function select_year_reflect() {
+    //   //年代選択反映
+    //   num1 = elm1.selectedIndex;
+    //   num3 = elm3.selectedIndex;
+    //   //num4 = elm4.selectedIndex;
+    //   //console.log(1);
+    //   //await sleep(5000);
+    //   //num4 = elm4.get_attribute("value");
+    //
+    //   //num5 = elm5.is_selected();
+    //   //console.log(num4);
+    //   //console.log(num5);
+    //
+    //   array.splice(0);//配列クリア
+    //   //array.push(elm1.options[num1].value, elm3.options[num3].value);
+    //   //num4 = elm4.get_attribute("value");
+    //   //num5 = elm5.is_selected();
+    //
+    //   array.push(elm1.options[num1].value, elm3.options[num3].value, elm4.value, elm5.checked);
+    //   //array.push(elm1.options[num1].value, elm3.options[num3].value, elm5.options[num5].value);
+    //
+    //   elm2.value = array;
+    //
+    //   //elm6.value = elm4.get_attribute("value");
+    //   //elm6.value = elm4.getAttribute("value");
+    //   //elm6.value = elm4.getAttribute('value');
+    //   //elm6.value = elm4.value;
+    //   //elm6.value = elm5.is_selected();
+    //   //elm6.value = elm5.checked;
+    //
+    //   //
+    //   f1_2.value = f1_1.value / 10;
+    //   f2_2.value = f2_1.value / 10;
+    //   console.log("f1_1:"+f1_1+", f1_2:"+f1_2.value);
+    // }
+
+    function select_year_reflect(msc_id) {
+      //年代選択反映
+      // num1 = elm1.selectedIndex;
+      // num3 = elm3.selectedIndex;
+      //num4 = elm4.selectedIndex;
+      //console.log(1);
+      //await sleep(5000);
+      //num4 = elm4.get_attribute("value");
+
+      //num5 = elm5.is_selected();
+      //console.log(num4);
+      //console.log(num5);
+
+      array.splice(0);//配列クリア
+      //array.push(elm1.options[num1].value, elm3.options[num3].value);
+      //num4 = elm4.get_attribute("value");
+      //num5 = elm5.is_selected();
+
+//      array.push(elm1.options[num1].value, elm3.options[num3].value, elm4.value, elm5.checked);
+      array.push(msc_id, 0,0,0);
+      //array.push(elm1.options[num1].value, elm3.options[num3].value, elm5.options[num5].value);
+
+      elm2.value = array;
+
+      //elm6.value = elm4.get_attribute("value");
+      //elm6.value = elm4.getAttribute("value");
+      //elm6.value = elm4.getAttribute('value');
+      //elm6.value = elm4.value;
+      //elm6.value = elm5.is_selected();
+      //elm6.value = elm5.checked;
+
+      //
+      // f1_2.value = f1_1.value / 10;
+      // f2_2.value = f2_1.value / 10;
+      // console.log("f1_1:"+f1_1+", f1_2:"+f1_2.value);
+    }
+
+    function sleep(msec) {
+       return new Promise(function(resolve) {
+
+          setTimeout(function() {resolve()}, msec);
+
+       })
+    }
+
+</script>
+
 {% endblock %}
