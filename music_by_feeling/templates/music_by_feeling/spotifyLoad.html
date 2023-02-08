@@ -128,8 +128,13 @@
 
 <script>
     var mbfl_len = {{ mbfl_len | safe}}; //エラー？
+    var music_list_flg = {{ music_list_flg | safe}}; //エラー？
     if(mbfl_len == 0){
-        //window.location.href = "{% url 'music_by_feeling:page3' user.id %}";
+        if(music_list_flg == 0){
+            window.location.href = "{% url 'music_by_feeling:page3' user.id %}";
+        }else {
+            window.location.href = "{% url 'music_by_feeling:music_list' user.id %}";
+        }
         alert("選択した内容にあう曲が見つかりませんでした。再度入力し直してください。");
     }
     // オーディオタグの取得
