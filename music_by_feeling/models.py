@@ -232,13 +232,14 @@ class Music(models.Model):
          blank=True,
          null=True
          )
-    era = models.CharField(
-         '年代',
-         max_length=5,
-         default='0',
-         blank=True,
-         null=True
-         )
+    # era = models.CharField(
+    #      '年代',
+    #      max_length=5,
+    #      default='0',
+    #      blank=True,
+    #      null=True
+    #      )
+    era = models.IntegerField('年代',blank=True, null=True,default=0)              #選択なしの時は0が入る
     date = models.DateTimeField('日付', null=True)
     famous = models.BooleanField(default=False, blank=True, null=True)
     """time = models.DateTimeField(default=timezone.now)"""

@@ -127,6 +127,11 @@
 </html>
 
 <script>
+    var mbfl_len = {{ mbfl_len | safe}}; //エラー？
+    if(mbfl_len == 0){
+        //window.location.href = "{% url 'music_by_feeling:page3' user.id %}";
+        alert("選択した内容にあう曲が見つかりませんでした。再度入力し直してください。");
+    }
     // オーディオタグの取得
     function playVideo(num) {
 //        var elm = document.getElementByName('select_music_button');
